@@ -1,0 +1,22 @@
+﻿@page "/"
+
+<PageTitle>Home</PageTitle>
+
+<MudButton ButtonType="ButtonType.Button" Color="Color.Primary" Variant="Variant.Filled" OnClick="LoggingTest">Logging Test</MudButton>
+
+@inject ILogger<Program> Logger
+@code{
+    private void LoggingTest()
+    {
+        try
+        {
+            int i = 0;
+            int j = 1;
+            j = j / i;
+        }
+        catch(DivideByZeroException ex)
+        {
+            Logger.LogError(ex, "Error Logger Test: {message}", ex.Message);
+        }
+    }
+}

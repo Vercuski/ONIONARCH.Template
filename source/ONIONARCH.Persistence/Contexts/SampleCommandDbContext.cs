@@ -11,7 +11,7 @@ namespace ONIONARCH.Persistence.Contexts;
 
 public sealed class SampleCommandDbContext(DbContextOptions options) : DbContext(options), ICommandDbContext, IUnitOfWork
 {
-    public new DbSet<TEntity> Set<TEntity>()
+    private new DbSet<TEntity> Set<TEntity>()
         where TEntity : Entity
         => base.Set<TEntity>();
 

@@ -2,7 +2,7 @@
 using ONIONARCH.Domain.Abstractions;
 using ONIONARCH.Infrastructure.HealthChecks;
 using ONIONARCH.Persistence.Contexts;
-using ONIONARCH.Presentation;
+using ONIONARCH.Presentation.Web;
 using ONIONARCH.Tests.ArchitectureTests.CustomRules;
 using FluentAssertions;
 using NetArchTest.Rules;

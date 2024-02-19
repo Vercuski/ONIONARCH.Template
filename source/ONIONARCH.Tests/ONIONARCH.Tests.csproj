@@ -36,7 +36,7 @@
     <ProjectReference Include="..\ONIONARCH.Domain\ONIONARCH.Domain.csproj" />
     <ProjectReference Include="..\ONIONARCH.Infrastructure\ONIONARCH.Infrastructure.csproj" />
     <ProjectReference Include="..\ONIONARCH.Persistence\ONIONARCH.Persistence.csproj" />
-    <ProjectReference Include="..\ONIONARCH.Presentation\ONIONARCH.Presentation.csproj" />
+    <ProjectReference Include="..\ONIONARCH.Presentation.Web\ONIONARCH.Presentation.Web.csproj" />
   </ItemGroup>
 
   <ItemGroup>

@@ -1,3 +1,4 @@
+using Microsoft.Extensions.Options;
 using ONIONARCH.Application;
 using ONIONARCH.Infrastructure;
 using ONIONARCH.Persistence;
@@ -10,7 +11,7 @@ builder.AddPersistenceRegistrations();
 builder.AddInfrastructureRegistration();
 
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(options => SwaggerGenOptionsConfiguration.ApplySwaggerGenOptions(options, builder));
 
 var app = builder.Build();
 

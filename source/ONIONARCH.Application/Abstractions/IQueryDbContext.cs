@@ -1,6 +1,5 @@
-﻿using ONIONARCH.Domain.Abstractions;
-using Microsoft.Data.SqlClient;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
+using ONIONARCH.Domain.Abstractions;
 
 namespace ONIONARCH.Application.Abstractions;
 

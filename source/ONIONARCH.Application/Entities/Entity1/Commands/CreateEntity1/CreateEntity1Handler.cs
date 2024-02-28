@@ -1,5 +1,5 @@
-﻿using ONIONARCH.Application.Abstractions;
-using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.Logging;
+using ONIONARCH.Application.Abstractions;
 
 namespace ONIONARCH.Application.Entities.Entity1.Commands.CreateEntity1;
 

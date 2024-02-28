@@ -1,10 +1,8 @@
 ﻿
-using ONIONARCH.Application.Abstractions;
-using ONIONARCH.Domain.Abstractions;
-using ONIONARCH.Domain.Entities;
-using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
+using ONIONARCH.Application.Abstractions;
+using ONIONARCH.Domain.Abstractions;
 using System.Reflection;
 
 namespace ONIONARCH.Persistence.Contexts;

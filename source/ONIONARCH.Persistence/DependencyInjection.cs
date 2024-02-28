@@ -1,11 +1,10 @@
-﻿using ONIONARCH.Application.Abstractions;
-using ONIONARCH.Domain.Options;
-using ONIONARCH.Persistence.Contexts;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
-using System.Net;
+using ONIONARCH.Application.Abstractions;
+using ONIONARCH.Domain.Options;
+using ONIONARCH.Persistence.Contexts;
 
 namespace ONIONARCH.Persistence;
 

@@ -1,4 +1,3 @@
-using Microsoft.Extensions.Options;
 using ONIONARCH.Application;
 using ONIONARCH.Infrastructure;
 using ONIONARCH.Persistence;

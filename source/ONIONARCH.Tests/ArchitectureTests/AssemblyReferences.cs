@@ -2,13 +2,7 @@
 using ONIONARCH.Domain.Abstractions;
 using ONIONARCH.Infrastructure.HealthChecks;
 using ONIONARCH.Persistence.Contexts;
-using ONIONARCH.Presentation.Web;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ONIONARCH.Tests.ArchitectureTests;
 

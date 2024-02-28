@@ -1,6 +1,5 @@
-﻿using ONIONARCH.Application.Abstractions;
-using ONIONARCH.Domain.Entities;
-using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.Logging;
+using ONIONARCH.Application.Abstractions;
 
 namespace ONIONARCH.Application.Entities.Entity1.Commands.DeleteEntity1;
 

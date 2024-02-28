@@ -1,6 +1,6 @@
-﻿using ONIONARCH.Application.Abstractions;
+﻿using Microsoft.EntityFrameworkCore;
+using ONIONARCH.Application.Abstractions;
 using ONIONARCH.Domain.Entities;
-using Microsoft.EntityFrameworkCore;
 
 namespace ONIONARCH.Application.Entities.Entity1.Queries.GetSingleEntity1;
 

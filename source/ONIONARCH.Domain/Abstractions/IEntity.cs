@@ -1,6 +1,4 @@
-﻿using System.Diagnostics.CodeAnalysis;
-
-namespace ONIONARCH.Domain.Abstractions;
+﻿namespace ONIONARCH.Domain.Abstractions;
 
 public interface IEntity
 {

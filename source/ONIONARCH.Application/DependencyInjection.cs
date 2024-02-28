@@ -13,10 +13,8 @@ public static class DependencyInjection
 {
     public static IHostApplicationBuilder AddApplicationRegistration(this IHostApplicationBuilder builder)
     {
-        var serviceProvider = builder.Services.BuildServiceProvider();
-        var rabbitMQOptions = serviceProvider.GetService<IOptions<RabbitMQOptions>>()!.Value;
         builder.Services.AddOptionsRegistration(builder.Configuration);
-        builder.Services.AddMassTransitRegistration(rabbitMQOptions);
+        builder.Services.AddMassTransitRegistration();
         builder.Services.AddMediatR(configuration =>
         {
             configuration.RegisterServicesFromAssemblies(AppDomain.CurrentDomain.GetAssemblies());
@@ -35,8 +33,11 @@ public static class DependencyInjection
         return services;
     }
 
-    public static IServiceCollection AddMassTransitRegistration(this IServiceCollection services, RabbitMQOptions rabbitMQOptions)
+    public static IServiceCollection AddMassTransitRegistration(this IServiceCollection services)
     {
+        var serviceProvider = services.BuildServiceProvider();
+        var rabbitMQOptions = serviceProvider.GetService<IOptions<RabbitMQOptions>>()!.Value;
+
         services.AddMassTransit(setup =>
         {
             setup.UsingRabbitMq((context, config) =>

@@ -7,7 +7,8 @@ using System.Reflection;
 
 namespace ONIONARCH.Persistence.Contexts;
 
-public sealed class SampleQueryDbContext(DbContextOptions options) : DbContext(options), IQueryDbContext, IUnitOfWork
+public sealed class SampleQueryDbContext(DbContextOptions<SampleQueryDbContext> options)
+    : BaseDbContext<SampleQueryDbContext>(options), IQueryDbContext, IUnitOfWork
 {
     public new DbSet<TEntity> Set<TEntity>()
         where TEntity : Entity

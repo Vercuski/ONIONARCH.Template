@@ -2,7 +2,7 @@
 
 namespace ONIONARCH.Domain.Options;
 
-public sealed class ConnectionStringOptions : BaseConfig
+public sealed record ConnectionStringOptions : BaseConfig
 {
     public string SampleDb { get; set; } = null!;
     public override string Section => "ConnectionStrings";

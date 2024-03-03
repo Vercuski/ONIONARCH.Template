@@ -1,4 +1,5 @@
 ﻿using MassTransit;
+using Microsoft.EntityFrameworkCore.Diagnostics.Internal;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -30,6 +31,7 @@ public static class DependencyInjection
     {
         services.Configure<ConnectionStringOptions>(GetSection<ConnectionStringOptions>(configuration));
         services.Configure<RabbitMQOptions>(GetSection<RabbitMQOptions>(configuration));
+        services.Configure<LogOptions>(GetSection<LogOptions>(configuration));
         return services;
     }
 

@@ -8,7 +8,8 @@ using System.Reflection;
 
 namespace ONIONARCH.Persistence.Contexts;
 
-public sealed class SampleCommandDbContext(DbContextOptions options) : DbContext(options), ICommandDbContext, IUnitOfWork
+public sealed class SampleCommandDbContext(DbContextOptions<SampleCommandDbContext> options)
+    : BaseDbContext<SampleCommandDbContext>(options), ICommandDbContext, IUnitOfWork
 {
     private new DbSet<TEntity> Set<TEntity>()
         where TEntity : Entity

@@ -1,5 +1,4 @@
-﻿using Investor.Domain.Entities;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using ONIONARCH.Domain.Entities;
 using System;
 using System.Collections.Generic;

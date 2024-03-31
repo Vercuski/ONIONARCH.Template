@@ -10,7 +10,6 @@ public class SimpleHealthCheck : IHealthCheck
         var stopwatch = new Stopwatch();
         stopwatch.Start();
         HealthCheckResult result;
-
         /* Start Health Check Code */
         Random rand = new();
         var test = rand.Next(1, 4);

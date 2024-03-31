@@ -1,6 +1,8 @@
+using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using MudBlazor.Services;
 using ONIONARCH.Application;
 using ONIONARCH.Infrastructure;
+using ONIONARCH.Infrastructure.HealthChecks;
 using ONIONARCH.Persistence;
 using ONIONARCH.Presentation.Web.Components;
 
@@ -28,8 +30,7 @@ if (!app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseAntiforgery();
-app.MapHealthChecks("/health");
-
+app.AddInfrastructureApplicationRegistration();
 app.MapRazorComponents<App>()
     .AddInteractiveServerRenderMode();
 

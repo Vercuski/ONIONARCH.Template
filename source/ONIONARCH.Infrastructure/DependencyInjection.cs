@@ -1,4 +1,6 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Diagnostics.HealthChecks;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using ONIONARCH.Infrastructure.HealthChecks;
@@ -7,6 +9,15 @@ namespace ONIONARCH.Infrastructure;
 
 public static class DependencyInjection
 {
+    public static WebApplication? AddInfrastructureApplicationRegistration(this WebApplication app)
+    {
+        app.MapHealthChecks("/health", new HealthCheckOptions
+        {
+            ResponseWriter = HealthCheckConfiguration.WriteResponse
+        });
+        return app;
+    }
+
     public static IHostApplicationBuilder AddInfrastructureRegistration(this IHostApplicationBuilder builder)
     {
         builder.Services.AddHealthChecksRegistration();

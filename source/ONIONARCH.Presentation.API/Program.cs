@@ -20,5 +20,6 @@ if (app.Environment.IsDevelopment())
     app.AddAppSwaggerConfiguration();
 }
 
+app.AddInfrastructureApplicationRegistration();
 app.UseHttpsRedirection();
 app.Run();

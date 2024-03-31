@@ -9,8 +9,9 @@ public sealed record LogOptions : BaseConfig
     public override string Section => "Logging";
 }
 
-public sealed record LogLevel
+public sealed record LogLevel : BaseConfig
 {
     public string Default { get; set; } = null!;
     public string MicrosoftAspNetCore { get; set; } = null!;
+    public override string Section => "Logging:LogLevel";
 }

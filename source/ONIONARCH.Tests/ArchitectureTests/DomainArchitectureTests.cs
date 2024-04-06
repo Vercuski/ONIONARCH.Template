@@ -66,7 +66,7 @@ public class DomainArchitectureTests
             .That()
             .ResideInNamespace("ONIONARCH.Domain.Options")
             .Should()
-            .Inherit(typeof(BaseConfig))
+            .Inherit(typeof(BaseOptionsConfig))
             .And()
             .BeSealed()
             .GetResult();

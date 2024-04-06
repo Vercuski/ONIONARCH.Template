@@ -2,7 +2,7 @@
 
 namespace ONIONARCH.Domain.Options;
 
-public sealed record RabbitMQOptions : BaseConfig
+public sealed record RabbitMQOptions : BaseOptionsConfig
 {
     public string Host { get; set; } = null!;
     public string VirtualHost { get; set; } = null!;

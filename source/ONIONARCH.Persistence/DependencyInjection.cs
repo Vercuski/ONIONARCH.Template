@@ -29,7 +29,6 @@ public static class DependencyInjection
 
         builder.Services.AddTransient<ICommandDbContext>(serviceProvider => serviceProvider.GetRequiredService<SampleCommandDbContext>());
         builder.Services.AddTransient<IQueryDbContext>(serviceProvider => serviceProvider.GetRequiredService<SampleQueryDbContext>());
-
         builder.Services.AddTransient<IUnitOfWork>(serviceProvider => serviceProvider.GetRequiredService<SampleCommandDbContext>());
 
         return builder;

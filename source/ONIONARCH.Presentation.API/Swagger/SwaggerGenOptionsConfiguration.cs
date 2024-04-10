@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
+using ONIONARCH.Domain.Options;
 using Swashbuckle.AspNetCore.SwaggerGen;
 
 namespace ONIONARCH.Presentation.API.Swagger;
@@ -8,6 +10,9 @@ public static class SwaggerGenOptionsConfiguration
 {
     public static void ApplySwaggerGenOptions(SwaggerGenOptions genOptions, IHostApplicationBuilder builder)
     {
+        var serviceProvider = builder.Services.BuildServiceProvider();
+        var swaggerOptions = serviceProvider.GetService<IOptions<SwaggerOptions>>()!.Value;
+
         genOptions.SwaggerDoc(SwaggerConstants.Version, new OpenApiInfo
         {
             Version = SwaggerConstants.Version,
@@ -31,7 +36,7 @@ public static class SwaggerGenOptionsConfiguration
         {
             genOptions.AddServer(new OpenApiServer
             {
-                Url = "https://www.ONIONARCH.PRODUCTION.URL.com/"
+                Url = swaggerOptions.ServerUrl
             });
         }
         genOptions.AddSecurityDefinition(JwtBearerDefaults.AuthenticationScheme, new OpenApiSecurityScheme

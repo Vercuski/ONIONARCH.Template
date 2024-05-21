@@ -16,13 +16,13 @@ public static class DependencyInjection
         var connectionStringOptions = serviceProvider.GetService<IOptions<ConnectionStringOptions>>()!.Value;
         builder.Services.AddDbContext<SampleCommandDbContext>(options =>
             options
-                .UseSqlServer(connectionStringOptions.SampleDb)
+                .UseSqlServer(connectionStringOptions.CommandDbConnection)
                 .EnableDetailedErrors()
                 .EnableSensitiveDataLogging(), ServiceLifetime.Transient
         );
         builder.Services.AddDbContext<SampleQueryDbContext>(options =>
             options
-                .UseSqlServer(connectionStringOptions.SampleDb)
+                .UseSqlServer(connectionStringOptions.QueryDbConnection)
                 .EnableDetailedErrors()
                 .EnableSensitiveDataLogging(), ServiceLifetime.Transient
         );

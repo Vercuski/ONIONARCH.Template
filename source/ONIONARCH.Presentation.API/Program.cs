@@ -5,6 +5,7 @@ using ONIONARCH.Presentation.API.Swagger;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Services.AddControllers();
 builder.AddApplicationRegistration();
 builder.AddPersistenceRegistrations();
 builder.AddInfrastructureRegistration();
@@ -20,6 +21,7 @@ if (app.Environment.IsDevelopment())
     app.AddAppSwaggerConfiguration();
 }
 
+app.MapControllers();
 app.AddInfrastructureApplicationRegistration();
 app.UseHttpsRedirection();
 app.Run();

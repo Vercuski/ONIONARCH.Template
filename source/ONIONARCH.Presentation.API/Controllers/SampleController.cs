@@ -15,7 +15,7 @@ namespace ONIONARCH.Presentation.API.Controllers
         [HttpGet("{id}")]
         public async Task<SampleEntity1> Get(int id)
         {
-            GetSingleSampleEntity1Request request = new GetSingleSampleEntity1Request(id);
+            GetSingleSampleEntity1Request request = new(id);
             var returnValue = await mediator.Send(request, CancellationToken.None);
             return returnValue;
         }

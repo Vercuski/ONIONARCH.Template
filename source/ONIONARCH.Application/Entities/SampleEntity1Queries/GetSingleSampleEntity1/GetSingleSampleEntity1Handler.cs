@@ -24,7 +24,7 @@ internal sealed class GetSingleSampleEntity1Handler(IQueryDbContext dbContext) :
         //            SampleString1 = "string"
         //        }).SingleOrDefaultAsync(cancellationToken).Result;
 
-        SampleEntity1? response = new SampleEntity1
+        SampleEntity1? response = new()
         {
             SampleBoolean1 = false,
             SampleDecimal1 = request.Id,

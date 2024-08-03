@@ -3,8 +3,8 @@ using ONIONARCH.Application.Abstractions;
 using ONIONARCH.Domain.Entities;
 
 namespace ONIONARCH.Application.Entities.SampleEntity1Queries.GetSingleSampleEntity1;
-
-internal sealed class GetSingleSampleEntity1Handler(IQueryDbContext dbContext) : IQueryHandler<GetSingleSampleEntity1Request, SampleEntity1>
+public sealed record GetSingleSampleEntity1Request(int Id) : IMediatRQueryRequest<SampleEntity1>;
+internal sealed class GetSingleSampleEntity1Handler(IQueryDbContext dbContext) : IMediatRQueryHandler<GetSingleSampleEntity1Request, SampleEntity1>
 {
     private readonly IQueryDbContext _dbContext = dbContext;
 

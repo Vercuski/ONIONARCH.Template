@@ -4,7 +4,8 @@ using ONIONARCH.Domain.Entities;
 
 namespace ONIONARCH.Application.Entities.SampleEntity1Queries.GetMultipleSampleEntity1;
 
-internal sealed class GetMultipleSampleEntity1sHandler(IQueryDbContext dbContext) : IQueryHandler<GetMultipleSampleEntity1sRequest, List<SampleEntity1>>
+public sealed class GetMultipleSampleEntity1sRequest : IMediatRQueryRequest<List<SampleEntity1>>;
+internal sealed class GetMultipleSampleEntity1sHandler(IQueryDbContext dbContext) : IMediatRQueryHandler<GetMultipleSampleEntity1sRequest, List<SampleEntity1>>
 {
     private readonly IQueryDbContext _dbContext = dbContext;
 

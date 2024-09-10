@@ -20,16 +20,16 @@ public static class DependencyInjection
         return app;
     }
 
-    public static IHostApplicationBuilder AddInfrastructureRegistration(this IHostApplicationBuilder builder)
+    public static IHostApplicationBuilder AddInfrastructureRegistration(this WebApplicationBuilder builder)
     {
-        builder.Services.AddHealthChecksRegistration();
-        builder.Services.AddLoggingRegistration(builder.Environment);
+        builder.AddHealthChecksRegistration();
+        builder.AddLoggingRegistration();
         return builder;
     }
 
-    public static IServiceCollection AddHealthChecksRegistration(this IServiceCollection services)
+    private static WebApplicationBuilder AddHealthChecksRegistration(this WebApplicationBuilder builder)
     {
-        var healthCheckBuilder = services.AddHealthChecks();
+        var healthCheckBuilder = builder.Services.AddHealthChecks();
         foreach (var healthCheckType in Assembly.GetExecutingAssembly()
             .GetTypes().Where(type => !type.IsAbstract &&
             type.GetInterfaces().Contains(typeof(IHealthCheck))))
@@ -37,19 +37,19 @@ public static class DependencyInjection
             healthCheckBuilder.AddCheck(healthCheckType.Name,
                 (IHealthCheck)Activator.CreateInstance(healthCheckType)!);
         }
-        return services;
+        return builder;
     }
 
-    public static IServiceCollection AddLoggingRegistration(this IServiceCollection services, IHostEnvironment environment)
+    private static WebApplicationBuilder AddLoggingRegistration(this WebApplicationBuilder builder)
     {
-        services.AddLogging(config =>
+        builder.Services.AddLogging(config =>
         {
             config.ClearProviders();
-            if (!environment.IsProduction())
+            if (!builder.Environment.IsProduction())
             {
                 config.AddConsole();
             }
         });
-        return services;
+        return builder;
     }
 }

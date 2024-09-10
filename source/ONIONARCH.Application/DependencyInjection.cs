@@ -1,4 +1,5 @@
 ﻿using MassTransit;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore.Diagnostics.Internal;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -12,35 +13,45 @@ namespace ONIONARCH.Application;
 
 public static class DependencyInjection
 {
-    public static IHostApplicationBuilder AddApplicationRegistration(this IHostApplicationBuilder builder)
+    public static IHostApplicationBuilder AddApplicationRegistration(this WebApplicationBuilder builder)
     {
-        builder.Services.AddOptionsRegistration(builder.Configuration);
-        builder.Services.AddMassTransitRegistration();
+        builder.AddOptionsRegistration();
+        builder.AddMassTransitRegistration();
+        builder.AddMediatorRegistration();
+        builder.AddErrorHandling();
+        return builder;
+    }
+
+    private static WebApplicationBuilder AddErrorHandling(this WebApplicationBuilder builder)
+    {
+        builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
+        builder.Services.AddProblemDetails();
+        return builder;
+    }
+
+    private static WebApplicationBuilder AddMediatorRegistration(this WebApplicationBuilder builder)
+    {
         builder.Services.AddMediatR(configuration =>
         {
             configuration.RegisterServicesFromAssemblies(AppDomain.CurrentDomain.GetAssemblies());
         });
-
-        builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
-        builder.Services.AddProblemDetails();
-
         return builder;
     }
 
-    public static IServiceCollection AddOptionsRegistration(this IServiceCollection services, IConfiguration configuration)
+    private static WebApplicationBuilder AddOptionsRegistration(this WebApplicationBuilder builder)
     {
-        services.Configure<ConnectionStringOptions>(GetSection<ConnectionStringOptions>(configuration));
-        services.Configure<RabbitMQOptions>(GetSection<RabbitMQOptions>(configuration));
-        services.Configure<LogOptions>(GetSection<LogOptions>(configuration));
-        return services;
+        builder.Services.Configure<ConnectionStringOptions>(GetSection<ConnectionStringOptions>(builder.Configuration));
+        builder.Services.Configure<RabbitMQOptions>(GetSection<RabbitMQOptions>(builder.Configuration));
+        builder.Services.Configure<LogOptions>(GetSection<LogOptions>(builder.Configuration));
+        return builder;
     }
 
-    public static IServiceCollection AddMassTransitRegistration(this IServiceCollection services)
+    private static WebApplicationBuilder AddMassTransitRegistration(this WebApplicationBuilder builder)
     {
-        var serviceProvider = services.BuildServiceProvider();
+        var serviceProvider = builder.Services.BuildServiceProvider();
         var rabbitMQOptions = serviceProvider.GetService<IOptions<RabbitMQOptions>>()!.Value;
 
-        services.AddMassTransit(setup =>
+        builder.Services.AddMassTransit(setup =>
         {
             setup.UsingRabbitMq((context, config) =>
             {
@@ -53,10 +64,10 @@ public static class DependencyInjection
                 config.ConfigureEndpoints(context);
             });
         });
-        return services;
+        return builder;
     }
 
-    public static IConfigurationSection GetSection<T>(IConfiguration configuration)
+    private static IConfigurationSection GetSection<T>(IConfiguration configuration)
         where T : BaseOptionsConfig
     {
         var config = Activator.CreateInstance(typeof(T))!;

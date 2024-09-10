@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Builder;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
@@ -10,7 +11,7 @@ namespace ONIONARCH.Persistence;
 
 public static class DependencyInjection
 {
-    public static IHostApplicationBuilder AddPersistenceRegistrations(this IHostApplicationBuilder builder)
+    public static IHostApplicationBuilder AddPersistenceRegistrations(this WebApplicationBuilder builder)
     {
         var serviceProvider = builder.Services.BuildServiceProvider();
         var connectionStringOptions = serviceProvider.GetService<IOptions<ConnectionStringOptions>>()!.Value;

@@ -13,7 +13,7 @@ namespace ONIONARCH.Application;
 
 public static class DependencyInjection
 {
-    public static IHostApplicationBuilder AddApplicationRegistration(this WebApplicationBuilder builder)
+    public static IHostApplicationBuilder AddApplicationRegistration(this IHostApplicationBuilder builder)
     {
         builder.AddOptionsRegistration();
         builder.AddMassTransitRegistration();
@@ -22,14 +22,14 @@ public static class DependencyInjection
         return builder;
     }
 
-    private static WebApplicationBuilder AddErrorHandling(this WebApplicationBuilder builder)
+    private static IHostApplicationBuilder AddErrorHandling(this IHostApplicationBuilder builder)
     {
         builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
         builder.Services.AddProblemDetails();
         return builder;
     }
 
-    private static WebApplicationBuilder AddMediatorRegistration(this WebApplicationBuilder builder)
+    private static IHostApplicationBuilder AddMediatorRegistration(this IHostApplicationBuilder builder)
     {
         builder.Services.AddMediatR(configuration =>
         {
@@ -38,7 +38,7 @@ public static class DependencyInjection
         return builder;
     }
 
-    private static WebApplicationBuilder AddOptionsRegistration(this WebApplicationBuilder builder)
+    private static IHostApplicationBuilder AddOptionsRegistration(this IHostApplicationBuilder builder)
     {
         builder.Services.Configure<ConnectionStringOptions>(GetSection<ConnectionStringOptions>(builder.Configuration));
         builder.Services.Configure<RabbitMQOptions>(GetSection<RabbitMQOptions>(builder.Configuration));
@@ -46,7 +46,7 @@ public static class DependencyInjection
         return builder;
     }
 
-    private static WebApplicationBuilder AddMassTransitRegistration(this WebApplicationBuilder builder)
+    private static IHostApplicationBuilder AddMassTransitRegistration(this IHostApplicationBuilder builder)
     {
         var serviceProvider = builder.Services.BuildServiceProvider();
         var rabbitMQOptions = serviceProvider.GetService<IOptions<RabbitMQOptions>>()!.Value;

@@ -17,7 +17,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ONIONARCH.Tests", "ONIONARC
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Presentation", "Presentation", "{4E5CFCD7-7831-4706-BC66-74342F71C74E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ONIONARCH.Presentation.API", "ONIONARCH.Presentation.API\ONIONARCH.Presentation.API.csproj", "{0ADC93B7-0431-4EFD-8C11-EFAFA30BA0DC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ONIONARCH.Presentation.API", "ONIONARCH.Presentation.API\ONIONARCH.Presentation.API.csproj", "{0ADC93B7-0431-4EFD-8C11-EFAFA30BA0DC}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ONIONARCH.Presentation.Console", "ONIONARCH.Presentation.Console\ONIONARCH.Presentation.Console.csproj", "{65771023-95A8-4543-BFA4-A59B54B637A3}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -53,6 +55,10 @@ Global
 		{0ADC93B7-0431-4EFD-8C11-EFAFA30BA0DC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0ADC93B7-0431-4EFD-8C11-EFAFA30BA0DC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0ADC93B7-0431-4EFD-8C11-EFAFA30BA0DC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{65771023-95A8-4543-BFA4-A59B54B637A3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{65771023-95A8-4543-BFA4-A59B54B637A3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{65771023-95A8-4543-BFA4-A59B54B637A3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{65771023-95A8-4543-BFA4-A59B54B637A3}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -60,6 +66,7 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{BFD27282-943E-4B5C-9C53-1544F19CDDC8} = {4E5CFCD7-7831-4706-BC66-74342F71C74E}
 		{0ADC93B7-0431-4EFD-8C11-EFAFA30BA0DC} = {4E5CFCD7-7831-4706-BC66-74342F71C74E}
+		{65771023-95A8-4543-BFA4-A59B54B637A3} = {4E5CFCD7-7831-4706-BC66-74342F71C74E}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {70FEBD2C-0F61-4732-9F1B-E3B477C35C32}

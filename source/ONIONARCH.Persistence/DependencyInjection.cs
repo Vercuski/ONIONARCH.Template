@@ -11,7 +11,7 @@ namespace ONIONARCH.Persistence;
 
 public static class DependencyInjection
 {
-    public static IHostApplicationBuilder AddPersistenceRegistrations(this WebApplicationBuilder builder)
+    public static IHostApplicationBuilder AddPersistenceRegistrations(this IHostApplicationBuilder builder)
     {
         var serviceProvider = builder.Services.BuildServiceProvider();
         var connectionStringOptions = serviceProvider.GetService<IOptions<ConnectionStringOptions>>()!.Value;

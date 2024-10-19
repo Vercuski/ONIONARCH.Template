@@ -20,14 +20,14 @@ public static class DependencyInjection
         return app;
     }
 
-    public static IHostApplicationBuilder AddInfrastructureRegistration(this WebApplicationBuilder builder)
+    public static IHostApplicationBuilder AddInfrastructureRegistration(this IHostApplicationBuilder builder)
     {
         builder.AddHealthChecksRegistration();
         builder.AddLoggingRegistration();
         return builder;
     }
 
-    private static WebApplicationBuilder AddHealthChecksRegistration(this WebApplicationBuilder builder)
+    private static IHostApplicationBuilder AddHealthChecksRegistration(this IHostApplicationBuilder builder)
     {
         var healthCheckBuilder = builder.Services.AddHealthChecks();
         foreach (var healthCheckType in Assembly.GetExecutingAssembly()
@@ -40,7 +40,7 @@ public static class DependencyInjection
         return builder;
     }
 
-    private static WebApplicationBuilder AddLoggingRegistration(this WebApplicationBuilder builder)
+    private static IHostApplicationBuilder AddLoggingRegistration(this IHostApplicationBuilder builder)
     {
         builder.Services.AddLogging(config =>
         {

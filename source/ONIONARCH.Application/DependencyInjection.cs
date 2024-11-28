@@ -1,6 +1,4 @@
 ﻿using MassTransit;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.EntityFrameworkCore.Diagnostics.Internal;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -70,7 +68,7 @@ public static class DependencyInjection
     private static IConfigurationSection GetSection<T>(IConfiguration configuration)
         where T : BaseOptionsConfig
     {
-        var config = Activator.CreateInstance(typeof(T))!;
+        var config = Activator.CreateInstance<T>()!;
         var section = ((BaseOptionsConfig)config).Section;
         return configuration.GetSection(section);
     }

@@ -1,6 +1,5 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using ONIONARCH.Application.Entities.SampleEntity1Queries.GetSingleSampleEntity1;
 using ONIONARCH.Domain.Entities;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860

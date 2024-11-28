@@ -1,10 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using ONIONARCH.Domain.Entities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ONIONARCH.Persistence.Contexts;
 public abstract class BaseDbContext<T>(DbContextOptions<T> options) : DbContext(options) where T : DbContext

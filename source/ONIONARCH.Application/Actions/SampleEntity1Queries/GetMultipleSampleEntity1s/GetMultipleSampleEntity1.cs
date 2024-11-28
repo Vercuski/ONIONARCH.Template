@@ -2,13 +2,11 @@
 using ONIONARCH.Application.Abstractions;
 using ONIONARCH.Domain.Entities;
 
-namespace ONIONARCH.Application.Entities.SampleEntity1Queries.GetMultipleSampleEntity1;
+namespace ONIONARCH.Application.Actions.SampleEntity1Queries.GetMultipleSampleEntity1s;
 
 public sealed class GetMultipleSampleEntity1sRequest : IMediatRQueryRequest<List<SampleEntity1>>;
-internal sealed class GetMultipleSampleEntity1sHandler(IQueryDbContext dbContext) : IMediatRQueryHandler<GetMultipleSampleEntity1sRequest, List<SampleEntity1>>
+internal sealed class GetMultipleSampleEntity1sHandler(IQueryDbContext queryDbContext) : IMediatRQueryHandler<GetMultipleSampleEntity1sRequest, List<SampleEntity1>>
 {
-    private readonly IQueryDbContext _dbContext = dbContext;
-
     public Task<List<SampleEntity1>> Handle(
         GetMultipleSampleEntity1sRequest request,
         CancellationToken cancellationToken)
@@ -16,7 +14,8 @@ internal sealed class GetMultipleSampleEntity1sHandler(IQueryDbContext dbContext
         List<SampleEntity1>? response =
         [
             .. (
-                from sampleEntity in _dbContext.Set<SampleEntity1>().AsNoTracking()
+                from sampleEntity in queryDbContext.Set<SampleEntity1>()
+                    .AsNoTracking()
                 select new SampleEntity1
                 {
                     SampleBoolean1 = false,

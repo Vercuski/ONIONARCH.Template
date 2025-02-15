@@ -5,7 +5,7 @@ using System.Diagnostics.CodeAnalysis;
 namespace ONIONARCH.Domain.Entities;
 
 [ExcludeFromCodeCoverage]
-public sealed class SampleEntity1 : Entity
+public sealed class SampleEntityDefinition : Entity
 {
     [Key]
     public int SampleId1 { get; set; }

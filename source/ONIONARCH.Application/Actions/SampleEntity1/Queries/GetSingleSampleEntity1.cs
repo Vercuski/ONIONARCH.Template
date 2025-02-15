@@ -2,21 +2,21 @@
 using ONIONARCH.Application.Abstractions;
 using ONIONARCH.Domain.Entities;
 
-namespace ONIONARCH.Application.Actions.SampleEntity1Queries.GetSingleSampleEntity1;
-public sealed record GetSingleSampleEntity1Request(int Id) : IMediatRQueryRequest<SampleEntity1>;
+namespace ONIONARCH.Application.Actions.SampleEntity1.Queries;
+public sealed record GetSingleSampleEntity1Request(int Id) : IMediatRQueryRequest<SampleEntityDefinition>;
 internal sealed class GetSingleSampleEntity1Handler(
     IQueryDbContext queryDbContext
-    ) : IMediatRQueryHandler<GetSingleSampleEntity1Request, SampleEntity1>
+    ) : IMediatRQueryHandler<GetSingleSampleEntity1Request, SampleEntityDefinition>
 {
-    public Task<SampleEntity1> Handle(
+    public Task<SampleEntityDefinition> Handle(
         GetSingleSampleEntity1Request request,
         CancellationToken cancellationToken)
     {
-        SampleEntity1? response =
+        SampleEntityDefinition? response =
             (
-                from sampleEntity in queryDbContext.Set<SampleEntity1>()
+                from sampleEntity in queryDbContext.Set<SampleEntityDefinition>()
                     .AsNoTracking()
-                select new SampleEntity1
+                select new SampleEntityDefinition
                 {
                     SampleBoolean1 = false,
                     SampleDecimal1 = 0,
@@ -27,7 +27,7 @@ internal sealed class GetSingleSampleEntity1Handler(
 
         if (response is null)
         {
-            return Task.FromResult(new SampleEntity1());
+            return Task.FromResult(new SampleEntityDefinition());
         }
 
         return Task.FromResult(response);

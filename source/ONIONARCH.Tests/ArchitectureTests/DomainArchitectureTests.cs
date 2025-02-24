@@ -1,5 +1,4 @@
-﻿using FluentAssertions;
-using NetArchTest.Rules;
+﻿using NetArchTest.Rules;
 using ONIONARCH.Domain.Abstractions;
 using static ONIONARCH.Tests.ArchitectureTests.AssemblyReferences;
 
@@ -29,7 +28,7 @@ public class DomainArchitectureTests
                 Console.WriteLine($"    {failingType}");
             }
         }
-        result.IsSuccessful.Should().BeTrue();
+        Assert.That(result.IsSuccessful == true);
     }
 
     [Test]
@@ -55,7 +54,7 @@ public class DomainArchitectureTests
                 Console.WriteLine($"    {failingType}");
             }
         }
-        result.IsSuccessful.Should().BeTrue();
+        Assert.That(result.IsSuccessful == true);
     }
 
     [Test]
@@ -79,6 +78,6 @@ public class DomainArchitectureTests
                 Console.WriteLine($"    {failingType}");
             }
         }
-        result.IsSuccessful.Should().BeTrue();
+        Assert.That(result.IsSuccessful == true);
     }
 }

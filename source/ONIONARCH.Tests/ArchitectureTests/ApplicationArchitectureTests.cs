@@ -1,5 +1,4 @@
-﻿using FluentAssertions;
-using NetArchTest.Rules;
+﻿using NetArchTest.Rules;
 using ONIONARCH.Application.Abstractions;
 using ONIONARCH.Tests.ArchitectureTests.CustomRules;
 using static ONIONARCH.Tests.ArchitectureTests.AssemblyReferences;
@@ -34,7 +33,7 @@ public class ApplicationArchitectureTests
                 Console.WriteLine($"    {failingType}");
             }
         }
-        result.IsSuccessful.Should().BeTrue();
+        Assert.That(result.IsSuccessful==true);
     }
 
     [Test]
@@ -62,6 +61,6 @@ public class ApplicationArchitectureTests
                 Console.WriteLine($"    {failingType}");
             }
         }
-        result.IsSuccessful.Should().BeTrue();
+        Assert.That(result.IsSuccessful==true);
     }
 }

@@ -2,9 +2,9 @@
 using ONIONARCH.Application.Abstractions;
 using ONIONARCH.Domain.Entities;
 
-namespace ONIONARCH.Application.Actions.SampleEntity1Commands.UpdateSampleEntity1;
+namespace ONIONARCH.Application.Actions.SampleEntity1.Commands;
 
-public sealed record UpdateSampleEntity1Request(SampleEntity1 SampleEntity) : IMediatRCommandRequest<int>;
+public sealed record UpdateSampleEntity1Request(SampleEntityDefinition SampleEntity) : IMediatRCommandRequest<int>;
 internal sealed class UpdateSampleEntity1Handler(ICommandDbContext commandDbContext,
     ILogger<UpdateSampleEntity1Handler> logger) : IMediatRCommandHandler<UpdateSampleEntity1Request, int>
 {

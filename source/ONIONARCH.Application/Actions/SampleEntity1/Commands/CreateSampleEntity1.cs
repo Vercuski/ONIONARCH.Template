@@ -2,8 +2,8 @@
 using ONIONARCH.Application.Abstractions;
 using ONIONARCH.Domain.Entities;
 
-namespace ONIONARCH.Application.Actions.SampleEntity1Commands.CreateSampleEntity1;
-public sealed record CreateSampleEntity1Request(SampleEntity1 SampleEntity) : IMediatRCommandRequest<int>;
+namespace ONIONARCH.Application.Actions.SampleEntity1.Commands;
+public sealed record CreateSampleEntity1Request(SampleEntityDefinition SampleEntity) : IMediatRCommandRequest<int>;
 internal sealed class CreateSampleEntity1Handler(ICommandDbContext commandDbContext,
     ILogger<CreateSampleEntity1Handler> logger) : IMediatRCommandHandler<CreateSampleEntity1Request, int>
 {

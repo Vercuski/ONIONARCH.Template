@@ -1,6 +1,6 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using ONIONARCH.Application.Actions.SampleEntity1Queries.GetSingleSampleEntity1;
+using ONIONARCH.Application.Actions.SampleEntity1.Queries;
 using ONIONARCH.Domain.Entities;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -13,7 +13,7 @@ namespace ONIONARCH.Presentation.API.Controllers
     {
         // GET api/<SampleController>/5
         [HttpGet("{id}")]
-        public async Task<SampleEntity1> Get(int id)
+        public async Task<SampleEntityDefinition> Get(int id)
         {
             GetSingleSampleEntity1Request request = new(id);
             var returnValue = await mediator.Send(request, CancellationToken.None);

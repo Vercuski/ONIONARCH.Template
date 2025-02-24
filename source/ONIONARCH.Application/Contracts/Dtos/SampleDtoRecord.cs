@@ -2,10 +2,16 @@
 
 namespace ONIONARCH.Application.Contracts.Dtos;
 
-public sealed record SampleDtoRecord(int Id, string? SomeValue)
+public sealed record SampleDtoRecord(int Id)
 {
-    public static SampleDtoRecord Create(SampleEntity1 entity1, SampleEntity2 entity2)
+    public static SampleDtoRecord Create(SampleEntityDefinition entity1)
     {
-        return new SampleDtoRecord(entity1.SampleId1, entity2.SampleString2);
+        return new SampleDtoRecord(entity1.SampleId1);
+    }
+
+    public void test()
+    {
+        int i = 0;
+        i++;
     }
 }

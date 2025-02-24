@@ -2,8 +2,8 @@
 using ONIONARCH.Application.Abstractions;
 using ONIONARCH.Domain.Entities;
 
-namespace ONIONARCH.Application.Actions.SampleEntity1Commands.DeleteSampleEntity1;
-public sealed record DeleteSampleEntity1Request(SampleEntity1 SampleEntity) : IMediatRCommandRequest<int>;
+namespace ONIONARCH.Application.Actions.SampleEntity1.Commands;
+public sealed record DeleteSampleEntity1Request(SampleEntityDefinition SampleEntity) : IMediatRCommandRequest<int>;
 internal sealed class DeleteSampleEntity1Handler(ICommandDbContext commandDbContext,
     ILogger<DeleteSampleEntity1Handler> logger) : IMediatRCommandHandler<DeleteSampleEntity1Request, int>
 {

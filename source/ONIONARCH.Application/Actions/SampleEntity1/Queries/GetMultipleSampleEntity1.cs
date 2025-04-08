@@ -13,7 +13,7 @@ internal sealed class GetMultipleSampleEntity1sHandler(IQueryDbContext queryDbCo
     {
         List<SampleEntityDefinition>? response =
         [
-            .. 
+            ..
                 from sampleEntity in queryDbContext.Set<SampleEntityDefinition>()
                     .AsNoTracking()
                 select new SampleEntityDefinition

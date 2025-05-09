@@ -35,6 +35,7 @@ public static class DependencyInjection
 
     private static IHostApplicationBuilder AddOptionsRegistration(this IHostApplicationBuilder builder)
     {
+        builder.Services.Configure<SwaggerOptions>(GetSection<SwaggerOptions>(builder.Configuration));
         builder.Services.Configure<ConnectionStringOptions>(GetSection<ConnectionStringOptions>(builder.Configuration));
         builder.Services.Configure<LogOptions>(GetSection<LogOptions>(builder.Configuration));
         return builder;

@@ -1,14 +1,15 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using ONIONARCH.Application.Abstractions;
+using ONIONARCH.Application.Abstractions.Context;
 using ONIONARCH.Domain.Entities;
 
-namespace ONIONARCH.Application.Actions.SampleEntity1.Queries;
+namespace ONIONARCH.Application.Actions.SampleEntity1Dapper.Queries;
 
-public sealed class GetMultipleSampleEntity1sRequest : IMediatRQueryRequest<List<SampleEntityDefinition>>;
-internal sealed class GetMultipleSampleEntity1sHandler(IQueryDbContext queryDbContext) : IMediatRQueryHandler<GetMultipleSampleEntity1sRequest, List<SampleEntityDefinition>>
+public sealed class GetMultipleSampleEntity1DappersRequest : IMediatRQueryRequest<List<SampleEntityDefinition>>;
+internal sealed class GetMultipleSampleEntity1DappersHandler(IQueryDbContext queryDbContext) : IMediatRQueryHandler<GetMultipleSampleEntity1DappersRequest, List<SampleEntityDefinition>>
 {
     public Task<List<SampleEntityDefinition>> Handle(
-        GetMultipleSampleEntity1sRequest request,
+        GetMultipleSampleEntity1DappersRequest request,
         CancellationToken cancellationToken)
     {
         List<SampleEntityDefinition>? response =

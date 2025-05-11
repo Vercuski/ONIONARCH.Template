@@ -1,8 +1,6 @@
 using ONIONARCH.Application;
 using ONIONARCH.Infrastructure;
 using ONIONARCH.Persistence;
-using Scalar.AspNetCore;
-using ONIONARCH.Presentation.API.Swagger;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -13,17 +11,27 @@ builder.AddPersistenceRegistrations();
 builder.AddInfrastructureRegistration();
 
 builder.Services.AddEndpointsApiExplorer();
+/* Uncomment when using Swagger
 builder.Services.AddSwaggerGen(options => SwaggerGenOptionsConfiguration.ApplySwaggerGenOptions(options, builder));
+*/
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
+/* Uncomment when using Swagger
+if (!app.Environment.IsProduction())
 {
-	app.AddAppSwaggerConfiguration();
-    app.MapOpenApi();
+    app.AddAppSwaggerConfiguration();
 }
-app.MapScalarApiReference();
+*/
+
+/* Uncomment when using Scalar
+if (!app.Environment.IsProduction())
+{
+    app.MapOpenApi();
+    app.MapScalarApiReference();
+}
+*/
+
 app.MapControllers();
 app.AddInfrastructureApplicationRegistration();
 app.UseHttpsRedirection();

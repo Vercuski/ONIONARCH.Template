@@ -3,6 +3,7 @@ using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
 using ONIONARCH.Application.Abstractions;
+using ONIONARCH.Application.Abstractions.Context;
 using ONIONARCH.Domain.Abstractions;
 using System.Reflection;
 

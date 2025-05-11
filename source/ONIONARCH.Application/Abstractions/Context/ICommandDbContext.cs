@@ -1,7 +1,7 @@
 ﻿using Microsoft.Data.SqlClient;
 using ONIONARCH.Domain.Abstractions;
 
-namespace ONIONARCH.Application.Abstractions;
+namespace ONIONARCH.Application.Abstractions.Context;
 
 public interface ICommandDbContext
 {

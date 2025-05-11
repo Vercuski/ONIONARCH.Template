@@ -1,6 +1,6 @@
 ﻿using Mono.Cecil;
 using NetArchTest.Rules;
-using ONIONARCH.Application.Abstractions;
+using ONIONARCH.Application.Abstractions.Context;
 
 namespace ONIONARCH.Tests.ArchitectureTests.CustomRules;
 

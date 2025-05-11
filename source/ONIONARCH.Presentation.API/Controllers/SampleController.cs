@@ -21,7 +21,7 @@ public class SampleController(IMediator mediator) : ControllerBase
 
     // GET api/<SampleController>/5
     [HttpGet("Dapper/{id}")]
-    public async Task<SampleEntityDefinition> GetDapper(int id)
+    public async Task<SampleEntityDefinition?> GetDapper(int id)
     {
         GetSingleSampleEntity1DapperRequest request = new(id);
         var returnValue = await mediator.Send(request, CancellationToken.None);

@@ -1,28 +1,32 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using Dapper;
+using Microsoft.AspNetCore.Connections;
+using Microsoft.Extensions.Logging;
 using ONIONARCH.Application.Abstractions;
+using ONIONARCH.Application.Abstractions.ConnectionFactory;
 using ONIONARCH.Application.Abstractions.Context;
 using ONIONARCH.Domain.Entities;
 
 namespace ONIONARCH.Application.Actions.SampleEntity1Dapper.Commands;
 
 public sealed record UpdateSampleEntity1DapperRequest(SampleEntityDefinition SampleEntity) : IMediatRCommandRequest<int>;
-internal sealed class UpdateSampleEntity1DapperHandler(ICommandDbContext commandDbContext,
+internal sealed class UpdateSampleEntity1DapperHandler(IDbConnectionFactory connectionFactory,
     ILogger<UpdateSampleEntity1DapperHandler> logger) : IMediatRCommandHandler<UpdateSampleEntity1DapperRequest, int>
 {
-    public Task<int> Handle(
+    public async Task<int> Handle(
         UpdateSampleEntity1DapperRequest request,
         CancellationToken cancellationToken)
     {
         try
         {
-            commandDbContext.Alter(request.SampleEntity);
-            var result = commandDbContext.SaveChanges();
-            return Task.FromResult(result);
+            var sql = "UPDATE table1 SET value1 = @value1 WHERE value2=@value2";
+            using var connection = connectionFactory.CreateWriteConnection();
+            var rowsAffected = await connection.ExecuteAsync(sql, request.SampleEntity);
+            return rowsAffected;
         }
         catch (Exception ex)
         {
             logger.LogError(ex, "Error updating SampleEntity1Dapper.");
         }
-        return Task.FromResult(0);
+        return 0;
     }
 }

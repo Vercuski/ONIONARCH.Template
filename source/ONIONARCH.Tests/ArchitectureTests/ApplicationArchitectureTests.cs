@@ -33,7 +33,7 @@ public class ApplicationArchitectureTests
                 Console.WriteLine($"    {failingType}");
             }
         }
-        Assert.That(result.IsSuccessful == true);
+        Assert.That(result.IsSuccessful, Is.True);
     }
 
     [Test]
@@ -61,6 +61,6 @@ public class ApplicationArchitectureTests
                 Console.WriteLine($"    {failingType}");
             }
         }
-        Assert.That(result.IsSuccessful == true);
+        Assert.That(result.IsSuccessful, Is.True);
     }
 }

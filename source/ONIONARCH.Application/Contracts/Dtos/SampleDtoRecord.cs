@@ -8,10 +8,4 @@ public sealed record SampleDtoRecord(int Id)
     {
         return new SampleDtoRecord(entity1.SampleId1);
     }
-
-    public void test()
-    {
-        int i = 0;
-        i++;
-    }
 }

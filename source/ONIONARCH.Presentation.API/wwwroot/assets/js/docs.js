@@ -1,7 +1,5 @@
 ﻿(function () {
-    var link = document.querySelector("link[rel*='icon']") || document.createElement('link');;
-    document.head.removeChild(link);
-    link = document.querySelector("link[rel*='icon']") || document.createElement('link');
+    let link = document.querySelector("link[rel*='icon']") || document.createElement('link');
     document.head.removeChild(link);
     link = document.createElement('link');
     link.type = 'image/x-icon';

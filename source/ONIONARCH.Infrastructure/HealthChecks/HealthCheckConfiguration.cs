@@ -7,6 +7,8 @@ namespace ONIONARCH.Infrastructure.HealthChecks;
 
 public class HealthCheckConfiguration
 {
+    protected HealthCheckConfiguration() { }
+
     public static Task WriteResponse(HttpContext context, HealthReport healthReport)
     {
         context.Response.ContentType = "application/json; charset=utf-8";

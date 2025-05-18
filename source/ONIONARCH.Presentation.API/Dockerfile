@@ -13,11 +13,11 @@ COPY ["ONIONARCH.Presentation.API/ONIONARCH.Presentation.API.csproj", "ONIONARCH
 RUN dotnet restore "./ONIONARCH.Presentation.API/ONIONARCH.Presentation.API.csproj"
 COPY . .
 WORKDIR "/src/ONIONARCH.Presentation.API"
-RUN dotnet build "./ONIONARCH.Presentation.API.csproj" -c $BUILD_CONFIGURATION -o /app/build
+RUN dotnet build "./ONIONARCH.Presentation.API.csproj" -c "$BUILD_CONFIGURATION" -o /app/build
 
 FROM build AS publish
 ARG BUILD_CONFIGURATION=Release
-RUN dotnet publish "./ONIONARCH.Presentation.API.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
+RUN dotnet publish "./ONIONARCH.Presentation.API.csproj" -c "$BUILD_CONFIGURATION" -o /app/publish /p:UseAppHost=false
 
 FROM base AS final
 WORKDIR /app

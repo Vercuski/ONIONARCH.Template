@@ -19,11 +19,11 @@ internal sealed class GetSingleSampleEntity1EFCoreHandler(
                     .AsNoTracking()
                 select new SampleEntityDefinition
                 {
-                    SampleBoolean1 = false,
-                    SampleDecimal1 = 0,
-                    SampleId1 = 1,
-                    SampleInt1 = 2,
-                    SampleString1 = "string"
+                    SampleBoolean1 = sampleEntity.SampleBoolean1,
+                    SampleDecimal1 = sampleEntity.SampleDecimal1,
+                    SampleId1 = sampleEntity.SampleId1,
+                    SampleInt1 = sampleEntity.SampleInt1,
+                    SampleString1 = sampleEntity.SampleString1
                 }).SingleOrDefaultAsync(cancellationToken).Result;
 
         if (response is null)

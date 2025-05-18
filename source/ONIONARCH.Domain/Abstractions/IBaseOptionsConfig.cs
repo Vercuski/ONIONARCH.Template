@@ -1,6 +1,6 @@
 ﻿namespace ONIONARCH.Domain.Abstractions;
 
-public abstract record BaseOptionsConfig
+public interface IBaseOptionsConfig
 {
     public abstract string Section { get; }
 }

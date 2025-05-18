@@ -17,11 +17,11 @@ COPY ["ONIONARCH.Persistence/ONIONARCH.Persistence.csproj", "ONIONARCH.Persisten
 RUN dotnet restore "./ONIONARCH.Presentation.Web/ONIONARCH.Presentation.Web.csproj"
 COPY . .
 WORKDIR "/src/ONIONARCH.Presentation.Web"
-RUN dotnet build "./ONIONARCH.Presentation.Web.csproj" -c $BUILD_CONFIGURATION -o /app/build
+RUN dotnet build "./ONIONARCH.Presentation.Web.csproj" -c "$BUILD_CONFIGURATION" -o /app/build
 
 FROM build AS publish
 ARG BUILD_CONFIGURATION=Release
-RUN dotnet publish "./ONIONARCH.Presentation.Web.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
+RUN dotnet publish "./ONIONARCH.Presentation.Web.csproj" -c "$BUILD_CONFIGURATION" -o /app/publish /p:UseAppHost=false
 
 FROM base AS final
 WORKDIR /app

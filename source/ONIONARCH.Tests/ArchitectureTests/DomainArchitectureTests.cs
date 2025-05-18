@@ -28,7 +28,7 @@ public class DomainArchitectureTests
                 Console.WriteLine($"    {failingType}");
             }
         }
-        Assert.That(result.IsSuccessful == true);
+        Assert.That(result.IsSuccessful, Is.True);
     }
 
     [Test]
@@ -54,7 +54,7 @@ public class DomainArchitectureTests
                 Console.WriteLine($"    {failingType}");
             }
         }
-        Assert.That(result.IsSuccessful == true);
+        Assert.That(result.IsSuccessful, Is.True);
     }
 
     [Test]
@@ -65,7 +65,7 @@ public class DomainArchitectureTests
             .That()
             .ResideInNamespace("ONIONARCH.Domain.Options")
             .Should()
-            .Inherit(typeof(BaseOptionsConfig))
+            .Inherit(typeof(IBaseOptionsConfig))
             .And()
             .BeSealed()
             .GetResult();
@@ -78,6 +78,6 @@ public class DomainArchitectureTests
                 Console.WriteLine($"    {failingType}");
             }
         }
-        Assert.That(result.IsSuccessful == true);
+        Assert.That(result.IsSuccessful, Is.True);
     }
 }

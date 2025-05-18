@@ -31,4 +31,4 @@ if (!app.Environment.IsProduction())
 app.MapControllers();
 app.AddInfrastructureApplicationRegistration();
 app.UseHttpsRedirection();
-app.Run();
+await app.RunAsync();

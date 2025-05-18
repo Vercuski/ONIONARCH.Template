@@ -31,7 +31,7 @@ public static class SwaggerGenOptionsConfiguration
                 Url = SwaggerConstants.SoftwareLicenseUrl
             },
         });
-        //genOptions.SchemaFilter<SwaggerExcludeFilter>();
+
         if (builder.Environment.IsProduction())
         {
             genOptions.AddServer(new OpenApiServer

@@ -14,6 +14,6 @@ builder.AddInfrastructureRegistration();
 builder.Services.AddHostedService<Worker>();
 
 IHost host = builder.Build();
-host.Run();
+await host.RunAsync();
 AnsiConsole.Write(new Markup("[bold red]Hello World![/]"));
 AnsiConsole.Write(new Markup("[dim blue]This is dim blue[/]"));

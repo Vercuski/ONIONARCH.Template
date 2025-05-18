@@ -40,11 +40,6 @@ public sealed class SampleCommandDbContext(DbContextOptions<SampleCommandDbConte
         return await base.SaveChangesAsync(cancellationToken);
     }
 
-    public override int SaveChanges()
-    {
-        return base.SaveChanges();
-    }
-
     public Task<IDbContextTransaction> BeginTransactionAsync(CancellationToken cancellationToken = default)
         => Database.BeginTransactionAsync(cancellationToken);
 

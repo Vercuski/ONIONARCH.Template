@@ -1,0 +1,6 @@
+<AnalyseParams>
+  <TargetExecutable>C:\Program Files\dotnet\dotnet.exe</TargetExecutable>
+  <TargetArguments>test C:\Source\github\ONIONARCH.Template\source\ONIONARCH.sln</TargetArguments>
+  <WorkingDir>C:\Source\github\ONIONARCH.Template\source</WorkingDir>
+  <Output>C:\Source\github\ONIONARCH.Template\source\coverage.xml</Output>
+</AnalyseParams>

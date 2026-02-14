@@ -21,7 +21,7 @@ internal sealed class GetMultipleSampleEntity1DappersHandler(IDbConnectionFactor
 
         if (response is null)
         {
-            return new List<SampleEntityDefinition>();
+            return [];
         }
 
         return response;

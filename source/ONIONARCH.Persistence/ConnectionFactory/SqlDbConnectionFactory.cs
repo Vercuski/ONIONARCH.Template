@@ -5,16 +5,10 @@ using ONIONARCH.Domain.Options;
 using System.Data;
 
 namespace ONIONARCH.Persistence.ConnectionFactory;
-public class SqlDbConnectionFactory : IDbConnectionFactory
+public class SqlDbConnectionFactory(IOptions<ConnectionStringOptions> connectionStringOptions) : IDbConnectionFactory
 {
-    private readonly string _readConnectionString;
-    private readonly string _writeConnectionString;
-
-    public SqlDbConnectionFactory(IOptions<ConnectionStringOptions> connectionStringOptions)
-    {
-        _readConnectionString = connectionStringOptions.Value.QueryDbConnection;
-        _writeConnectionString = connectionStringOptions.Value.CommandDbConnection;
-    }
+    private readonly string _readConnectionString = connectionStringOptions.Value.QueryDbConnection;
+    private readonly string _writeConnectionString = connectionStringOptions.Value.CommandDbConnection;
 
     public IDbConnection CreateReadConnection()
     {

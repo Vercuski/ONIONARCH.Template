@@ -24,7 +24,7 @@ public static class DependencyInjection
             options
                 .UseSqlServer(connectionStringOptions.CommandDbConnection)
                 .EnableDetailedErrors()
-                .EnableSensitiveDataLogging(),ServiceLifetime.Transient
+                .EnableSensitiveDataLogging(), ServiceLifetime.Transient
         );
         builder.Services.AddDbContext<SampleQueryDbContext>(options =>
             options

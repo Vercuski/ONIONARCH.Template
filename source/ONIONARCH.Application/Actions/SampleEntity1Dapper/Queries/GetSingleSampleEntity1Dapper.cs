@@ -1,12 +1,10 @@
 ﻿using Dapper;
-using Microsoft.AspNetCore.Connections;
-using Microsoft.EntityFrameworkCore;
 using ONIONARCH.Application.Abstractions;
 using ONIONARCH.Application.Abstractions.ConnectionFactory;
-using ONIONARCH.Application.Abstractions.Context;
 using ONIONARCH.Domain.Entities;
 
 namespace ONIONARCH.Application.Actions.SampleEntity1Dapper.Queries;
+
 public sealed record GetSingleSampleEntity1DapperRequest(int Id) : IMediatRQueryRequest<SampleEntityDefinition?>;
 internal sealed class GetSingleSampleEntity1DapperHandler(
     IDbConnectionFactory connectionFactory

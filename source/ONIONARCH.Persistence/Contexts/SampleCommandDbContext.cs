@@ -14,26 +14,38 @@ public sealed class SampleCommandDbContext(DbContextOptions<SampleCommandDbConte
 {
     private new DbSet<TEntity> Set<TEntity>()
         where TEntity : Entity
-        => base.Set<TEntity>();
+    {
+        return base.Set<TEntity>();
+    }
 
     public void Insert<TEntity>(TEntity entity)
         where TEntity : Entity
-        => Set<TEntity>().Add(entity);
+    {
+        Set<TEntity>().Add(entity);
+    }
 
     public void InsertRange<TEntity>(IReadOnlyCollection<TEntity> entities)
         where TEntity : Entity
-        => Set<TEntity>().AddRange(entities);
+    {
+        Set<TEntity>().AddRange(entities);
+    }
 
     public void Alter<TEntity>(TEntity entity)
         where TEntity : Entity
-        => Set<TEntity>().Update(entity);
+    {
+        Set<TEntity>().Update(entity);
+    }
 
     public new void Remove<TEntity>(TEntity entity)
         where TEntity : Entity
-        => Set<TEntity>().Remove(entity);
+    {
+        Set<TEntity>().Remove(entity);
+    }
 
     public Task<int> ExecuteSqlAsync(string sql, IEnumerable<SqlParameter> parameters, CancellationToken cancellationToken = default)
-        => Database.ExecuteSqlRawAsync(sql, parameters, cancellationToken);
+    {
+        return Database.ExecuteSqlRawAsync(sql, parameters, cancellationToken);
+    }
 
     public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
     {
@@ -41,7 +53,9 @@ public sealed class SampleCommandDbContext(DbContextOptions<SampleCommandDbConte
     }
 
     public Task<IDbContextTransaction> BeginTransactionAsync(CancellationToken cancellationToken = default)
-        => Database.BeginTransactionAsync(cancellationToken);
+    {
+        return Database.BeginTransactionAsync(cancellationToken);
+    }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

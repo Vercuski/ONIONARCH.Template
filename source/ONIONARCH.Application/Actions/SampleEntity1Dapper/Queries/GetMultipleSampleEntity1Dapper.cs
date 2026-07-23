@@ -1,10 +1,7 @@
 ﻿using Dapper;
-using Microsoft.EntityFrameworkCore;
 using ONIONARCH.Application.Abstractions;
 using ONIONARCH.Application.Abstractions.ConnectionFactory;
-using ONIONARCH.Application.Abstractions.Context;
 using ONIONARCH.Domain.Entities;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace ONIONARCH.Application.Actions.SampleEntity1Dapper.Queries;
 

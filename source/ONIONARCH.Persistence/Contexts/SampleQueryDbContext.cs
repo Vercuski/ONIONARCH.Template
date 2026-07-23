@@ -13,14 +13,24 @@ public sealed class SampleQueryDbContext(DbContextOptions<SampleQueryDbContext> 
 {
     public new DbSet<TEntity> Set<TEntity>()
         where TEntity : Entity
-        => base.Set<TEntity>();
+    {
+        return base.Set<TEntity>();
+    }
 
     public Task<IDbContextTransaction> BeginTransactionAsync(CancellationToken cancellationToken = default)
-        => Database.BeginTransactionAsync(cancellationToken);
+    {
+        return Database.BeginTransactionAsync(cancellationToken);
+    }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
         base.OnModelCreating(modelBuilder);
+    }
+
+    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+    {
+        optionsBuilder.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
+        base.OnConfiguring(optionsBuilder);
     }
 }

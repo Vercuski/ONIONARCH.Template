@@ -1,12 +1,11 @@
 ﻿using Dapper;
-using Microsoft.AspNetCore.Connections;
 using Microsoft.Extensions.Logging;
 using ONIONARCH.Application.Abstractions;
 using ONIONARCH.Application.Abstractions.ConnectionFactory;
-using ONIONARCH.Application.Abstractions.Context;
 using ONIONARCH.Domain.Entities;
 
 namespace ONIONARCH.Application.Actions.SampleEntity1Dapper.Commands;
+
 public sealed record DeleteSampleEntity1DapperRequest(SampleEntityDefinition SampleEntity) : IMediatRCommandRequest<int>;
 internal sealed class DeleteSampleEntity1DapperHandler(IDbConnectionFactory connectionFactory,
     ILogger<DeleteSampleEntity1DapperHandler> logger) : IMediatRCommandHandler<DeleteSampleEntity1DapperRequest, int>

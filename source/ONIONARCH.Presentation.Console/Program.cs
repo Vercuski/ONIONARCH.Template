@@ -8,7 +8,7 @@ using ONIONARCH.Presentation.Console;
 using Spectre.Console;
 
 HostApplicationBuilder builder = Host.CreateApplicationBuilder(args);
-((IHostApplicationBuilder)builder).AddApplicationRegistration();
+builder.AddApplicationRegistration();
 builder.AddPersistenceRegistrations();
 builder.AddInfrastructureRegistration();
 builder.Services.AddHostedService<Worker>();

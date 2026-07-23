@@ -4,6 +4,7 @@ using ONIONARCH.Application.Abstractions.Context;
 using ONIONARCH.Domain.Entities;
 
 namespace ONIONARCH.Application.Actions.SampleEntity1EFCore.Queries;
+
 public sealed record GetSingleSampleEntity1EFCoreRequest(int Id) : IMediatRQueryRequest<SampleEntityDefinition>;
 internal sealed class GetSingleSampleEntity1EFCoreHandler(
     IQueryDbContext queryDbContext

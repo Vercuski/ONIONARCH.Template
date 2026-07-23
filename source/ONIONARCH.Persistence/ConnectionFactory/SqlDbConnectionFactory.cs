@@ -5,6 +5,7 @@ using ONIONARCH.Domain.Options;
 using System.Data;
 
 namespace ONIONARCH.Persistence.ConnectionFactory;
+
 public class SqlDbConnectionFactory(IOptions<ConnectionStringOptions> connectionStringOptions) : IDbConnectionFactory
 {
     private readonly string _readConnectionString = connectionStringOptions.Value.QueryDbConnection;

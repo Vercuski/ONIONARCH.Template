@@ -1,9 +1,7 @@
 ﻿using Dapper;
-using Microsoft.AspNetCore.Connections;
 using Microsoft.Extensions.Logging;
 using ONIONARCH.Application.Abstractions;
 using ONIONARCH.Application.Abstractions.ConnectionFactory;
-using ONIONARCH.Application.Abstractions.Context;
 using ONIONARCH.Domain.Entities;
 
 namespace ONIONARCH.Application.Actions.SampleEntity1Dapper.Commands;

@@ -4,6 +4,7 @@ using ONIONARCH.Application.Abstractions.Context;
 using ONIONARCH.Domain.Entities;
 
 namespace ONIONARCH.Application.Actions.SampleEntity1EFCore.Commands;
+
 public sealed record CreateSampleEntity1EFCoreRequest(SampleEntityDefinition SampleEntity) : IMediatRCommandRequest<int>;
 internal sealed class CreateSampleEntity1EFCoreHandler(ICommandDbContext commandDbContext,
     ILogger<CreateSampleEntity1EFCoreHandler> logger) : IMediatRCommandHandler<CreateSampleEntity1EFCoreRequest, int>

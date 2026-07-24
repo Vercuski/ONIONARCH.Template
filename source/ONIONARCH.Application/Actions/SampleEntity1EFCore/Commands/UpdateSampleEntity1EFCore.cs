@@ -13,16 +13,16 @@ internal sealed class UpdateSampleEntity1EFCoreHandler(ICommandDbContext command
         UpdateSampleEntity1EFCoreRequest request,
         CancellationToken cancellationToken)
     {
+        int rowsAffected = 0;
         try
         {
             commandDbContext.Alter(request.SampleEntity);
-            var result = commandDbContext.SaveChanges();
-            return Task.FromResult(result);
+            rowsAffected = commandDbContext.SaveChanges();
         }
         catch (Exception ex)
         {
             logger.LogError(ex, "Error updating SampleEntity1EFCore.");
         }
-        return Task.FromResult(0);
+        return Task.FromResult(rowsAffected);
     }
 }

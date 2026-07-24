@@ -11,6 +11,6 @@ internal static class AssemblyReferences
     internal static readonly Assembly DomainAssembly = typeof(Entity).Assembly;
     internal static readonly Assembly ApplicationAssembly = typeof(IQueryDbContext).Assembly;
     internal static readonly Assembly InfrastrcutureAssembly = typeof(SimpleHealthCheck).Assembly;
-    internal static readonly Assembly PersistenceAssembly = typeof(SampleQueryDbContext).Assembly;
+    internal static readonly Assembly PersistenceAssembly = typeof(QueryDbContext).Assembly;
     internal static readonly Assembly TestsAssembly = typeof(DomainArchitectureTests).Assembly;
 }

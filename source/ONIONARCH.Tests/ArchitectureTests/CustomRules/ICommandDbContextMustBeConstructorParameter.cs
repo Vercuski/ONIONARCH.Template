@@ -1,5 +1,6 @@
 ﻿using Mono.Cecil;
 using NetArchTest.Rules;
+using ONIONARCH.Application.Abstractions.ConnectionFactory;
 using ONIONARCH.Application.Abstractions.Context;
 
 namespace ONIONARCH.Tests.ArchitectureTests.CustomRules;
@@ -11,7 +12,7 @@ internal class ICommandDbContextMustBeConstructorParameter : ICustomRule
         bool isValid = true;
         foreach (var method in type.Methods.Where(x => x.IsConstructor))
         {
-            isValid &= method.Parameters.Any(x => x.ParameterType.Name == typeof(ICommandDbContext).Name);
+            isValid &= method.Parameters.Any(x => x.ParameterType.Name == typeof(ICommandDbContext).Name) || method.Parameters.Any(x => x.ParameterType.Name == typeof(IDbWriteConnectionFactory).Name);
         }
         return isValid;
     }

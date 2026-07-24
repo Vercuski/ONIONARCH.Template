@@ -7,7 +7,7 @@ namespace ONIONARCH.Application.Actions.SampleEntity1Dapper.Queries;
 
 public sealed record GetSingleSampleEntity1DapperRequest(int Id) : IMediatRQueryRequest<SampleEntityDefinition?>;
 internal sealed class GetSingleSampleEntity1DapperHandler(
-    IDbConnectionFactory connectionFactory
+    IDbReadOnlyConnectionFactory connectionFactory
     ) : IMediatRQueryHandler<GetSingleSampleEntity1DapperRequest, SampleEntityDefinition?>
 {
     public async Task<SampleEntityDefinition?> Handle(
@@ -15,14 +15,8 @@ internal sealed class GetSingleSampleEntity1DapperHandler(
         CancellationToken cancellationToken)
     {
         var sql = "SELECT * FROM table1 WHERE value1 = @value1";
-        using var connection = connectionFactory.CreateReadConnection();
+        using var connection = connectionFactory.CreateConnection();
         var response = await connection.QuerySingleAsync<SampleEntityDefinition>(sql, request.Id);
-
-        if (response is null)
-        {
-            return new SampleEntityDefinition();
-        }
-
-        return response;
+        return response is null ? new() : response;
     }
 }

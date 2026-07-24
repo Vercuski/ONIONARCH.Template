@@ -16,7 +16,7 @@ public class ApplicationArchitectureTests
         var result = Types
             .InAssembly(ApplicationAssembly)
             .That()
-            .ResideInNamespaceMatching("ONIONARCH.Application.Entities.*.Queries.*")
+            .ResideInNamespaceMatching("ONIONARCH.Application.Actions.*.Queries.*")
             .And()
             .ImplementInterface(typeof(IMediatRQueryHandler<,>))
             .Should()
@@ -44,7 +44,7 @@ public class ApplicationArchitectureTests
         var result = Types
             .InAssembly(ApplicationAssembly)
             .That()
-            .ResideInNamespaceMatching("ONIONARCH.Application.Entities.*.Commands.*")
+            .ResideInNamespaceMatching("ONIONARCH.Application.Actions.*.Commands.*")
             .And()
             .ImplementInterface(typeof(IMediatRCommandHandler<,>))
             .Should()

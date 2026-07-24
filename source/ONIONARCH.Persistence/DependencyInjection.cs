@@ -17,25 +17,26 @@ public static class DependencyInjection
     {
         var serviceProvider = builder.Services.BuildServiceProvider();
 
-        builder.Services.AddScoped<IDbConnectionFactory, SqlDbConnectionFactory>();
+        builder.Services.AddScoped<IDbReadOnlyConnectionFactory, SqlDbReadOnlyConnectionFactory>();
+        builder.Services.AddScoped<IDbWriteConnectionFactory, SqlDbWriteConnectionFactory>();
 
         var connectionStringOptions = serviceProvider.GetService<IOptions<ConnectionStringOptions>>()!.Value;
-        builder.Services.AddDbContext<SampleCommandDbContext>(options =>
+        builder.Services.AddDbContext<CommandDbContext>(options =>
             options
                 .UseSqlServer(connectionStringOptions.CommandDbConnection)
                 .EnableDetailedErrors()
                 .EnableSensitiveDataLogging(), ServiceLifetime.Transient
         );
-        builder.Services.AddDbContext<SampleQueryDbContext>(options =>
+        builder.Services.AddDbContext<QueryDbContext>(options =>
             options
                 .UseSqlServer(connectionStringOptions.QueryDbConnection)
                 .EnableDetailedErrors()
                 .EnableSensitiveDataLogging(), ServiceLifetime.Transient
         );
 
-        builder.Services.AddTransient<ICommandDbContext>(serviceProvider => serviceProvider.GetRequiredService<SampleCommandDbContext>());
-        builder.Services.AddTransient<IQueryDbContext>(serviceProvider => serviceProvider.GetRequiredService<SampleQueryDbContext>());
-        builder.Services.AddTransient<IUnitOfWork>(serviceProvider => serviceProvider.GetRequiredService<SampleCommandDbContext>());
+        builder.Services.AddTransient<ICommandDbContext>(serviceProvider => serviceProvider.GetRequiredService<CommandDbContext>());
+        builder.Services.AddTransient<IQueryDbContext>(serviceProvider => serviceProvider.GetRequiredService<QueryDbContext>());
+        builder.Services.AddTransient<IUnitOfWork>(serviceProvider => serviceProvider.GetRequiredService<CommandDbContext>());
 
         return builder;
     }

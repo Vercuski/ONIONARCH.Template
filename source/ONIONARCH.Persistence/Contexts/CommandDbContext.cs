@@ -1,16 +1,15 @@
-﻿
-using Microsoft.Data.SqlClient;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
 using ONIONARCH.Application.Abstractions;
 using ONIONARCH.Application.Abstractions.Context;
 using ONIONARCH.Domain.Abstractions;
+using System.Data;
 using System.Reflection;
 
 namespace ONIONARCH.Persistence.Contexts;
 
-public sealed class SampleCommandDbContext(DbContextOptions<SampleCommandDbContext> options)
-    : BaseDbContext<SampleCommandDbContext>(options), ICommandDbContext, IUnitOfWork
+public sealed class CommandDbContext(DbContextOptions<CommandDbContext> options)
+    : BaseDbContext<CommandDbContext>(options), ICommandDbContext, IUnitOfWork
 {
     private new DbSet<TEntity> Set<TEntity>()
         where TEntity : Entity
@@ -42,7 +41,7 @@ public sealed class SampleCommandDbContext(DbContextOptions<SampleCommandDbConte
         Set<TEntity>().Remove(entity);
     }
 
-    public Task<int> ExecuteSqlAsync(string sql, IEnumerable<SqlParameter> parameters, CancellationToken cancellationToken = default)
+    public Task<int> ExecuteSqlAsync(string sql, IEnumerable<IDataParameter> parameters, CancellationToken cancellationToken = default)
     {
         return Database.ExecuteSqlRawAsync(sql, parameters, cancellationToken);
     }

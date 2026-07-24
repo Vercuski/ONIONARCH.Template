@@ -1,5 +1,5 @@
-﻿using Microsoft.Data.SqlClient;
-using ONIONARCH.Domain.Abstractions;
+﻿using ONIONARCH.Domain.Abstractions;
+using System.Data;
 
 namespace ONIONARCH.Application.Abstractions.Context;
 
@@ -19,5 +19,5 @@ public interface ICommandDbContext
 
     int SaveChanges();
 
-    Task<int> ExecuteSqlAsync(string sql, IEnumerable<SqlParameter> parameters, CancellationToken cancellationToken = default);
+    Task<int> ExecuteSqlAsync(string sql, IEnumerable<IDataParameter> parameters, CancellationToken cancellationToken = default);
 }

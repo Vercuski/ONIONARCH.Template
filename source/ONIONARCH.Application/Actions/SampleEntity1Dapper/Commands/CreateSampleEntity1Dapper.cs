@@ -7,7 +7,7 @@ using ONIONARCH.Domain.Entities;
 namespace ONIONARCH.Application.Actions.SampleEntity1Dapper.Commands;
 
 public sealed record CreateSampleEntity1DapperRequest(SampleEntityDefinition SampleEntity) : IMediatRCommandRequest<int>;
-internal sealed class CreateSampleEntity1DapperHandler(IDbConnectionFactory connectionFactory,
+internal sealed class CreateSampleEntity1DapperHandler(IDbWriteConnectionFactory connectionFactory,
     ILogger<CreateSampleEntity1DapperHandler> logger)
     : IMediatRCommandHandler<CreateSampleEntity1DapperRequest, int>
 {
@@ -15,17 +15,17 @@ internal sealed class CreateSampleEntity1DapperHandler(IDbConnectionFactory conn
         CreateSampleEntity1DapperRequest request,
         CancellationToken cancellationToken)
     {
+        int rowsAffected = 0;
         try
         {
             var sql = "INSERT INTO table1 (value1, value2) VALUES (@value1, @value2)";
-            using var connection = connectionFactory.CreateWriteConnection();
-            var rowsAffected = await connection.ExecuteAsync(sql, request.SampleEntity);
-            return rowsAffected;
+            using var connection = connectionFactory.CreateConnection();
+            rowsAffected = await connection.ExecuteAsync(sql, request.SampleEntity);
         }
         catch (Exception ex)
         {
             logger.LogError(ex, "Error creating SampleEntity1Dapper.");
         }
-        return 0;
+        return rowsAffected;
     }
 }

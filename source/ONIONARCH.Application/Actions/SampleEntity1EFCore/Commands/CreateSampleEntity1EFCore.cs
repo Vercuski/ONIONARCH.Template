@@ -13,16 +13,16 @@ internal sealed class CreateSampleEntity1EFCoreHandler(ICommandDbContext command
         CreateSampleEntity1EFCoreRequest request,
         CancellationToken cancellationToken)
     {
+        int rowsAffected = 0;
         try
         {
             commandDbContext.Insert(request.SampleEntity);
-            var result = commandDbContext.SaveChanges();
-            return Task.FromResult(result);
+            rowsAffected = commandDbContext.SaveChanges();
         }
         catch (Exception ex)
         {
             logger.LogError(ex, "Error creating SampleEntity1EFCore.");
         }
-        return Task.FromResult(0);
+        return Task.FromResult(rowsAffected);
     }
 }

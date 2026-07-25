@@ -5,12 +5,14 @@ using ONIONARCH.Application;
 using ONIONARCH.Infrastructure;
 using ONIONARCH.Persistence;
 using ONIONARCH.Presentation.Console;
+using ONIONARCH.Presentation.Console.Exceptions;
 using Spectre.Console;
 
 HostApplicationBuilder builder = Host.CreateApplicationBuilder(args);
 builder.AddApplicationRegistration();
 builder.AddPersistenceRegistrations();
 builder.AddInfrastructureRegistration();
+builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
 builder.Services.AddHostedService<Worker>();
 
 IHost host = builder.Build();

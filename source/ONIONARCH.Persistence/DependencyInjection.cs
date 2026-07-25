@@ -13,30 +13,30 @@ namespace ONIONARCH.Persistence;
 
 public static class DependencyInjection
 {
-    public static IHostApplicationBuilder AddPersistenceRegistrations(this IHostApplicationBuilder builder)
+    public static IHostApplicationBuilder AddPersistenceRegistrations(
+        this IHostApplicationBuilder builder,
+        Action<DbContextOptionsBuilder, string> configureProvider)
     {
-        var serviceProvider = builder.Services.BuildServiceProvider();
-
         builder.Services.AddScoped<IDbReadOnlyConnectionFactory, SqlDbReadOnlyConnectionFactory>();
         builder.Services.AddScoped<IDbWriteConnectionFactory, SqlDbWriteConnectionFactory>();
 
-        var connectionStringOptions = serviceProvider.GetService<IOptions<ConnectionStringOptions>>()!.Value;
-        builder.Services.AddDbContext<CommandDbContext>(options =>
-            options
-                .UseSqlServer(connectionStringOptions.CommandDbConnection)
-                .EnableDetailedErrors()
-                .EnableSensitiveDataLogging(), ServiceLifetime.Transient
-        );
-        builder.Services.AddDbContext<QueryDbContext>(options =>
-            options
-                .UseSqlServer(connectionStringOptions.QueryDbConnection)
-                .EnableDetailedErrors()
-                .EnableSensitiveDataLogging(), ServiceLifetime.Transient
-        );
+        builder.Services.AddDbContext<CommandDbContext>((sp, options) =>
+        {
+            var connectionStringOptions = sp.GetRequiredService<IOptions<ConnectionStringOptions>>().Value;
+            configureProvider(options, connectionStringOptions.CommandDbConnection);
+            options.EnableDetailedErrors().EnableSensitiveDataLogging();
+        }, ServiceLifetime.Scoped);
 
-        builder.Services.AddTransient<ICommandDbContext>(serviceProvider => serviceProvider.GetRequiredService<CommandDbContext>());
-        builder.Services.AddTransient<IQueryDbContext>(serviceProvider => serviceProvider.GetRequiredService<QueryDbContext>());
-        builder.Services.AddTransient<IUnitOfWork>(serviceProvider => serviceProvider.GetRequiredService<CommandDbContext>());
+        builder.Services.AddDbContext<QueryDbContext>((sp, options) =>
+        {
+            var connectionStringOptions = sp.GetRequiredService<IOptions<ConnectionStringOptions>>().Value;
+            configureProvider(options, connectionStringOptions.QueryDbConnection);
+            options.EnableDetailedErrors().EnableSensitiveDataLogging();
+        }, ServiceLifetime.Scoped);
+
+        builder.Services.AddTransient<ICommandDbContext>(sp => sp.GetRequiredService<CommandDbContext>());
+        builder.Services.AddTransient<IQueryDbContext>(sp => sp.GetRequiredService<QueryDbContext>());
+        builder.Services.AddTransient<IUnitOfWork>(sp => sp.GetRequiredService<CommandDbContext>());
 
         return builder;
     }

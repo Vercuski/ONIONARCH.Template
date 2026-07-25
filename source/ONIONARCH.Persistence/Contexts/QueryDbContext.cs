@@ -1,6 +1,5 @@
 ﻿
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Storage;
 using ONIONARCH.Application.Abstractions.Context;
 using ONIONARCH.Domain.Abstractions;
 using System.Reflection;
@@ -14,11 +13,6 @@ public sealed class QueryDbContext(DbContextOptions<QueryDbContext> options)
         where TEntity : Entity
     {
         return base.Set<TEntity>();
-    }
-
-    public Task<IDbContextTransaction> BeginTransactionAsync(CancellationToken cancellationToken = default)
-    {
-        return Database.BeginTransactionAsync(cancellationToken);
     }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)

@@ -1,7 +1,6 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using ONIONARCH.Application.Exceptions;
 using ONIONARCH.Domain.Abstractions;
 using ONIONARCH.Domain.Options;
 
@@ -19,7 +18,6 @@ public static class DependencyInjection
 
     private static IHostApplicationBuilder AddErrorHandling(this IHostApplicationBuilder builder)
     {
-        builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
         builder.Services.AddProblemDetails();
         return builder;
     }

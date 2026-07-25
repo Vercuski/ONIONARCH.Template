@@ -1,12 +1,14 @@
 using ONIONARCH.Application;
 using ONIONARCH.Infrastructure;
 using ONIONARCH.Persistence;
+using ONIONARCH.Presentation.API.Exceptions;
 using Scalar.AspNetCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
 builder.Services.AddOpenApi();
+builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
 builder.AddApplicationRegistration();
 builder.AddPersistenceRegistrations();
 builder.AddInfrastructureRegistration();

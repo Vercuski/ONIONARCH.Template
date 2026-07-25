@@ -1,5 +1,4 @@
-﻿using Microsoft.Data.SqlClient;
-using Microsoft.Extensions.Options;
+﻿using Microsoft.Extensions.Options;
 using ONIONARCH.Application.Abstractions.ConnectionFactory;
 using ONIONARCH.Domain.Options;
 using System.Data;
@@ -12,6 +11,6 @@ public class SqlDbReadOnlyConnectionFactory(IOptions<ConnectionStringOptions> co
 
     public IDbConnection CreateConnection()
     {
-        return new SqlConnection(_connectionString);
+        return new DbConnection(_connectionString);
     }
 }

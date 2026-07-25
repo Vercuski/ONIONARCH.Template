@@ -3,14 +3,14 @@ using ONIONARCH.Application.Abstractions;
 using ONIONARCH.Application.Abstractions.Context;
 using ONIONARCH.Domain.Entities;
 
-namespace ONIONARCH.Application.Actions.SampleEntity1EFCore.Commands;
+namespace ONIONARCH.Application.Actions.SampleEntityEFCore.Commands;
 
-public sealed record UpdateSampleEntity1EFCoreRequest(SampleEntityDefinition SampleEntity) : IMediatRCommandRequest<int>;
-internal sealed class UpdateSampleEntity1EFCoreHandler(ICommandDbContext commandDbContext,
-    ILogger<UpdateSampleEntity1EFCoreHandler> logger) : IMediatRCommandHandler<UpdateSampleEntity1EFCoreRequest, int>
+public sealed record UpdateSampleEntityEFCoreRequest(SampleEntityDefinition SampleEntity) : IMediatRCommandRequest<int>;
+internal sealed class UpdateSampleEntityEFCoreHandler(ICommandDbContext commandDbContext,
+    ILogger<UpdateSampleEntityEFCoreHandler> logger) : IMediatRCommandHandler<UpdateSampleEntityEFCoreRequest, int>
 {
     public Task<int> Handle(
-        UpdateSampleEntity1EFCoreRequest request,
+        UpdateSampleEntityEFCoreRequest request,
         CancellationToken cancellationToken)
     {
         int rowsAffected = 0;
@@ -21,7 +21,7 @@ internal sealed class UpdateSampleEntity1EFCoreHandler(ICommandDbContext command
         }
         catch (Exception ex)
         {
-            logger.LogError(ex, "Error updating SampleEntity1EFCore.");
+            logger.LogError(ex, "Error updating SampleEntityEFCore.");
         }
         return Task.FromResult(rowsAffected);
     }

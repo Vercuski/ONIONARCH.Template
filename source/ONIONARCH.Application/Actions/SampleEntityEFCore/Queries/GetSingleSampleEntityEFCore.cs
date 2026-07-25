@@ -3,15 +3,15 @@ using ONIONARCH.Application.Abstractions;
 using ONIONARCH.Application.Abstractions.Context;
 using ONIONARCH.Domain.Entities;
 
-namespace ONIONARCH.Application.Actions.SampleEntity1EFCore.Queries;
+namespace ONIONARCH.Application.Actions.SampleEntityEFCore.Queries;
 
-public sealed record GetSingleSampleEntity1EFCoreRequest(int Id) : IMediatRQueryRequest<SampleEntityDefinition>;
-internal sealed class GetSingleSampleEntity1EFCoreHandler(
+public sealed record GetSingleSampleEntityEFCoreRequest(int Id) : IMediatRQueryRequest<SampleEntityDefinition>;
+internal sealed class GetSingleSampleEntityEFCoreHandler(
     IQueryDbContext queryDbContext
-    ) : IMediatRQueryHandler<GetSingleSampleEntity1EFCoreRequest, SampleEntityDefinition>
+    ) : IMediatRQueryHandler<GetSingleSampleEntityEFCoreRequest, SampleEntityDefinition>
 {
     public async Task<SampleEntityDefinition> Handle(
-        GetSingleSampleEntity1EFCoreRequest request,
+        GetSingleSampleEntityEFCoreRequest request,
         CancellationToken cancellationToken)
     {
         SampleEntityDefinition? response = await queryDbContext.Set<SampleEntityDefinition>().SingleOrDefaultAsync(cancellationToken);

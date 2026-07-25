@@ -9,7 +9,8 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
 builder.AddApplicationRegistration();
-builder.AddPersistenceRegistrations();
+builder.AddEFCorePersistenceRegistrations();
+builder.AddDapperPersistenceRegistrations();
 builder.AddInfrastructureRegistration();
 
 // Add services to the container.

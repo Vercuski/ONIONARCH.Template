@@ -3,14 +3,14 @@ using ONIONARCH.Application.Abstractions;
 using ONIONARCH.Application.Abstractions.Context;
 using ONIONARCH.Domain.Entities;
 
-namespace ONIONARCH.Application.Actions.SampleEntity1EFCore.Commands;
+namespace ONIONARCH.Application.Actions.SampleEntityEFCore.Commands;
 
-public sealed record DeleteSampleEntity1EFCoreRequest(SampleEntityDefinition SampleEntity) : IMediatRCommandRequest<int>;
-internal sealed class DeleteSampleEntity1EFCoreHandler(ICommandDbContext commandDbContext,
-    ILogger<DeleteSampleEntity1EFCoreHandler> logger) : IMediatRCommandHandler<DeleteSampleEntity1EFCoreRequest, int>
+public sealed record DeleteSampleEntityEFCoreRequest(SampleEntityDefinition SampleEntity) : IMediatRCommandRequest<int>;
+internal sealed class DeleteSampleEntityEFCoreHandler(ICommandDbContext commandDbContext,
+    ILogger<DeleteSampleEntityEFCoreHandler> logger) : IMediatRCommandHandler<DeleteSampleEntityEFCoreRequest, int>
 {
     public Task<int> Handle(
-        DeleteSampleEntity1EFCoreRequest request,
+        DeleteSampleEntityEFCoreRequest request,
         CancellationToken cancellationToken)
     {
         int rowsAffected = 0;
@@ -21,7 +21,7 @@ internal sealed class DeleteSampleEntity1EFCoreHandler(ICommandDbContext command
         }
         catch (Exception ex)
         {
-            logger.LogError(ex, "Error deleting SampleEntity1EFCore.");
+            logger.LogError(ex, "Error deleting SampleEntityEFCore.");
         }
         return Task.FromResult(rowsAffected);
     }

@@ -4,13 +4,13 @@ namespace ONIONARCH.Domain.Options;
 
 public sealed record LogOptions : IBaseOptionsConfig
 {
-    public LogLevel LogLevel { get; set; } = null!;
+    public LoggingLevel LoggingLevel { get; set; } = null!;
     public string Section => "Logging";
 }
 
-public sealed record LogLevel : IBaseOptionsConfig
+public sealed record LoggingLevel : IBaseOptionsConfig
 {
     public string Default { get; set; } = null!;
     public string MicrosoftAspNetCore { get; set; } = null!;
-    public string Section => "Logging:LogLevel";
+    public string Section => "Logging:LoggingLevel";
 }

@@ -10,7 +10,8 @@ using Spectre.Console;
 
 HostApplicationBuilder builder = Host.CreateApplicationBuilder(args);
 builder.AddApplicationRegistration();
-builder.AddPersistenceRegistrations();
+builder.AddEFCorePersistenceRegistrations();
+builder.AddDapperPersistenceRegistrations();
 builder.AddInfrastructureRegistration();
 builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
 builder.Services.AddHostedService<Worker>();

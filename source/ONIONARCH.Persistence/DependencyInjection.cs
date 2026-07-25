@@ -13,25 +13,36 @@ namespace ONIONARCH.Persistence;
 
 public static class DependencyInjection
 {
-    public static IHostApplicationBuilder AddPersistenceRegistrations(
-        this IHostApplicationBuilder builder,
-        Action<DbContextOptionsBuilder, string> configureProvider)
+    public static IHostApplicationBuilder AddDapperPersistenceRegistrations(
+        this IHostApplicationBuilder builder)
     {
         builder.Services.AddScoped<IDbReadOnlyConnectionFactory, SqlDbReadOnlyConnectionFactory>();
         builder.Services.AddScoped<IDbWriteConnectionFactory, SqlDbWriteConnectionFactory>();
+        return builder;
+    }
 
+    public static IHostApplicationBuilder AddEFCorePersistenceRegistrations(
+        this IHostApplicationBuilder builder,
+        Action<DbContextOptionsBuilder, string> configureProvider)
+    {
         builder.Services.AddDbContext<CommandDbContext>((sp, options) =>
         {
             var connectionStringOptions = sp.GetRequiredService<IOptions<ConnectionStringOptions>>().Value;
             configureProvider(options, connectionStringOptions.CommandDbConnection);
-            options.EnableDetailedErrors().EnableSensitiveDataLogging();
+            if (!builder.Environment.IsProduction())
+            {
+                options.EnableDetailedErrors().EnableSensitiveDataLogging();
+            }
         }, ServiceLifetime.Scoped);
 
         builder.Services.AddDbContext<QueryDbContext>((sp, options) =>
         {
             var connectionStringOptions = sp.GetRequiredService<IOptions<ConnectionStringOptions>>().Value;
             configureProvider(options, connectionStringOptions.QueryDbConnection);
-            options.EnableDetailedErrors().EnableSensitiveDataLogging();
+            if (!builder.Environment.IsProduction())
+            {
+                options.EnableDetailedErrors().EnableSensitiveDataLogging();
+            }
         }, ServiceLifetime.Scoped);
 
         builder.Services.AddScoped<ICommandDbContext>(sp => sp.GetRequiredService<CommandDbContext>());

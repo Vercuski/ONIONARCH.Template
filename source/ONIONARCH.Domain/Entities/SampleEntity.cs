@@ -8,10 +8,10 @@ namespace ONIONARCH.Domain.Entities;
 public sealed class SampleEntityDefinition : Entity
 {
     [Key]
-    public int SampleId1 { get; set; }
+    public int SampleId { get; set; }
     [Required]
-    public string? SampleString1 { get; set; }
-    public bool SampleBoolean1 { get; set; }
-    public int SampleInt1 { get; set; }
-    public decimal SampleDecimal1 { get; set; }
+    public string? SampleString { get; set; }
+    public bool SampleBoolean { get; set; }
+    public int SampleInt { get; set; }
+    public decimal SampleDecimal { get; set; }
 }

@@ -10,7 +10,8 @@ builder.Services.AddControllers();
 builder.Services.AddOpenApi();
 builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
 builder.AddApplicationRegistration();
-builder.AddPersistenceRegistrations();
+builder.AddEFCorePersistenceRegistrations();
+builder.AddDapperPersistenceRegistrations();
 builder.AddInfrastructureRegistration();
 
 builder.Services.AddEndpointsApiExplorer();

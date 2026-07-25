@@ -5,5 +5,5 @@ namespace ONIONARCH.Persistence.Contexts;
 
 public abstract class BaseDbContext<T>(DbContextOptions<T> options) : DbContext(options) where T : DbContext
 {
-    public DbSet<SampleEntityDefinition> SampleEntity1 { get; set; }
+    public DbSet<SampleEntityDefinition> SampleEntity { get; set; }
 }

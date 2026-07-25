@@ -3,14 +3,14 @@ using ONIONARCH.Application.Abstractions;
 using ONIONARCH.Application.Abstractions.Context;
 using ONIONARCH.Domain.Entities;
 
-namespace ONIONARCH.Application.Actions.SampleEntity1EFCore.Commands;
+namespace ONIONARCH.Application.Actions.SampleEntityEFCore.Commands;
 
-public sealed record CreateSampleEntity1EFCoreRequest(SampleEntityDefinition SampleEntity) : IMediatRCommandRequest<int>;
-internal sealed class CreateSampleEntity1EFCoreHandler(ICommandDbContext commandDbContext,
-    ILogger<CreateSampleEntity1EFCoreHandler> logger) : IMediatRCommandHandler<CreateSampleEntity1EFCoreRequest, int>
+public sealed record CreateSampleEntityEFCoreRequest(SampleEntityDefinition SampleEntity) : IMediatRCommandRequest<int>;
+internal sealed class CreateSampleEntityEFCoreHandler(ICommandDbContext commandDbContext,
+    ILogger<CreateSampleEntityEFCoreHandler> logger) : IMediatRCommandHandler<CreateSampleEntityEFCoreRequest, int>
 {
     public Task<int> Handle(
-        CreateSampleEntity1EFCoreRequest request,
+        CreateSampleEntityEFCoreRequest request,
         CancellationToken cancellationToken)
     {
         int rowsAffected = 0;
@@ -21,7 +21,7 @@ internal sealed class CreateSampleEntity1EFCoreHandler(ICommandDbContext command
         }
         catch (Exception ex)
         {
-            logger.LogError(ex, "Error creating SampleEntity1EFCore.");
+            logger.LogError(ex, "Error creating SampleEntityEFCore.");
         }
         return Task.FromResult(rowsAffected);
     }

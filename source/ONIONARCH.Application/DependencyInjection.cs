@@ -12,13 +12,6 @@ public static class DependencyInjection
     {
         builder.AddOptionsRegistration();
         builder.AddMediatorRegistration();
-        builder.AddErrorHandling();
-        return builder;
-    }
-
-    private static IHostApplicationBuilder AddErrorHandling(this IHostApplicationBuilder builder)
-    {
-        builder.Services.AddProblemDetails();
         return builder;
     }
 

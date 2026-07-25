@@ -34,9 +34,9 @@ public static class DependencyInjection
             options.EnableDetailedErrors().EnableSensitiveDataLogging();
         }, ServiceLifetime.Scoped);
 
-        builder.Services.AddTransient<ICommandDbContext>(sp => sp.GetRequiredService<CommandDbContext>());
-        builder.Services.AddTransient<IQueryDbContext>(sp => sp.GetRequiredService<QueryDbContext>());
-        builder.Services.AddTransient<IUnitOfWork>(sp => sp.GetRequiredService<CommandDbContext>());
+        builder.Services.AddScoped<ICommandDbContext>(sp => sp.GetRequiredService<CommandDbContext>());
+        builder.Services.AddScoped<IQueryDbContext>(sp => sp.GetRequiredService<QueryDbContext>());
+        builder.Services.AddScoped<IUnitOfWork>(sp => sp.GetRequiredService<CommandDbContext>());
 
         return builder;
     }

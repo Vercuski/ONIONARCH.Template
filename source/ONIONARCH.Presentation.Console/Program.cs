@@ -2,7 +2,6 @@
 using Microsoft.Extensions.Hosting;
 using ONIONARCH.Application;
 using ONIONARCH.Infrastructure;
-using ONIONARCH.Infrastructure.Exceptions;
 using ONIONARCH.Persistence;
 using ONIONARCH.Persistence.Providers;
 using ONIONARCH.Presentation.Console;

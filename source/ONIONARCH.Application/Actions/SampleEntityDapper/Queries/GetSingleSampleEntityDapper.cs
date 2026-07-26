@@ -16,7 +16,7 @@ internal sealed class GetSingleSampleEntityDapperHandler(
     {
         var sql = "SELECT SampleId, SampleString, SampleBoolean, SampleInt, SampleDecimal FROM SampleTable WHERE SampleId = @Id";
         using var connection = connectionFactory.CreateConnection();
-        var response = await connection.QuerySingleAsync<SampleEntityDefinition>(sql, new { request.Id });
+        var response = await connection.QuerySingleOrDefaultAsync<SampleEntityDefinition>(sql, new { request.Id });
         return response;
     }
 }

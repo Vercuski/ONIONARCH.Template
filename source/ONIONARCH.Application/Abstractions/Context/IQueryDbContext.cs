@@ -5,6 +5,6 @@ namespace ONIONARCH.Application.Abstractions.Context;
 
 public interface IQueryDbContext
 {
-    DbSet<TEntity> Set<TEntity>()
+    IQueryable<TEntity> Set<TEntity>()
         where TEntity : Entity;
 }

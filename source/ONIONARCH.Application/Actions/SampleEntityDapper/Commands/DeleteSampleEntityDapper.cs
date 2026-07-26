@@ -6,7 +6,7 @@ using ONIONARCH.Domain.Entities;
 
 namespace ONIONARCH.Application.Actions.SampleEntityDapper.Commands;
 
-public sealed record DeleteSampleEntityDapperRequest(SampleEntityDefinition SampleEntity) : IMediatRCommandRequest<int>;
+public sealed record DeleteSampleEntityDapperRequest(int SampleId) : IMediatRCommandRequest<int>;
 internal sealed class DeleteSampleEntityDapperHandler(IDbWriteConnectionFactory connectionFactory,
     ILogger<DeleteSampleEntityDapperHandler> logger) : IMediatRCommandHandler<DeleteSampleEntityDapperRequest, int>
 {
@@ -19,7 +19,7 @@ internal sealed class DeleteSampleEntityDapperHandler(IDbWriteConnectionFactory 
         {
             var sql = "DELETE FROM SampleTable WHERE SampleId=@SampleId";
             using var connection = connectionFactory.CreateConnection();
-            rowsAffected = await connection.ExecuteAsync(sql, request.SampleEntity);
+            rowsAffected = await connection.ExecuteAsync(sql, new { request.SampleId });
         }
         catch (Exception ex)
         {

@@ -28,6 +28,7 @@ if (!app.Environment.IsProduction())
     app.MapScalarApiReference();
 }
 
+app.UseExceptionHandler();
 app.MapControllers();
 app.AddInfrastructureApplicationRegistration();
 app.UseHttpsRedirection();

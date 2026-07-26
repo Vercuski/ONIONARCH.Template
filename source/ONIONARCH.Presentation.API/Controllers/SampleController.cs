@@ -13,19 +13,19 @@ namespace ONIONARCH.Presentation.API.Controllers;
 public class SampleController(IMediator mediator) : ControllerBase
 {
     // GET api/<SampleController>/5
-    [HttpGet("EFCore/{id}")]
-    public async Task<SampleDtoRecord> GetEFCore(int id)
+    [HttpGet("EFCore/{sampleId}")]
+    public async Task<SampleDtoRecord> GetEFCore(int sampleId)
     {
-        GetSingleSampleEntityEFCoreRequest request = new(id);
+        GetSingleSampleEntityEFCoreRequest request = new(sampleId);
         var returnValue = await mediator.Send(request, CancellationToken.None);
         return SampleDtoRecord.Create(returnValue);
     }
 
     // GET api/<SampleController>/5
-    [HttpGet("Dapper/{id}")]
-    public async Task<SampleDtoRecord?> GetDapper(int id)
+    [HttpGet("Dapper/{sampleId}")]
+    public async Task<SampleDtoRecord?> GetDapper(int sampleId)
     {
-        GetSingleSampleEntityDapperRequest request = new(id);
+        GetSingleSampleEntityDapperRequest request = new(sampleId);
         var returnValue = await mediator.Send(request, CancellationToken.None);
         return returnValue is not null ? SampleDtoRecord.Create(returnValue) : null;
     }
@@ -45,6 +45,42 @@ public class SampleController(IMediator mediator) : ControllerBase
     {
         var entity = dto.MapToDomain();
         CreateSampleEntityDapperRequest request = new(entity);
+        return await mediator.Send(request, CancellationToken.None);
+    }
+
+    // PUT api/<SampleController>
+    [HttpPut("EFCore")]
+    public async Task<int> UpdateEFCore([FromBody] UpdateSampleRequestDto dto)
+    {
+        var entity = dto.MapToDomain();
+        UpdateSampleEntityEFCoreRequest request = new(entity);
+        return await mediator.Send(request, CancellationToken.None);
+    }
+
+    // PUT api/<SampleController>
+    [HttpPut("Dapper")]
+    public async Task<int> UpdateDapper([FromBody] UpdateSampleRequestDto dto)
+    {
+        var entity = dto.MapToDomain();
+        UpdateSampleEntityDapperRequest request = new(entity);
+        return await mediator.Send(request, CancellationToken.None);
+    }
+
+    // DELETE api/<SampleController>
+    [HttpDelete("EFCore")]
+    public async Task<int> DeleteEFCore(int sampleId)
+    {
+        GetSingleSampleEntityEFCoreRequest request = new(sampleId);
+        var entity = await mediator.Send(request, CancellationToken.None);
+        DeleteSampleEntityEFCoreRequest deleteRequest = new(entity);
+        return await mediator.Send(deleteRequest, CancellationToken.None);
+    }
+
+    // DELETE api/<SampleController>
+    [HttpDelete("Dapper")]
+    public async Task<int> DeleteDapper(int sampleId)
+    {
+        DeleteSampleEntityDapperRequest request = new(sampleId);
         return await mediator.Send(request, CancellationToken.None);
     }
 }

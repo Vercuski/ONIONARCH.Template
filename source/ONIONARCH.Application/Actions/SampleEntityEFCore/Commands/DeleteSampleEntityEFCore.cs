@@ -5,7 +5,7 @@ using ONIONARCH.Domain.Entities;
 
 namespace ONIONARCH.Application.Actions.SampleEntityEFCore.Commands;
 
-public sealed record DeleteSampleEntityEFCoreRequest(SampleEntityDefinition SampleEntity) : IMediatRCommandRequest<int>;
+public sealed record DeleteSampleEntityEFCoreRequest(SampleEntityDefinition Entity) : IMediatRCommandRequest<int>;
 internal sealed class DeleteSampleEntityEFCoreHandler(ICommandDbContext commandDbContext,
     ILogger<DeleteSampleEntityEFCoreHandler> logger) : IMediatRCommandHandler<DeleteSampleEntityEFCoreRequest, int>
 {
@@ -16,7 +16,7 @@ internal sealed class DeleteSampleEntityEFCoreHandler(ICommandDbContext commandD
         int rowsAffected = 0;
         try
         {
-            commandDbContext.Remove(request.SampleEntity);
+            commandDbContext.Delete(request.Entity);
             rowsAffected = commandDbContext.SaveChanges();
         }
         catch (Exception ex)

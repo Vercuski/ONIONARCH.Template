@@ -1,7 +1,7 @@
 using ONIONARCH.Application;
 using ONIONARCH.Infrastructure;
+using ONIONARCH.Infrastructure.Exceptions;
 using ONIONARCH.Persistence;
-using ONIONARCH.Presentation.API.Exceptions;
 using Scalar.AspNetCore;
 
 var builder = WebApplication.CreateBuilder(args);

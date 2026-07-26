@@ -1,9 +1,11 @@
 ﻿using Microsoft.AspNetCore.Diagnostics;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 
-namespace ONIONARCH.Presentation.API.Exceptions;
+namespace ONIONARCH.Infrastructure.Exceptions;
 
-internal sealed class GlobalExceptionHandler(ILogger<GlobalExceptionHandler> logger) : IExceptionHandler
+public sealed class GlobalExceptionHandler(ILogger<GlobalExceptionHandler> logger) : IExceptionHandler
 {
     private readonly ILogger<GlobalExceptionHandler> _logger = logger;
 

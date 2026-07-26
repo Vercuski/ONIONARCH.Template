@@ -1,11 +1,10 @@
-﻿// See https://aka.ms/new-console-template for more information
-using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using ONIONARCH.Application;
 using ONIONARCH.Infrastructure;
+using ONIONARCH.Infrastructure.Exceptions;
 using ONIONARCH.Persistence;
 using ONIONARCH.Presentation.Console;
-using ONIONARCH.Presentation.Console.Exceptions;
 using Spectre.Console;
 
 HostApplicationBuilder builder = Host.CreateApplicationBuilder(args);

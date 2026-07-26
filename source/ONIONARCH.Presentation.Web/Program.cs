@@ -1,9 +1,9 @@
 using MudBlazor.Services;
 using ONIONARCH.Application;
 using ONIONARCH.Infrastructure;
+using ONIONARCH.Infrastructure.Exceptions;
 using ONIONARCH.Persistence;
 using ONIONARCH.Presentation.Web.Components;
-using ONIONARCH.Presentation.Web.Exceptions;
 
 var builder = WebApplication.CreateBuilder(args);
 

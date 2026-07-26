@@ -9,11 +9,7 @@ using Spectre.Console;
 
 HostApplicationBuilder builder = Host.CreateApplicationBuilder(args);
 builder.AddApplicationRegistration();
-
-IDatabaseProvider databaseProvider = new SqlServerDatabaseProvider();
-// IDatabaseProvider databaseProvider = new PostgreSqlDatabaseProvider();
-
-builder.AddPersistenceRegistrations(databaseProvider);
+builder.AddPersistenceRegistrations();
 builder.AddInfrastructureRegistration();
 builder.Services.AddHostedService<Worker>();
 

@@ -37,8 +37,8 @@ public class SampleController(IMediator mediator) : ControllerBase
     {
         GetSingleSampleEntityDapperRequest request = new(sampleId);
         var result = await mediator.Send(request, CancellationToken.None);
-        return result.IsSuccess
-            ? Ok(result.Value)
+        return result.IsSuccess && result.Value is not null
+            ? Ok(SampleDtoRecord.Create(result.Value))
             : result.ErrorType switch
             {
                 ResultErrorType.NotFound => NotFound(result.Error),
@@ -126,17 +126,30 @@ public class SampleController(IMediator mediator) : ControllerBase
     {
         GetSingleSampleEntityEFCoreRequest request = new(sampleId);
         var entity = await mediator.Send(request, CancellationToken.None);
-        DeleteSampleEntityEFCoreRequest deleteRequest = new(entity.Value!);
-        var result = await mediator.Send(deleteRequest, CancellationToken.None);
-        return result.IsSuccess
-            ? Ok(result.Value)
-            : result.ErrorType switch
+        if (!entity.IsSuccess || entity.Value is null)
+        {
+            return entity.ErrorType switch
             {
-                ResultErrorType.NotFound => NotFound(result.Error),
-                ResultErrorType.Validation => BadRequest(result.Error),
-                ResultErrorType.Conflict => Conflict(result.Error),
-                _ => Problem(result.Error)
+                ResultErrorType.NotFound => NotFound(entity.Error),
+                ResultErrorType.Validation => BadRequest(entity.Error),
+                ResultErrorType.Conflict => Conflict(entity.Error),
+                _ => Problem(entity.Error)
             };
+        }
+        else
+        {
+            DeleteSampleEntityEFCoreRequest deleteRequest = new(entity.Value);
+            var result = await mediator.Send(deleteRequest, CancellationToken.None);
+            return result.IsSuccess
+                ? Ok(result.Value)
+                : result.ErrorType switch
+                {
+                    ResultErrorType.NotFound => NotFound(result.Error),
+                    ResultErrorType.Validation => BadRequest(result.Error),
+                    ResultErrorType.Conflict => Conflict(result.Error),
+                    _ => Problem(result.Error)
+                };
+        }
     }
 
     // DELETE api/<SampleController>

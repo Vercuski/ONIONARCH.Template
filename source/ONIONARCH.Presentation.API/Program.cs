@@ -11,10 +11,7 @@ builder.Services.AddControllers();
 builder.Services.AddOpenApi();
 builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
 builder.AddApplicationRegistration();
-IDatabaseProvider databaseProvider = new SqlServerDatabaseProvider();
-// IDatabaseProvider databaseProvider = new PostgreSqlDatabaseProvider();
-
-builder.AddPersistenceRegistrations(databaseProvider);
+builder.AddPersistenceRegistrations();
 builder.AddInfrastructureRegistration();
 
 builder.Services.AddEndpointsApiExplorer();

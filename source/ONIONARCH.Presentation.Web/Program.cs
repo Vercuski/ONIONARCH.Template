@@ -10,11 +10,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
 builder.AddApplicationRegistration();
-
-IDatabaseProvider databaseProvider = new SqlServerDatabaseProvider();
-// IDatabaseProvider databaseProvider = new PostgreSqlDatabaseProvider();
-
-builder.AddPersistenceRegistrations(databaseProvider);
+builder.AddPersistenceRegistrations();
 builder.AddInfrastructureRegistration();
 
 // Add services to the container.

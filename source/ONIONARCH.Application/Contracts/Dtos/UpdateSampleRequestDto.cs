@@ -4,6 +4,7 @@ using ONIONARCH.Domain.Entities;
 namespace ONIONARCH.Application.Contracts.Dtos;
 
 public sealed record UpdateSampleRequestDto(
+    int DtoSampleId,
     string? DtoSampleString,
     bool DtoSampleBoolean,
     int DtoSampleInt,
@@ -14,6 +15,7 @@ public sealed record UpdateSampleRequestDto(
     {
         return new SampleEntityDefinition
         {
+            SampleId = DtoSampleId,
             SampleString = DtoSampleString,
             SampleBoolean = DtoSampleBoolean,
             SampleInt = DtoSampleInt,

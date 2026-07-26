@@ -16,45 +16,73 @@ namespace ONIONARCH.Persistence;
 
 public static class DependencyInjection
 {
-    public static IHostApplicationBuilder AddPersistenceRegistrations(this IHostApplicationBuilder builder, IDatabaseProvider databaseProvider)
+    public static IHostApplicationBuilder AddPersistenceRegistrations(this IHostApplicationBuilder builder)
     {
         builder.AddOptionsRegistration();
-        builder.AddDapperPersistenceRegistrations(databaseProvider);
-        builder.AddEFCorePersistenceRegistrations(databaseProvider);
+        builder.AddDatabaseProviderRegistration();
         return builder;
     }
-
+    
     private static IHostApplicationBuilder AddOptionsRegistration(this IHostApplicationBuilder builder)
     {
         builder.Services.Configure<ConnectionStringOptions>(GetSection<ConnectionStringOptions>(builder.Configuration));
+        builder.Services.Configure<DatabasePlatformOptions>(GetSection<DatabasePlatformOptions >(builder.Configuration));
+        return builder;
+    }
+
+    private static IHostApplicationBuilder AddDatabaseProviderRegistration(
+        this IHostApplicationBuilder builder)
+    {
+        var databasePlatformOptions = builder.Services.BuildServiceProvider().GetRequiredService<IOptions<DatabasePlatformOptions>>().Value;
+        
+        IDatabaseProvider queryDatabaseProvider = databasePlatformOptions.QueryDbPlatform.ToUpper()
+        switch
+        {
+            "MSSQL" => new SqlServerDatabaseProvider(),
+            "POSTGRESQL" => new PostgreSqlDatabaseProvider(),
+            "MYSQL" => new MySQLDatabaseProvider(),
+            _ => throw new NotSupportedException($"Query Database platform '{databasePlatformOptions.QueryDbPlatform}' is not supported.")
+        };
+
+        IDatabaseProvider commandDatabaseProvider = databasePlatformOptions.CommandDbPlatform.ToUpper()
+        switch
+        {
+            "MSSQL" => new SqlServerDatabaseProvider(),
+            "POSTGRESQL" => new PostgreSqlDatabaseProvider(),
+            "MYSQL" => new MySQLDatabaseProvider(),
+            _ => throw new NotSupportedException($"Command Database platform '{databasePlatformOptions.CommandDbPlatform}' is not supported.")
+        };
+
         return builder;
     }
 
     private static IHostApplicationBuilder AddDapperPersistenceRegistrations(
         this IHostApplicationBuilder builder,
-        IDatabaseProvider databaseProvider)
+        IDatabaseProvider queryDatabaseProvider,
+        IDatabaseProvider commandDatabaseProvider)
     {
         builder.Services.AddScoped<IDbReadOnlyConnectionFactory>(sp =>
             new DbReadOnlyConnectionFactory(
                 sp.GetRequiredService<IOptions<ConnectionStringOptions>>(),
-                databaseProvider));
+                queryDatabaseProvider));
 
         builder.Services.AddScoped<IDbWriteConnectionFactory>(sp =>
             new DbWriteConnectionFactory(
                 sp.GetRequiredService<IOptions<ConnectionStringOptions>>(),
-                databaseProvider));
+                commandDatabaseProvider));
 
         return builder;
     }
 
     private static IHostApplicationBuilder AddEFCorePersistenceRegistrations(
         this IHostApplicationBuilder builder,
-        IDatabaseProvider databaseProvider)
+        IDatabaseProvider queryDatabaseProvider,
+        IDatabaseProvider commandDatabaseProvider)
     {
         builder.Services.AddDbContext<CommandDbContext>((sp, options) =>
         {
             var connectionStringOptions = sp.GetRequiredService<IOptions<ConnectionStringOptions>>().Value;
-            databaseProvider.ConfigureEfCore(options, connectionStringOptions.CommandDbConnection);
+            queryDatabaseProvider.ConfigureEfCore(options, connectionStringOptions.CommandDbConnection);
             if (!builder.Environment.IsProduction())
             {
                 options.EnableDetailedErrors().EnableSensitiveDataLogging();
@@ -64,7 +92,7 @@ public static class DependencyInjection
         builder.Services.AddDbContext<QueryDbContext>((sp, options) =>
         {
             var connectionStringOptions = sp.GetRequiredService<IOptions<ConnectionStringOptions>>().Value;
-            databaseProvider.ConfigureEfCore(options, connectionStringOptions.QueryDbConnection);
+            commandDatabaseProvider.ConfigureEfCore(options, connectionStringOptions.QueryDbConnection);
             if (!builder.Environment.IsProduction())
             {
                 options.EnableDetailedErrors().EnableSensitiveDataLogging();

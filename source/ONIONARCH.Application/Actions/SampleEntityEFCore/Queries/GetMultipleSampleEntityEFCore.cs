@@ -13,12 +13,6 @@ internal sealed class GetMultipleSampleEntityEFCoresHandler(IQueryDbContext quer
         CancellationToken cancellationToken)
     {
         List<SampleEntityDefinition>? response = await queryDbContext.Set<SampleEntityDefinition>().ToListAsync(cancellationToken);
-
-        if (response is null)
-        {
-            return await Task.FromResult(new List<SampleEntityDefinition>());
-        }
-
         return response;
     }
 }

@@ -34,8 +34,11 @@ public static class DependencyInjection
             .GetTypes().Where(type => !type.IsAbstract &&
             type.GetInterfaces().Contains(typeof(IHealthCheck))))
         {
-            healthCheckBuilder.AddCheck(healthCheckType.Name,
-                (IHealthCheck)Activator.CreateInstance(healthCheckType)!);
+            healthCheckBuilder.Add(new HealthCheckRegistration(
+                healthCheckType.Name,
+                serviceProvider => (IHealthCheck)ActivatorUtilities.CreateInstance(serviceProvider, healthCheckType),
+                failureStatus: null,
+                tags: null));
         }
         return builder;
     }

@@ -14,13 +14,7 @@ internal sealed class GetSingleSampleEntityEFCoreHandler(
         GetSingleSampleEntityEFCoreRequest request,
         CancellationToken cancellationToken)
     {
-        SampleEntityDefinition? response = await queryDbContext.Set<SampleEntityDefinition>().SingleOrDefaultAsync(cancellationToken);
-
-        if (response is null)
-        {
-            return await Task.FromResult(new SampleEntityDefinition());
-        }
-
-        return response;
+        SampleEntityDefinition? response = await queryDbContext.Set<SampleEntityDefinition>().Where(e => e.SampleId == request.Id).SingleOrDefaultAsync(cancellationToken);
+        return response is null ? new() : response;
     }
 }

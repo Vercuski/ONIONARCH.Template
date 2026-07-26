@@ -17,7 +17,6 @@ IDatabaseProvider databaseProvider = new SqlServerDatabaseProvider();
 builder.AddEFCorePersistenceRegistrations(databaseProvider);
 builder.AddDapperPersistenceRegistrations(databaseProvider);
 builder.AddInfrastructureRegistration();
-builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
 builder.Services.AddHostedService<Worker>();
 
 IHost host = builder.Build();

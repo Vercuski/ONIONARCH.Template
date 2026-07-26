@@ -1,0 +1,14 @@
+﻿using Microsoft.EntityFrameworkCore;
+using Npgsql;
+using System.Data;
+
+namespace ONIONARCH.Persistence.Providers;
+
+public sealed class PostgreSqlDatabaseProvider : IDatabaseProvider
+{
+    public void ConfigureEfCore(DbContextOptionsBuilder optionsBuilder, string connectionString) =>
+        optionsBuilder.UseNpgsql(connectionString);
+
+    public IDbConnection CreateConnection(string connectionString) =>
+        new NpgsqlConnection(connectionString);
+}

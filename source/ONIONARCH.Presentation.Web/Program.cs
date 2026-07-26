@@ -3,14 +3,19 @@ using ONIONARCH.Application;
 using ONIONARCH.Infrastructure;
 using ONIONARCH.Infrastructure.Exceptions;
 using ONIONARCH.Persistence;
+using ONIONARCH.Persistence.Providers;
 using ONIONARCH.Presentation.Web.Components;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
 builder.AddApplicationRegistration();
-builder.AddEFCorePersistenceRegistrations();
-builder.AddDapperPersistenceRegistrations();
+
+IDatabaseProvider databaseProvider = new SqlServerDatabaseProvider();
+// IDatabaseProvider databaseProvider = new PostgreSqlDatabaseProvider();
+
+builder.AddEFCorePersistenceRegistrations(databaseProvider);
+builder.AddDapperPersistenceRegistrations(databaseProvider);
 builder.AddInfrastructureRegistration();
 
 // Add services to the container.

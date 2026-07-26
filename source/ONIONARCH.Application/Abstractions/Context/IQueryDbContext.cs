@@ -1,5 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
-using ONIONARCH.Domain.Abstractions;
+﻿using ONIONARCH.Domain.Abstractions;
 
 namespace ONIONARCH.Application.Abstractions.Context;
 

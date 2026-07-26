@@ -2,15 +2,16 @@
 using Microsoft.Extensions.Logging;
 using ONIONARCH.Application.Abstractions;
 using ONIONARCH.Application.Abstractions.ConnectionFactory;
-using ONIONARCH.Domain.Entities;
 
 namespace ONIONARCH.Application.Actions.SampleEntityDapper.Commands;
 
-public sealed record DeleteSampleEntityDapperRequest(int SampleId) : IMediatRCommandRequest<int>;
+public sealed record DeleteSampleEntityDapperRequest(int SampleId)
+    : IMediatRCommandRequest<Result<int>>;
 internal sealed class DeleteSampleEntityDapperHandler(IDbWriteConnectionFactory connectionFactory,
-    ILogger<DeleteSampleEntityDapperHandler> logger) : IMediatRCommandHandler<DeleteSampleEntityDapperRequest, int>
+    ILogger<DeleteSampleEntityDapperHandler> logger)
+    : IMediatRCommandHandler<DeleteSampleEntityDapperRequest, Result<int>>
 {
-    public async Task<int> Handle(
+    public async Task<Result<int>> Handle(
         DeleteSampleEntityDapperRequest request,
         CancellationToken cancellationToken)
     {
@@ -24,7 +25,8 @@ internal sealed class DeleteSampleEntityDapperHandler(IDbWriteConnectionFactory 
         catch (Exception ex)
         {
             logger.LogError(ex, "Error deleting SampleEntityDapper.");
+            return Result<int>.Failure("Error deleting SampleEntityDapper.", ResultErrorType.Validation);
         }
-        return rowsAffected;
+        return Result<int>.Success(rowsAffected);
     }
 }

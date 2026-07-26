@@ -1,6 +1,6 @@
 ﻿using ONIONARCH.Domain.Abstractions;
 
-namespace ONIONARCH.Domain.Options;
+namespace ONIONARCH.Persistence.Options;
 
 public sealed record ConnectionStringOptions : IBaseOptionsConfig
 {

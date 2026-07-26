@@ -13,8 +13,7 @@ builder.AddApplicationRegistration();
 IDatabaseProvider databaseProvider = new SqlServerDatabaseProvider();
 // IDatabaseProvider databaseProvider = new PostgreSqlDatabaseProvider();
 
-builder.AddEFCorePersistenceRegistrations(databaseProvider);
-builder.AddDapperPersistenceRegistrations(databaseProvider);
+builder.AddPersistenceRegistrations(databaseProvider);
 builder.AddInfrastructureRegistration();
 builder.Services.AddHostedService<Worker>();
 

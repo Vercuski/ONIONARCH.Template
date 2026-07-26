@@ -6,11 +6,13 @@ using ONIONARCH.Domain.Entities;
 
 namespace ONIONARCH.Application.Actions.SampleEntityDapper.Commands;
 
-public sealed record UpdateSampleEntityDapperRequest(SampleEntityDefinition SampleEntity) : IMediatRCommandRequest<int>;
+public sealed record UpdateSampleEntityDapperRequest(SampleEntityDefinition SampleEntity)
+    : IMediatRCommandRequest<Result<int>>;
 internal sealed class UpdateSampleEntityDapperHandler(IDbWriteConnectionFactory connectionFactory,
-    ILogger<UpdateSampleEntityDapperHandler> logger) : IMediatRCommandHandler<UpdateSampleEntityDapperRequest, int>
+    ILogger<UpdateSampleEntityDapperHandler> logger)
+    : IMediatRCommandHandler<UpdateSampleEntityDapperRequest, Result<int>>
 {
-    public async Task<int> Handle(
+    public async Task<Result<int>> Handle(
         UpdateSampleEntityDapperRequest request,
         CancellationToken cancellationToken)
     {
@@ -24,7 +26,8 @@ internal sealed class UpdateSampleEntityDapperHandler(IDbWriteConnectionFactory 
         catch (Exception ex)
         {
             logger.LogError(ex, "Error updating SampleEntityDapper.");
+            return Result<int>.Failure("Error updating SampleEntityDapper.", ResultErrorType.Validation);
         }
-        return rowsAffected;
+        return Result<int>.Success(rowsAffected);
     }
 }

@@ -6,12 +6,13 @@ using ONIONARCH.Domain.Entities;
 
 namespace ONIONARCH.Application.Actions.SampleEntityDapper.Commands;
 
-public sealed record CreateSampleEntityDapperRequest(SampleEntityDefinition SampleEntity) : IMediatRCommandRequest<int>;
+public sealed record CreateSampleEntityDapperRequest(SampleEntityDefinition SampleEntity)
+    : IMediatRCommandRequest<Result<int>>;
 internal sealed class CreateSampleEntityDapperHandler(IDbWriteConnectionFactory connectionFactory,
     ILogger<CreateSampleEntityDapperHandler> logger)
-    : IMediatRCommandHandler<CreateSampleEntityDapperRequest, int>
+    : IMediatRCommandHandler<CreateSampleEntityDapperRequest, Result<int>>
 {
-    public async Task<int> Handle(
+    public async Task<Result<int>> Handle(
         CreateSampleEntityDapperRequest request,
         CancellationToken cancellationToken)
     {
@@ -25,7 +26,8 @@ internal sealed class CreateSampleEntityDapperHandler(IDbWriteConnectionFactory 
         catch (Exception ex)
         {
             logger.LogError(ex, "Error creating SampleEntityDapper.");
+            return Result<int>.Failure("Error creating SampleEntityDapper.", ResultErrorType.Validation);
         }
-        return rowsAffected;
+        return Result<int>.Success(rowsAffected);
     }
 }

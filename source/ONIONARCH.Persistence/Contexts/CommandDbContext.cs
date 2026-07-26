@@ -18,10 +18,10 @@ public sealed class CommandDbContext(DbContextOptions<CommandDbContext> options)
         return Set<TEntity>().Add(entity);
     }
 
-    public void  InsertRange<TEntity>(IReadOnlyCollection<TEntity> entities)
+    public void InsertRange<TEntity>(IReadOnlyCollection<TEntity> entities)
         where TEntity : Entity
     {
-         Set<TEntity>().AddRange(entities);
+        Set<TEntity>().AddRange(entities);
     }
 
     public EntityEntry<TEntity> Alter<TEntity>(TEntity entity)

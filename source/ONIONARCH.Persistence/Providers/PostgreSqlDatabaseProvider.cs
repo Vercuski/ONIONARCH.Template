@@ -6,9 +6,13 @@ namespace ONIONARCH.Persistence.Providers;
 
 public sealed class PostgreSqlDatabaseProvider : IDatabaseProvider
 {
-    public void ConfigureEfCore(DbContextOptionsBuilder optionsBuilder, string connectionString) =>
+    public void ConfigureEfCore(DbContextOptionsBuilder optionsBuilder, string connectionString)
+    {
         optionsBuilder.UseNpgsql(connectionString);
+    }
 
-    public IDbConnection CreateConnection(string connectionString) =>
-        new NpgsqlConnection(connectionString);
+    public IDbConnection CreateConnection(string connectionString)
+    {
+        return new NpgsqlConnection(connectionString);
+    }
 }

@@ -1,7 +1,6 @@
 ﻿
 using Microsoft.EntityFrameworkCore;
 using ONIONARCH.Application.Abstractions.Context;
-using ONIONARCH.Domain.Abstractions;
 using System.Reflection;
 
 namespace ONIONARCH.Persistence.Contexts;
@@ -10,7 +9,9 @@ public sealed class QueryDbContext(DbContextOptions<QueryDbContext> options)
     : BaseDbContext<QueryDbContext>(options), IQueryDbContext
 {
     IQueryable<TEntity> IQueryDbContext.Set<TEntity>()
-        => base.Set<TEntity>();
+    {
+        return base.Set<TEntity>();
+    }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

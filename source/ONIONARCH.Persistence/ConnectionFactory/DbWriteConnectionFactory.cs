@@ -1,6 +1,6 @@
 ﻿using Microsoft.Extensions.Options;
 using ONIONARCH.Application.Abstractions.ConnectionFactory;
-using ONIONARCH.Domain.Options;
+using ONIONARCH.Persistence.Options;
 using ONIONARCH.Persistence.Providers;
 using System.Data;
 
@@ -12,6 +12,8 @@ public sealed class DbWriteConnectionFactory(
 {
     private readonly string _connectionString = connectionStringOptions.Value.CommandDbConnection;
 
-    public IDbConnection CreateConnection() =>
-        databaseProvider.CreateConnection(_connectionString);
+    public IDbConnection CreateConnection()
+    {
+        return databaseProvider.CreateConnection(_connectionString);
+    }
 }

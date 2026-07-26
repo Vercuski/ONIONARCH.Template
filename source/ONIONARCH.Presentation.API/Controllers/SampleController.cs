@@ -1,5 +1,7 @@
 ﻿using MediatR;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
+using ONIONARCH.Application.Abstractions;
 using ONIONARCH.Application.Actions.SampleEntityDapper.Commands;
 using ONIONARCH.Application.Actions.SampleEntityDapper.Queries;
 using ONIONARCH.Application.Actions.SampleEntityEFCore.Commands;
@@ -14,73 +16,143 @@ public class SampleController(IMediator mediator) : ControllerBase
 {
     // GET api/<SampleController>/5
     [HttpGet("EFCore/{sampleId}")]
-    public async Task<SampleDtoRecord> GetEFCore(int sampleId)
+    public async Task<IActionResult> GetEFCore(int sampleId)
     {
         GetSingleSampleEntityEFCoreRequest request = new(sampleId);
-        var returnValue = await mediator.Send(request, CancellationToken.None);
-        return SampleDtoRecord.Create(returnValue);
+        var result = await mediator.Send(request, CancellationToken.None);
+        return result.IsSuccess && result.Value is not null
+            ? Ok(SampleDtoRecord.Create(result.Value))
+            : result.ErrorType switch
+            {
+                ResultErrorType.NotFound => NotFound(result.Error),
+                ResultErrorType.Validation => BadRequest(result.Error),
+                ResultErrorType.Conflict => Conflict(result.Error),
+                _ => Problem(result.Error)
+            };
     }
 
     // GET api/<SampleController>/5
     [HttpGet("Dapper/{sampleId}")]
-    public async Task<SampleDtoRecord?> GetDapper(int sampleId)
+    public async Task<IActionResult> GetDapper(int sampleId)
     {
         GetSingleSampleEntityDapperRequest request = new(sampleId);
-        var returnValue = await mediator.Send(request, CancellationToken.None);
-        return returnValue is not null ? SampleDtoRecord.Create(returnValue) : null;
+        var result = await mediator.Send(request, CancellationToken.None);
+        return result.IsSuccess
+            ? Ok(result.Value)
+            : result.ErrorType switch
+            {
+                ResultErrorType.NotFound => NotFound(result.Error),
+                ResultErrorType.Validation => BadRequest(result.Error),
+                ResultErrorType.Conflict => Conflict(result.Error),
+                _ => Problem(result.Error)
+            };
     }
 
     // POST api/<SampleController>
     [HttpPost("EFCore")]
-    public async Task<int> CreateEFCore([FromBody] CreateSampleRequestDto dto)
+    public async Task<IActionResult> CreateEFCore([FromBody] CreateSampleRequestDto dto)
     {
         var entity = dto.MapToDomain();
         CreateSampleEntityEFCoreRequest request = new(entity);
-        return await mediator.Send(request, CancellationToken.None);
+        var result = await mediator.Send(request, CancellationToken.None);
+        return result.IsSuccess
+            ? Ok(result.Value)
+            : result.ErrorType switch
+            {
+                ResultErrorType.NotFound => NotFound(result.Error),
+                ResultErrorType.Validation => BadRequest(result.Error),
+                ResultErrorType.Conflict => Conflict(result.Error),
+                _ => Problem(result.Error)
+            };
     }
 
     // POST api/<SampleController>
     [HttpPost("Dapper")]
-    public async Task<int> CreateDapper([FromBody] CreateSampleRequestDto dto)
+    public async Task<IActionResult> CreateDapper([FromBody] CreateSampleRequestDto dto)
     {
         var entity = dto.MapToDomain();
         CreateSampleEntityDapperRequest request = new(entity);
-        return await mediator.Send(request, CancellationToken.None);
+        var result = await mediator.Send(request, CancellationToken.None);
+        return result.IsSuccess
+            ? Ok(result.Value)
+            : result.ErrorType switch
+            {
+                ResultErrorType.NotFound => NotFound(result.Error),
+                ResultErrorType.Validation => BadRequest(result.Error),
+                ResultErrorType.Conflict => Conflict(result.Error),
+                _ => Problem(result.Error)
+            };
     }
 
     // PUT api/<SampleController>
     [HttpPut("EFCore")]
-    public async Task<int> UpdateEFCore([FromBody] UpdateSampleRequestDto dto)
+    public async Task<IActionResult> UpdateEFCore([FromBody] UpdateSampleRequestDto dto)
     {
         var entity = dto.MapToDomain();
         UpdateSampleEntityEFCoreRequest request = new(entity);
-        return await mediator.Send(request, CancellationToken.None);
+        var result = await mediator.Send(request, CancellationToken.None);
+        return result.IsSuccess
+            ? Ok(result.Value)
+            : result.ErrorType switch
+            {
+                ResultErrorType.NotFound => NotFound(result.Error),
+                ResultErrorType.Validation => BadRequest(result.Error),
+                ResultErrorType.Conflict => Conflict(result.Error),
+                _ => Problem(result.Error)
+            };
     }
 
     // PUT api/<SampleController>
     [HttpPut("Dapper")]
-    public async Task<int> UpdateDapper([FromBody] UpdateSampleRequestDto dto)
+    public async Task<IActionResult> UpdateDapper([FromBody] UpdateSampleRequestDto dto)
     {
         var entity = dto.MapToDomain();
         UpdateSampleEntityDapperRequest request = new(entity);
-        return await mediator.Send(request, CancellationToken.None);
+        var result = await mediator.Send(request, CancellationToken.None);
+        return result.IsSuccess
+            ? Ok(result.Value)
+            : result.ErrorType switch
+            {
+                ResultErrorType.NotFound => NotFound(result.Error),
+                ResultErrorType.Validation => BadRequest(result.Error),
+                ResultErrorType.Conflict => Conflict(result.Error),
+                _ => Problem(result.Error)
+            };
     }
 
     // DELETE api/<SampleController>
     [HttpDelete("EFCore")]
-    public async Task<int> DeleteEFCore(int sampleId)
+    public async Task<IActionResult> DeleteEFCore(int sampleId)
     {
         GetSingleSampleEntityEFCoreRequest request = new(sampleId);
         var entity = await mediator.Send(request, CancellationToken.None);
-        DeleteSampleEntityEFCoreRequest deleteRequest = new(entity);
-        return await mediator.Send(deleteRequest, CancellationToken.None);
+        DeleteSampleEntityEFCoreRequest deleteRequest = new(entity.Value!);
+        var result = await mediator.Send(deleteRequest, CancellationToken.None);
+        return result.IsSuccess
+            ? Ok(result.Value)
+            : result.ErrorType switch
+            {
+                ResultErrorType.NotFound => NotFound(result.Error),
+                ResultErrorType.Validation => BadRequest(result.Error),
+                ResultErrorType.Conflict => Conflict(result.Error),
+                _ => Problem(result.Error)
+            };
     }
 
     // DELETE api/<SampleController>
     [HttpDelete("Dapper")]
-    public async Task<int> DeleteDapper(int sampleId)
+    public async Task<IActionResult> DeleteDapper(int sampleId)
     {
         DeleteSampleEntityDapperRequest request = new(sampleId);
-        return await mediator.Send(request, CancellationToken.None);
+        var result = await mediator.Send(request, CancellationToken.None);
+        return result.IsSuccess
+            ? Ok(result.Value)
+            : result.ErrorType switch
+            {
+                ResultErrorType.NotFound => NotFound(result.Error),
+                ResultErrorType.Validation => BadRequest(result.Error),
+                ResultErrorType.Conflict => Conflict(result.Error),
+                _ => Problem(result.Error)
+            };
     }
 }

@@ -6,9 +6,13 @@ namespace ONIONARCH.Persistence.Providers;
 
 public sealed class SqlServerDatabaseProvider : IDatabaseProvider
 {
-    public void ConfigureEfCore(DbContextOptionsBuilder optionsBuilder, string connectionString) =>
+    public void ConfigureEfCore(DbContextOptionsBuilder optionsBuilder, string connectionString)
+    {
         optionsBuilder.UseSqlServer(connectionString);
+    }
 
-    public IDbConnection CreateConnection(string connectionString) =>
-        new SqlConnection(connectionString);
+    public IDbConnection CreateConnection(string connectionString)
+    {
+        return new SqlConnection(connectionString);
+    }
 }

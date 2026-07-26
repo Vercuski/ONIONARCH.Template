@@ -1,21 +1,36 @@
 ﻿// ONIONARCH.Persistence/DependencyInjection.cs
-using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
 using ONIONARCH.Application.Abstractions;
 using ONIONARCH.Application.Abstractions.ConnectionFactory;
 using ONIONARCH.Application.Abstractions.Context;
-using ONIONARCH.Domain.Options;
+using ONIONARCH.Domain.Abstractions;
 using ONIONARCH.Persistence.ConnectionFactory;
 using ONIONARCH.Persistence.Contexts;
+using ONIONARCH.Persistence.Options;
 using ONIONARCH.Persistence.Providers;
 
 namespace ONIONARCH.Persistence;
 
 public static class DependencyInjection
 {
-    public static IHostApplicationBuilder AddDapperPersistenceRegistrations(
+    public static IHostApplicationBuilder AddPersistenceRegistrations(this IHostApplicationBuilder builder, IDatabaseProvider databaseProvider)
+    {
+        builder.AddOptionsRegistration();
+        builder.AddDapperPersistenceRegistrations(databaseProvider);
+        builder.AddEFCorePersistenceRegistrations(databaseProvider);
+        return builder;
+    }
+
+    private static IHostApplicationBuilder AddOptionsRegistration(this IHostApplicationBuilder builder)
+    {
+        builder.Services.Configure<ConnectionStringOptions>(GetSection<ConnectionStringOptions>(builder.Configuration));
+        return builder;
+    }
+
+    private static IHostApplicationBuilder AddDapperPersistenceRegistrations(
         this IHostApplicationBuilder builder,
         IDatabaseProvider databaseProvider)
     {
@@ -32,7 +47,7 @@ public static class DependencyInjection
         return builder;
     }
 
-    public static IHostApplicationBuilder AddEFCorePersistenceRegistrations(
+    private static IHostApplicationBuilder AddEFCorePersistenceRegistrations(
         this IHostApplicationBuilder builder,
         IDatabaseProvider databaseProvider)
     {
@@ -61,5 +76,13 @@ public static class DependencyInjection
         builder.Services.AddScoped<IUnitOfWork>(sp => sp.GetRequiredService<CommandDbContext>());
 
         return builder;
+    }
+
+    private static IConfigurationSection GetSection<T>(IConfiguration configuration)
+    where T : IBaseOptionsConfig
+    {
+        var config = Activator.CreateInstance<T>()!;
+        var section = ((IBaseOptionsConfig)config).Section;
+        return configuration.GetSection(section);
     }
 }

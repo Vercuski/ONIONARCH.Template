@@ -5,15 +5,17 @@ using ONIONARCH.Domain.Entities;
 
 namespace ONIONARCH.Application.Actions.SampleEntityEFCore.Commands;
 
-public sealed record CreateSampleEntityEFCoreRequest(SampleEntityDefinition SampleEntity) : IMediatRCommandRequest<int>;
+public sealed record CreateSampleEntityEFCoreRequest(SampleEntityDefinition SampleEntity)
+    : IMediatRCommandRequest<Result<int>>;
 internal sealed class CreateSampleEntityEFCoreHandler(ICommandDbContext commandDbContext,
-    ILogger<CreateSampleEntityEFCoreHandler> logger) : IMediatRCommandHandler<CreateSampleEntityEFCoreRequest, int>
+    ILogger<CreateSampleEntityEFCoreHandler> logger)
+    : IMediatRCommandHandler<CreateSampleEntityEFCoreRequest, Result<int>>
 {
-    public Task<int> Handle(
+    public Task<Result<int>> Handle(
         CreateSampleEntityEFCoreRequest request,
         CancellationToken cancellationToken)
     {
-        int rowsAffected = 0;
+        int rowsAffected;
         try
         {
             commandDbContext.Insert(request.SampleEntity);
@@ -22,7 +24,8 @@ internal sealed class CreateSampleEntityEFCoreHandler(ICommandDbContext commandD
         catch (Exception ex)
         {
             logger.LogError(ex, "Error creating SampleEntityEFCore.");
+            return Task.FromResult(Result<int>.Failure("Error creating SampleEntityEFCore.", ResultErrorType.Validation));
         }
-        return Task.FromResult(rowsAffected);
+        return Task.FromResult(Result<int>.Success(rowsAffected));
     }
 }

@@ -3,7 +3,7 @@
     <DisableTransitiveProjectReferences>true</DisableTransitiveProjectReferences>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <IsTestProject>false</IsTestProject>
-    <IsPublishable>false</IsPublishable>
+    <IsPublishable>true</IsPublishable>
     <ProjectKey Condition="'$(ProjectKey)'==''">ONIONARCH</ProjectKey>
   </PropertyGroup>
   <PropertyGroup>

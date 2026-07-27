@@ -1,14 +1,13 @@
-﻿using Dapper;
-using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.Logging;
 using ONIONARCH.Application.Abstractions;
-using ONIONARCH.Application.Abstractions.ConnectionFactory;
+using ONIONARCH.Application.Abstractions.Repositories;
 using ONIONARCH.Domain.Entities;
 
 namespace ONIONARCH.Application.Actions.SampleEntityDapper.Commands;
 
 public sealed record CreateSampleEntityDapperRequest(SampleEntityDefinition SampleEntity)
     : IMediatRCommandRequest<Result<int>>;
-internal sealed class CreateSampleEntityDapperHandler(IDbWriteConnectionFactory connectionFactory,
+internal sealed class CreateSampleEntityDapperHandler(ISampleEntityDapperCommandRepository repository,
     ILogger<CreateSampleEntityDapperHandler> logger)
     : IMediatRCommandHandler<CreateSampleEntityDapperRequest, Result<int>>
 {
@@ -16,18 +15,15 @@ internal sealed class CreateSampleEntityDapperHandler(IDbWriteConnectionFactory 
         CreateSampleEntityDapperRequest request,
         CancellationToken cancellationToken)
     {
-        int rowsAffected = 0;
         try
         {
-            var sql = "INSERT INTO SampleTable (SampleId, SampleString, SampleBoolean, SampleInt, SampleDecimal) VALUES (@SampleId, @SampleString, @SampleBoolean, @SampleInt, @SampleDecimal)";
-            using var connection = connectionFactory.CreateConnection();
-            rowsAffected = await connection.ExecuteAsync(sql, request.SampleEntity);
+            var rowsAffected = await repository.CreateAsync(request.SampleEntity, cancellationToken);
+            return Result<int>.Success(rowsAffected);
         }
         catch (Exception ex)
         {
             logger.LogError(ex, "Error creating SampleEntityDapper.");
             return Result<int>.Failure("Error creating SampleEntityDapper.", ResultErrorType.Validation);
         }
-        return Result<int>.Success(rowsAffected);
     }
 }

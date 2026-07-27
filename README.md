@@ -8,7 +8,6 @@
 
 ## Application Layer
 - Third Party Libraries
-  - Dapper
   - MediatR
   - Microsoft.EntityFrameworkCore
   - Microsoft.Extensions.Hosting
@@ -37,6 +36,7 @@
   
 ## Persistence Layer
 - Third Party Libraries
+  - Dapper
   - Microsoft.Data.SqlClient
   - Microsoft.EntityFrameworkCore.SqlServer
   - Npgsql

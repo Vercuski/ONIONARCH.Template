@@ -1,13 +1,12 @@
-﻿using Dapper;
-using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.Logging;
 using ONIONARCH.Application.Abstractions;
-using ONIONARCH.Application.Abstractions.ConnectionFactory;
+using ONIONARCH.Application.Abstractions.Repositories;
 
 namespace ONIONARCH.Application.Actions.SampleEntityDapper.Commands;
 
 public sealed record DeleteSampleEntityDapperRequest(int SampleId)
     : IMediatRCommandRequest<Result<int>>;
-internal sealed class DeleteSampleEntityDapperHandler(IDbWriteConnectionFactory connectionFactory,
+internal sealed class DeleteSampleEntityDapperHandler(ISampleEntityDapperCommandRepository repository,
     ILogger<DeleteSampleEntityDapperHandler> logger)
     : IMediatRCommandHandler<DeleteSampleEntityDapperRequest, Result<int>>
 {
@@ -15,18 +14,15 @@ internal sealed class DeleteSampleEntityDapperHandler(IDbWriteConnectionFactory 
         DeleteSampleEntityDapperRequest request,
         CancellationToken cancellationToken)
     {
-        int rowsAffected = 0;
         try
         {
-            var sql = "DELETE FROM SampleTable WHERE SampleId=@SampleId";
-            using var connection = connectionFactory.CreateConnection();
-            rowsAffected = await connection.ExecuteAsync(sql, new { request.SampleId });
+            var rowsAffected = await repository.DeleteAsync(request.SampleId, cancellationToken);
+            return Result<int>.Success(rowsAffected);
         }
         catch (Exception ex)
         {
             logger.LogError(ex, "Error deleting SampleEntityDapper.");
             return Result<int>.Failure("Error deleting SampleEntityDapper.", ResultErrorType.Validation);
         }
-        return Result<int>.Success(rowsAffected);
     }
 }

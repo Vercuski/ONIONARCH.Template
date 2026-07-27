@@ -63,4 +63,29 @@ public class ApplicationArchitectureTests
         }
         Assert.That(result.IsSuccessful, Is.True);
     }
+
+    [Test]
+    public void ApplicationAssembly_ShouldNot_ReferenceDapper()
+    {
+        // Application must depend only on abstractions (ICommandDbContext, IQueryDbContext,
+        // ISampleEntityDapperQueryRepository, ISampleEntityDapperCommandRepository, etc.) that
+        // are implemented in Persistence. This is a whole-assembly check, independent of the
+        // constructor-shape rules above, so it also catches Dapper usage introduced outside a
+        // MediatR handler (e.g. a helper class, static method, or future feature slice).
+        var result = Types
+            .InAssembly(ApplicationAssembly)
+            .ShouldNot()
+            .HaveDependencyOn("Dapper")
+            .GetResult();
+
+        if (result.FailingTypeNames != null && result.FailingTypeNames.Any())
+        {
+            Console.WriteLine("Types Referencing Dapper:");
+            foreach (var failingType in result.FailingTypeNames)
+            {
+                Console.WriteLine($"    {failingType}");
+            }
+        }
+        Assert.That(result.IsSuccessful, Is.True);
+    }
 }

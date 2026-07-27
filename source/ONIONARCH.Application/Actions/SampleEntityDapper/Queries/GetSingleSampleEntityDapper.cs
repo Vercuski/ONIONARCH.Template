@@ -1,7 +1,6 @@
-﻿using Dapper;
-using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.Logging;
 using ONIONARCH.Application.Abstractions;
-using ONIONARCH.Application.Abstractions.ConnectionFactory;
+using ONIONARCH.Application.Abstractions.Repositories;
 using ONIONARCH.Domain.Entities;
 
 namespace ONIONARCH.Application.Actions.SampleEntityDapper.Queries;
@@ -9,7 +8,7 @@ namespace ONIONARCH.Application.Actions.SampleEntityDapper.Queries;
 public sealed record GetSingleSampleEntityDapperRequest(int Id)
     : IMediatRQueryRequest<Result<SampleEntityDefinition>>;
 internal sealed class GetSingleSampleEntityDapperHandler(
-    IDbReadOnlyConnectionFactory connectionFactory,
+    ISampleEntityDapperQueryRepository repository,
     ILogger<GetSingleSampleEntityDapperHandler> logger
     ) : IMediatRQueryHandler<GetSingleSampleEntityDapperRequest, Result<SampleEntityDefinition>>
 {
@@ -17,11 +16,9 @@ internal sealed class GetSingleSampleEntityDapperHandler(
         GetSingleSampleEntityDapperRequest request,
         CancellationToken cancellationToken)
     {
-        var sql = "SELECT SampleId, SampleString, SampleBoolean, SampleInt, SampleDecimal FROM SampleTable WHERE SampleId = @Id";
-        using var connection = connectionFactory.CreateConnection();
         try
         {
-            var response = await connection.QuerySingleOrDefaultAsync<SampleEntityDefinition>(sql, new { request.Id });
+            var response = await repository.GetByIdAsync(request.Id, cancellationToken);
             return response is null ? Result<SampleEntityDefinition>.Failure("SampleEntityDapper not found.", ResultErrorType.NotFound) : Result<SampleEntityDefinition>.Success(response);
         }
         catch (Exception ex)

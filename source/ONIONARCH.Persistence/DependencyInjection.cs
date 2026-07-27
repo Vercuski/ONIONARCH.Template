@@ -6,11 +6,13 @@ using Microsoft.Extensions.Options;
 using ONIONARCH.Application.Abstractions;
 using ONIONARCH.Application.Abstractions.ConnectionFactory;
 using ONIONARCH.Application.Abstractions.Context;
+using ONIONARCH.Application.Abstractions.Repositories;
 using ONIONARCH.Domain.Abstractions;
 using ONIONARCH.Persistence.ConnectionFactory;
 using ONIONARCH.Persistence.Contexts;
 using ONIONARCH.Persistence.Options;
 using ONIONARCH.Persistence.Providers;
+using ONIONARCH.Persistence.Repositories;
 
 namespace ONIONARCH.Persistence;
 
@@ -73,6 +75,9 @@ public static class DependencyInjection
             new DbWriteConnectionFactory(
                 sp.GetRequiredService<IOptions<ConnectionStringOptions>>(),
                 commandDatabaseProvider));
+
+        builder.Services.AddScoped<ISampleEntityDapperQueryRepository, SampleEntityDapperQueryRepository>();
+        builder.Services.AddScoped<ISampleEntityDapperCommandRepository, SampleEntityDapperCommandRepository>();
 
         return builder;
     }

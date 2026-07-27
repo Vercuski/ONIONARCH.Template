@@ -7,6 +7,7 @@ using ONIONARCH.Application.Actions.SampleEntityDapper.Queries;
 using ONIONARCH.Application.Actions.SampleEntityEFCore.Commands;
 using ONIONARCH.Application.Actions.SampleEntityEFCore.Queries;
 using ONIONARCH.Application.Contracts.Dtos;
+using ONIONARCH.Presentation.API.Extensions;
 
 namespace ONIONARCH.Presentation.API.Controllers;
 
@@ -20,15 +21,7 @@ public class SampleController(IMediator mediator) : ControllerBase
     {
         GetSingleSampleEntityEFCoreRequest request = new(sampleId);
         var result = await mediator.Send(request, CancellationToken.None);
-        return result.IsSuccess && result.Value is not null
-            ? Ok(SampleDtoRecord.Create(result.Value))
-            : result.ErrorType switch
-            {
-                ResultErrorType.NotFound => NotFound(result.Error),
-                ResultErrorType.Validation => BadRequest(result.Error),
-                ResultErrorType.Conflict => Conflict(result.Error),
-                _ => Problem(result.Error)
-            };
+        return result.ToActionResult(this, SampleDtoRecord.Create);
     }
 
     // GET api/<SampleController>/5
@@ -37,15 +30,7 @@ public class SampleController(IMediator mediator) : ControllerBase
     {
         GetSingleSampleEntityDapperRequest request = new(sampleId);
         var result = await mediator.Send(request, CancellationToken.None);
-        return result.IsSuccess && result.Value is not null
-            ? Ok(SampleDtoRecord.Create(result.Value))
-            : result.ErrorType switch
-            {
-                ResultErrorType.NotFound => NotFound(result.Error),
-                ResultErrorType.Validation => BadRequest(result.Error),
-                ResultErrorType.Conflict => Conflict(result.Error),
-                _ => Problem(result.Error)
-            };
+        return result.ToActionResult(this, SampleDtoRecord.Create);
     }
 
     // POST api/<SampleController>
@@ -55,15 +40,7 @@ public class SampleController(IMediator mediator) : ControllerBase
         var entity = dto.MapToDomain();
         CreateSampleEntityEFCoreRequest request = new(entity);
         var result = await mediator.Send(request, CancellationToken.None);
-        return result.IsSuccess
-            ? Ok(result.Value)
-            : result.ErrorType switch
-            {
-                ResultErrorType.NotFound => NotFound(result.Error),
-                ResultErrorType.Validation => BadRequest(result.Error),
-                ResultErrorType.Conflict => Conflict(result.Error),
-                _ => Problem(result.Error)
-            };
+        return result.ToActionResult(this);
     }
 
     // POST api/<SampleController>
@@ -73,15 +50,7 @@ public class SampleController(IMediator mediator) : ControllerBase
         var entity = dto.MapToDomain();
         CreateSampleEntityDapperRequest request = new(entity);
         var result = await mediator.Send(request, CancellationToken.None);
-        return result.IsSuccess
-            ? Ok(result.Value)
-            : result.ErrorType switch
-            {
-                ResultErrorType.NotFound => NotFound(result.Error),
-                ResultErrorType.Validation => BadRequest(result.Error),
-                ResultErrorType.Conflict => Conflict(result.Error),
-                _ => Problem(result.Error)
-            };
+        return result.ToActionResult(this);
     }
 
     // PUT api/<SampleController>
@@ -91,15 +60,7 @@ public class SampleController(IMediator mediator) : ControllerBase
         var entity = dto.MapToDomain();
         UpdateSampleEntityEFCoreRequest request = new(entity);
         var result = await mediator.Send(request, CancellationToken.None);
-        return result.IsSuccess
-            ? Ok(result.Value)
-            : result.ErrorType switch
-            {
-                ResultErrorType.NotFound => NotFound(result.Error),
-                ResultErrorType.Validation => BadRequest(result.Error),
-                ResultErrorType.Conflict => Conflict(result.Error),
-                _ => Problem(result.Error)
-            };
+        return result.ToActionResult(this);
     }
 
     // PUT api/<SampleController>
@@ -109,15 +70,7 @@ public class SampleController(IMediator mediator) : ControllerBase
         var entity = dto.MapToDomain();
         UpdateSampleEntityDapperRequest request = new(entity);
         var result = await mediator.Send(request, CancellationToken.None);
-        return result.IsSuccess
-            ? Ok(result.Value)
-            : result.ErrorType switch
-            {
-                ResultErrorType.NotFound => NotFound(result.Error),
-                ResultErrorType.Validation => BadRequest(result.Error),
-                ResultErrorType.Conflict => Conflict(result.Error),
-                _ => Problem(result.Error)
-            };
+        return result.ToActionResult(this);
     }
 
     // DELETE api/<SampleController>
@@ -140,15 +93,7 @@ public class SampleController(IMediator mediator) : ControllerBase
         {
             DeleteSampleEntityEFCoreRequest deleteRequest = new(entity.Value);
             var result = await mediator.Send(deleteRequest, CancellationToken.None);
-            return result.IsSuccess
-                ? Ok(result.Value)
-                : result.ErrorType switch
-                {
-                    ResultErrorType.NotFound => NotFound(result.Error),
-                    ResultErrorType.Validation => BadRequest(result.Error),
-                    ResultErrorType.Conflict => Conflict(result.Error),
-                    _ => Problem(result.Error)
-                };
+            return result.ToActionResult(this);
         }
     }
 
@@ -158,14 +103,6 @@ public class SampleController(IMediator mediator) : ControllerBase
     {
         DeleteSampleEntityDapperRequest request = new(sampleId);
         var result = await mediator.Send(request, CancellationToken.None);
-        return result.IsSuccess
-            ? Ok(result.Value)
-            : result.ErrorType switch
-            {
-                ResultErrorType.NotFound => NotFound(result.Error),
-                ResultErrorType.Validation => BadRequest(result.Error),
-                ResultErrorType.Conflict => Conflict(result.Error),
-                _ => Problem(result.Error)
-            };
+        return result.ToActionResult(this);
     }
 }

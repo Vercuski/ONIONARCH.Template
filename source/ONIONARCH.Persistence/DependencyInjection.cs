@@ -53,6 +53,9 @@ public static class DependencyInjection
             _ => throw new NotSupportedException($"Command Database platform '{databasePlatformOptions.CommandDbPlatform}' is not supported.")
         };
 
+        builder.AddDapperPersistenceRegistrations(queryDatabaseProvider, commandDatabaseProvider);
+        builder.AddEFCorePersistenceRegistrations(queryDatabaseProvider, commandDatabaseProvider);
+
         return builder;
     }
 

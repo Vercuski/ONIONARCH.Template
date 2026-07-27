@@ -85,7 +85,7 @@ public static class DependencyInjection
         builder.Services.AddDbContext<CommandDbContext>((sp, options) =>
         {
             var connectionStringOptions = sp.GetRequiredService<IOptions<ConnectionStringOptions>>().Value;
-            queryDatabaseProvider.ConfigureEfCore(options, connectionStringOptions.CommandDbConnection);
+            commandDatabaseProvider.ConfigureEfCore(options, connectionStringOptions.CommandDbConnection);
             if (!builder.Environment.IsProduction())
             {
                 options.EnableDetailedErrors().EnableSensitiveDataLogging();
@@ -95,7 +95,7 @@ public static class DependencyInjection
         builder.Services.AddDbContext<QueryDbContext>((sp, options) =>
         {
             var connectionStringOptions = sp.GetRequiredService<IOptions<ConnectionStringOptions>>().Value;
-            commandDatabaseProvider.ConfigureEfCore(options, connectionStringOptions.QueryDbConnection);
+            queryDatabaseProvider.ConfigureEfCore(options, connectionStringOptions.QueryDbConnection);
             if (!builder.Environment.IsProduction())
             {
                 options.EnableDetailedErrors().EnableSensitiveDataLogging();

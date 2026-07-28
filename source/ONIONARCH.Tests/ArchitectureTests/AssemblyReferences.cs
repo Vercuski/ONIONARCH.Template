@@ -2,6 +2,7 @@
 using ONIONARCH.Domain.Abstractions;
 using ONIONARCH.Infrastructure.HealthChecks;
 using ONIONARCH.Persistence.Contexts;
+using ONIONARCH.Presentation.API.Controllers;
 using System.Reflection;
 
 namespace ONIONARCH.Tests.ArchitectureTests;
@@ -12,5 +13,6 @@ internal static class AssemblyReferences
     internal static readonly Assembly ApplicationAssembly = typeof(IQueryDbContext).Assembly;
     internal static readonly Assembly InfrastrcutureAssembly = typeof(SimpleHealthCheck).Assembly;
     internal static readonly Assembly PersistenceAssembly = typeof(QueryDbContext).Assembly;
+    internal static readonly Assembly PresentationAssembly = typeof(SampleController).Assembly;
     internal static readonly Assembly TestsAssembly = typeof(DomainArchitectureTests).Assembly;
 }

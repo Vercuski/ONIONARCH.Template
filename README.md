@@ -11,13 +11,10 @@
   - MediatR
   - Microsoft.EntityFrameworkCore
   - Microsoft.Extensions.Hosting
-  - Microsoft.IdentityModel.JsonWebTokens
-  - System.IdentityModel.Tokens.Jwt
 
 ## Presentation Layer
 ### Presentation.API
 - Third Party Libraries
-  - Microsoft.AspNetCore.Authentication.JwtBearer
   - Microsoft.AspNetCore.OpenApi
   - Microsoft.OpenApi
   - Microsoft.VisualStudio.Azure.Containers.Tools.Targets
@@ -39,13 +36,16 @@
   - Dapper
   - Microsoft.Data.SqlClient
   - Microsoft.EntityFrameworkCore.SqlServer
+  - MySql.EntityFrameworkCore
+  - MySqlConnector
   - Npgsql
   - Npgsql.EntityFrameworkCore.PostgreSQL
 
-  Both SQL Server and PostgreSQL packages are referenced because the database
-  backend is swappable via `IDatabaseProvider` (`SqlServerDatabaseProvider` /
-  `PostgreSqlDatabaseProvider`). The active provider is selected once, in each
-  Presentation project's `Program.cs`.
+  SQL Server, PostgreSQL, and MySQL packages are all referenced because the
+  database backend is swappable via `IDatabaseProvider` (`SqlServerDatabaseProvider` /
+  `PostgreSqlDatabaseProvider` / `MySQLDatabaseProvider`). The active provider is
+  selected per query/command side via `DatabasePlatformOptions` in each
+  Presentation project's `appsettings.json`, resolved in `Persistence/DependencyInjection.cs`.
 
 ## Infrastructure Layer
 - Third Party Libraries

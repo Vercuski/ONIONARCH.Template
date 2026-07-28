@@ -25,7 +25,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="PresentationTests\" />
     <Folder Include="InfrastructureTests\" />
     <Folder Include="DomainTests\" />
     <Folder Include="ApplicationTests\" />
@@ -36,6 +35,7 @@
     <ProjectReference Include="..\ONIONARCH.Domain\ONIONARCH.Domain.csproj" />
     <ProjectReference Include="..\ONIONARCH.Infrastructure\ONIONARCH.Infrastructure.csproj" />
     <ProjectReference Include="..\ONIONARCH.Persistence\ONIONARCH.Persistence.csproj" />
+    <ProjectReference Include="..\ONIONARCH.Presentation.API\ONIONARCH.Presentation.API.csproj" />
     <ProjectReference Include="..\ONIONARCH.Presentation.Web\ONIONARCH.Presentation.Web.csproj" />
   </ItemGroup>
 

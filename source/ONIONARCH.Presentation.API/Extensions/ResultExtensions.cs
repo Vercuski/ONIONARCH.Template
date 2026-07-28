@@ -32,7 +32,7 @@ public static class ResultExtensions
             : result.ToErrorResult(controller);
     }
 
-    private static IActionResult ToErrorResult<T>(this Result<T> result, ControllerBase controller)
+    private static ObjectResult ToErrorResult<T>(this Result<T> result, ControllerBase controller)
     {
         return result.ErrorType switch
         {

@@ -1,6 +1,7 @@
 ﻿
 using Microsoft.EntityFrameworkCore;
 using ONIONARCH.Application.Abstractions.Context;
+using ONIONARCH.Domain.Abstractions;
 using System.Reflection;
 
 namespace ONIONARCH.Persistence.Contexts;
@@ -12,6 +13,14 @@ public sealed class QueryDbContext(DbContextOptions<QueryDbContext> options)
     {
         return base.Set<TEntity>();
     }
+
+    public Task<List<TEntity>> ToListAsync<TEntity>(IQueryable<TEntity> query, CancellationToken cancellationToken = default)
+    where TEntity : Entity
+    => query.ToListAsync(cancellationToken);
+
+    public Task<TEntity?> SingleOrDefaultAsync<TEntity>(IQueryable<TEntity> query, CancellationToken cancellationToken = default)
+        where TEntity : Entity
+        => query.SingleOrDefaultAsync(cancellationToken);
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

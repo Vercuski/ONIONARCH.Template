@@ -1,5 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.Logging;
 using ONIONARCH.Application.Abstractions;
 using ONIONARCH.Application.Abstractions.Context;
 using ONIONARCH.Domain.Entities;
@@ -19,7 +18,9 @@ internal sealed class GetSingleSampleEntityEFCoreHandler(
     {
         try
         {
-            SampleEntityDefinition? response = await queryDbContext.Set<SampleEntityDefinition>().Where(e => e.SampleId == request.Id).SingleOrDefaultAsync(cancellationToken);
+            IQueryable<SampleEntityDefinition> query = queryDbContext.Set<SampleEntityDefinition>()
+                .Where(e => e.SampleId == request.Id);
+            SampleEntityDefinition? response = await queryDbContext.SingleOrDefaultAsync(query, cancellationToken);
             return response is null ? Result<SampleEntityDefinition>.Failure("SampleEntityEFCore not found.", ResultErrorType.NotFound) : Result<SampleEntityDefinition>.Success(response);
         }
         catch (Exception ex)

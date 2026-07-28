@@ -4,37 +4,19 @@ using Microsoft.EntityFrameworkCore.Storage;
 using ONIONARCH.Application.Abstractions;
 using ONIONARCH.Application.Abstractions.Context;
 using ONIONARCH.Domain.Abstractions;
+using ONIONARCH.Persistence.Transactions;
 using System.Data;
 using System.Reflection;
 
 namespace ONIONARCH.Persistence.Contexts;
 
 public sealed class CommandDbContext(DbContextOptions<CommandDbContext> options)
-    : BaseDbContext<CommandDbContext>(options), ICommandDbContext, IUnitOfWork
+    : BaseDbContext<CommandDbContext>(options), ICommandDbContext
 {
-    public EntityEntry<TEntity> Insert<TEntity>(TEntity entity)
-        where TEntity : Entity
-    {
-        return Set<TEntity>().Add(entity);
-    }
-
-    public void InsertRange<TEntity>(IReadOnlyCollection<TEntity> entities)
-        where TEntity : Entity
-    {
-        Set<TEntity>().AddRange(entities);
-    }
-
-    public EntityEntry<TEntity> Alter<TEntity>(TEntity entity)
-        where TEntity : Entity
-    {
-        return Set<TEntity>().Update(entity);
-    }
-
-    public EntityEntry<TEntity> Delete<TEntity>(TEntity entity)
-        where TEntity : Entity
-    {
-        return Set<TEntity>().Remove(entity);
-    }
+    public void Insert<TEntity>(TEntity entity) where TEntity : Entity => Set<TEntity>().Add(entity);
+    public void InsertRange<TEntity>(IReadOnlyCollection<TEntity> entities) where TEntity : Entity => Set<TEntity>().AddRange(entities);
+    public void Alter<TEntity>(TEntity entity) where TEntity : Entity => Set<TEntity>().Update(entity);
+    public void Delete<TEntity>(TEntity entity) where TEntity : Entity => Set<TEntity>().Remove(entity);
 
     public Task<int> ExecuteSqlAsync(string sql, IEnumerable<IDataParameter> parameters, CancellationToken cancellationToken = default)
     {
@@ -46,9 +28,10 @@ public sealed class CommandDbContext(DbContextOptions<CommandDbContext> options)
         return await base.SaveChangesAsync(cancellationToken);
     }
 
-    public Task<IDbContextTransaction> BeginTransactionAsync(CancellationToken cancellationToken = default)
+    public async Task<IUnitOfWorkTransaction> BeginTransactionAsync(CancellationToken cancellationToken = default)
     {
-        return Database.BeginTransactionAsync(cancellationToken);
+        var transaction = await Database.BeginTransactionAsync(cancellationToken);
+        return new EfCoreUnitOfWorkTransaction(transaction);
     }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)

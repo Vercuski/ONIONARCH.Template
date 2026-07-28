@@ -1,5 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.Logging;
 using ONIONARCH.Application.Abstractions;
 using ONIONARCH.Application.Abstractions.Context;
 using ONIONARCH.Application.Actions.SampleEntityEFCore.Commands;
@@ -20,7 +19,8 @@ internal sealed class GetMultipleSampleEntityEFCoresHandler(IQueryDbContext quer
     {
         try
         {
-            List<SampleEntityDefinition>? response = await queryDbContext.Set<SampleEntityDefinition>().ToListAsync(cancellationToken);
+            List<SampleEntityDefinition> response = await queryDbContext.ToListAsync(
+                queryDbContext.Set<SampleEntityDefinition>(), cancellationToken);
             return Result<List<SampleEntityDefinition>>.Success(response);
         }
         catch (Exception ex)

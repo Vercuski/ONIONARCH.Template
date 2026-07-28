@@ -92,23 +92,6 @@ public class ApplicationArchitectureTests
     [Test]
     public void ApplicationAssembly_ShouldNot_ReferenceEntityFrameworkCore()
     {
-        // Mirrors ApplicationAssembly_ShouldNot_ReferenceDapper: EF Core is a Persistence-layer
-        // implementation detail. Application should only see its own abstractions
-        // (ICommandDbContext, IQueryDbContext, IUnitOfWork) and never the concrete EF Core types
-        // those abstractions are backed by (EntityEntry<T>, IDbContextTransaction, DbContext
-        // LINQ-async extensions, etc.).
-        //
-        // NOTE: as of this review this test is EXPECTED TO FAIL. Application currently has four
-        // real references to Microsoft.EntityFrameworkCore:
-        //   - Abstractions/Context/ICommandDbContext.cs   (EntityEntry<TEntity> return type)
-        //   - Abstractions/IUnitOfWork.cs                 (IDbContextTransaction return type)
-        //   - Actions/SampleEntityEFCore/Queries/GetMultipleSampleEntityEFCore.cs (ToListAsync)
-        //   - Actions/SampleEntityEFCore/Queries/GetSingleSampleEntityEFCore.cs   (SingleOrDefaultAsync)
-        // The first two are the tracked "ICommandDbContext leaks EF Core" architectural debt.
-        // The latter two are EF Core's async LINQ extension methods, which have no
-        // provider-agnostic equivalent without Application taking on its own async materialization
-        // helper. This test is left enabled (rather than weakened) so the violation stays visible
-        // until one of those is addressed.
         var result = Types
             .InAssembly(ApplicationAssembly)
             .ShouldNot()

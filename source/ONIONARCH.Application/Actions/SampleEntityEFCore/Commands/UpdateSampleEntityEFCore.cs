@@ -7,25 +7,15 @@ namespace ONIONARCH.Application.Actions.SampleEntityEFCore.Commands;
 
 public sealed record UpdateSampleEntityEFCoreRequest(SampleEntityDefinition SampleEntity)
     : IMediatRCommandRequest<Result<int>>;
-internal sealed class UpdateSampleEntityEFCoreHandler(ICommandDbContext commandDbContext,
-    ILogger<UpdateSampleEntityEFCoreHandler> logger)
+internal sealed class UpdateSampleEntityEFCoreHandler(ICommandDbContext commandDbContext)
     : IMediatRCommandHandler<UpdateSampleEntityEFCoreRequest, Result<int>>
 {
     public Task<Result<int>> Handle(
         UpdateSampleEntityEFCoreRequest request,
         CancellationToken cancellationToken)
     {
-        int rowsAffected;
-        try
-        {
-            commandDbContext.Alter(request.SampleEntity);
-            rowsAffected = commandDbContext.SaveChanges();
-        }
-        catch (Exception ex)
-        {
-            logger.LogError(ex, "Error updating SampleEntityEFCore.");
-            return Task.FromResult(Result<int>.Failure("Error updating SampleEntityEFCore.", ResultErrorType.Validation));
-        }
+        commandDbContext.Alter(request.SampleEntity);
+        int rowsAffected = commandDbContext.SaveChanges();
         return Task.FromResult(Result<int>.Success(rowsAffected));
     }
 }

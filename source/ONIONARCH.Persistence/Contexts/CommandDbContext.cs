@@ -11,7 +11,7 @@ using System.Reflection;
 namespace ONIONARCH.Persistence.Contexts;
 
 public sealed class CommandDbContext(DbContextOptions<CommandDbContext> options)
-    : BaseDbContext<CommandDbContext>(options), ICommandDbContext
+    : BaseDbContext<CommandDbContext>(options), ICommandDbContext, IUnitOfWork
 {
     public void Insert<TEntity>(TEntity entity) where TEntity : Entity => Set<TEntity>().Add(entity);
     public void InsertRange<TEntity>(IReadOnlyCollection<TEntity> entities) where TEntity : Entity => Set<TEntity>().AddRange(entities);

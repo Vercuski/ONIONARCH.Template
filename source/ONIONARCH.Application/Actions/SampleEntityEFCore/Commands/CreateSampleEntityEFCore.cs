@@ -11,7 +11,7 @@ internal sealed class CreateSampleEntityEFCoreHandler(ICommandDbContext commandD
     ILogger<CreateSampleEntityEFCoreHandler> logger)
     : IMediatRCommandHandler<CreateSampleEntityEFCoreRequest, Result<int>>
 {
-    public Task<Result<int>> Handle(
+    public async Task<Result<int>> Handle(
         CreateSampleEntityEFCoreRequest request,
         CancellationToken cancellationToken)
     {
@@ -24,8 +24,8 @@ internal sealed class CreateSampleEntityEFCoreHandler(ICommandDbContext commandD
         catch (Exception ex)
         {
             logger.LogError(ex, "Error creating SampleEntityEFCore.");
-            return Task.FromResult(Result<int>.Failure("Error creating SampleEntityEFCore.", ResultErrorType.Validation));
+            return Result<int>.Failure("Error creating SampleEntityEFCore.", ResultErrorType.Validation);
         }
-        return Task.FromResult(Result<int>.Success(rowsAffected));
+        return Result<int>.Success(rowsAffected);
     }
 }

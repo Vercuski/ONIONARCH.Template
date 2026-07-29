@@ -1,5 +1,4 @@
-﻿// ONIONARCH.Persistence/DependencyInjection.cs
-using Microsoft.Extensions.Configuration;
+﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
@@ -35,32 +34,28 @@ public static class DependencyInjection
     private static IHostApplicationBuilder AddDatabaseProviderRegistration(
         this IHostApplicationBuilder builder)
     {
-        var databasePlatformOptions = builder.Services.BuildServiceProvider().GetRequiredService<IOptions<DatabasePlatformOptions>>().Value;
-        
-        IDatabaseProvider queryDatabaseProvider = databasePlatformOptions.QueryDbPlatform.ToUpper()
-        switch
-        {
-            "MSSQL" => new SqlServerDatabaseProvider(),
-            "POSTGRESQL" => new PostgreSqlDatabaseProvider(),
-            "MYSQL" => new MySQLDatabaseProvider(),
-            _ => throw new NotSupportedException($"Query Database platform '{databasePlatformOptions.QueryDbPlatform}' is not supported.")
-        };
+        var databasePlatformOptions = GetSection<DatabasePlatformOptions>(builder.Configuration)
+            .Get<DatabasePlatformOptions>()
+            ?? throw new InvalidOperationException("Missing or invalid 'DatabasePlatform' configuration section.");
 
-        IDatabaseProvider commandDatabaseProvider = databasePlatformOptions.CommandDbPlatform.ToUpper()
-        switch
-        {
-            "MSSQL" => new SqlServerDatabaseProvider(),
-            "POSTGRESQL" => new PostgreSqlDatabaseProvider(),
-            "MYSQL" => new MySQLDatabaseProvider(),
-            _ => throw new NotSupportedException($"Command Database platform '{databasePlatformOptions.CommandDbPlatform}' is not supported.")
-        };
+        var queryDatabaseProvider = CreateDatabaseProvider(databasePlatformOptions.QueryDbPlatform, "Query");
+        var commandDatabaseProvider = CreateDatabaseProvider(databasePlatformOptions.CommandDbPlatform, "Command");
 
         builder.AddDapperPersistenceRegistrations(queryDatabaseProvider, commandDatabaseProvider);
         builder.AddEFCorePersistenceRegistrations(queryDatabaseProvider, commandDatabaseProvider);
 
         return builder;
     }
-
+    
+    private static IDatabaseProvider CreateDatabaseProvider(string platform, string side) =>
+    platform.ToUpperInvariant() switch
+    {
+        "MSSQL" => new SqlServerDatabaseProvider(),
+        "POSTGRESQL" => new PostgreSqlDatabaseProvider(),
+        "MYSQL" => new MySQLDatabaseProvider(),
+        _ => throw new NotSupportedException($"{side} Database platform '{platform}' is not supported.")
+    };
+    
     private static IHostApplicationBuilder AddDapperPersistenceRegistrations(
         this IHostApplicationBuilder builder,
         IDatabaseProvider queryDatabaseProvider,
@@ -109,6 +104,7 @@ public static class DependencyInjection
 
         builder.Services.AddScoped<ICommandDbContext>(sp => sp.GetRequiredService<CommandDbContext>());
         builder.Services.AddScoped<IQueryDbContext>(sp => sp.GetRequiredService<QueryDbContext>());
+        builder.Services.AddScoped<IUnitOfWork>(sp => sp.GetRequiredService<CommandDbContext>());
 
         return builder;
     }

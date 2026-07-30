@@ -1,5 +1,4 @@
-﻿using Microsoft.Extensions.Logging;
-using ONIONARCH.Application.Abstractions;
+﻿using ONIONARCH.Application.Abstractions;
 using ONIONARCH.Application.Abstractions.Repositories;
 using ONIONARCH.Domain.Entities;
 

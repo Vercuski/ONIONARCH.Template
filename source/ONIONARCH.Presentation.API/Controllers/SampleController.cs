@@ -1,5 +1,4 @@
 ﻿using MediatR;
-using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using ONIONARCH.Application.Abstractions;
 using ONIONARCH.Application.Actions.SampleEntityDapper.Commands;

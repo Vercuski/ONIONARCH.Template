@@ -16,11 +16,15 @@ public sealed class QueryDbContext(DbContextOptions<QueryDbContext> options)
 
     public Task<List<TEntity>> ToListAsync<TEntity>(IQueryable<TEntity> query, CancellationToken cancellationToken = default)
     where TEntity : Entity
-    => query.ToListAsync(cancellationToken);
+    {
+        return query.ToListAsync(cancellationToken);
+    }
 
     public Task<TEntity?> SingleOrDefaultAsync<TEntity>(IQueryable<TEntity> query, CancellationToken cancellationToken = default)
         where TEntity : Entity
-        => query.SingleOrDefaultAsync(cancellationToken);
+    {
+        return query.SingleOrDefaultAsync(cancellationToken);
+    }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

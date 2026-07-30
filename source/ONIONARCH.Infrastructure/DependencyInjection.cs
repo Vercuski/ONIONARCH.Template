@@ -4,6 +4,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using ONIONARCH.Infrastructure.Correlation;
 using ONIONARCH.Infrastructure.HealthChecks;
 using System.Reflection;
 
@@ -20,10 +21,18 @@ public static class DependencyInjection
         return app;
     }
 
+    public static WebApplication UseCorrelationIdMiddleware(this WebApplication app)
+    {
+        app.UseMiddleware<CorrelationIdMiddleware>();
+        return app;
+    }
+
     public static IHostApplicationBuilder AddInfrastructureRegistration(this IHostApplicationBuilder builder)
     {
         builder.AddHealthChecksRegistration();
         builder.AddLoggingRegistration();
+        builder.Services.AddSingleton<CorrelationIdAccessor>();
+        builder.Services.AddProblemDetails();
         return builder;
     }
 
@@ -50,7 +59,7 @@ public static class DependencyInjection
             config.ClearProviders();
             if (!builder.Environment.IsProduction())
             {
-                config.AddConsole();
+                config.AddSimpleConsole(options => options.IncludeScopes = true);
             }
         });
         return builder;

@@ -1,6 +1,4 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.ChangeTracking;
-using Microsoft.EntityFrameworkCore.Storage;
 using ONIONARCH.Application.Abstractions;
 using ONIONARCH.Application.Abstractions.Context;
 using ONIONARCH.Domain.Abstractions;
@@ -13,10 +11,25 @@ namespace ONIONARCH.Persistence.Contexts;
 public sealed class CommandDbContext(DbContextOptions<CommandDbContext> options)
     : BaseDbContext<CommandDbContext>(options), ICommandDbContext, IUnitOfWork
 {
-    public void Insert<TEntity>(TEntity entity) where TEntity : Entity => Set<TEntity>().Add(entity);
-    public void InsertRange<TEntity>(IReadOnlyCollection<TEntity> entities) where TEntity : Entity => Set<TEntity>().AddRange(entities);
-    public void Alter<TEntity>(TEntity entity) where TEntity : Entity => Set<TEntity>().Update(entity);
-    public void Delete<TEntity>(TEntity entity) where TEntity : Entity => Set<TEntity>().Remove(entity);
+    public void Insert<TEntity>(TEntity entity) where TEntity : Entity
+    {
+        Set<TEntity>().Add(entity);
+    }
+
+    public void InsertRange<TEntity>(IReadOnlyCollection<TEntity> entities) where TEntity : Entity
+    {
+        Set<TEntity>().AddRange(entities);
+    }
+
+    public void Alter<TEntity>(TEntity entity) where TEntity : Entity
+    {
+        Set<TEntity>().Update(entity);
+    }
+
+    public void Delete<TEntity>(TEntity entity) where TEntity : Entity
+    {
+        Set<TEntity>().Remove(entity);
+    }
 
     public Task<int> ExecuteSqlAsync(string sql, IEnumerable<IDataParameter> parameters, CancellationToken cancellationToken = default)
     {

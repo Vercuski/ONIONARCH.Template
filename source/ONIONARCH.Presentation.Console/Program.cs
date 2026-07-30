@@ -3,7 +3,6 @@ using Microsoft.Extensions.Hosting;
 using ONIONARCH.Application;
 using ONIONARCH.Infrastructure;
 using ONIONARCH.Persistence;
-using ONIONARCH.Persistence.Providers;
 using ONIONARCH.Presentation.Console;
 using Spectre.Console;
 

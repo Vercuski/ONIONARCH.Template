@@ -1,7 +1,6 @@
-﻿using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using ONIONARCH.Domain.Abstractions;
+using ONIONARCH.Application.Behaviors;
 
 namespace ONIONARCH.Application;
 
@@ -18,6 +17,7 @@ public static class DependencyInjection
         builder.Services.AddMediatR(configuration =>
         {
             configuration.RegisterServicesFromAssemblies(AppDomain.CurrentDomain.GetAssemblies());
+            configuration.AddOpenBehavior(typeof(LoggingBehavior<,>));
         });
         return builder;
     }

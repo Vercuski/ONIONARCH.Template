@@ -3,7 +3,6 @@ using ONIONARCH.Application;
 using ONIONARCH.Infrastructure;
 using ONIONARCH.Infrastructure.Exceptions;
 using ONIONARCH.Persistence;
-using ONIONARCH.Persistence.Providers;
 using ONIONARCH.Presentation.Web.Components;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -20,6 +19,7 @@ builder.Services.AddMudServices();
 
 var app = builder.Build();
 
+app.UseCorrelationIdMiddleware();
 app.UseExceptionHandler();
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())

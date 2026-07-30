@@ -23,11 +23,11 @@ public static class DependencyInjection
         builder.AddDatabaseProviderRegistration();
         return builder;
     }
-    
+
     private static IHostApplicationBuilder AddOptionsRegistration(this IHostApplicationBuilder builder)
     {
         builder.Services.Configure<ConnectionStringOptions>(GetSection<ConnectionStringOptions>(builder.Configuration));
-        builder.Services.Configure<DatabasePlatformOptions>(GetSection<DatabasePlatformOptions >(builder.Configuration));
+        builder.Services.Configure<DatabasePlatformOptions>(GetSection<DatabasePlatformOptions>(builder.Configuration));
         return builder;
     }
 
@@ -46,16 +46,18 @@ public static class DependencyInjection
 
         return builder;
     }
-    
-    private static IDatabaseProvider CreateDatabaseProvider(string platform, string side) =>
-    platform.ToUpperInvariant() switch
+
+    private static IDatabaseProvider CreateDatabaseProvider(string platform, string side)
     {
-        "MSSQL" => new SqlServerDatabaseProvider(),
-        "POSTGRESQL" => new PostgreSqlDatabaseProvider(),
-        "MYSQL" => new MySQLDatabaseProvider(),
-        _ => throw new NotSupportedException($"{side} Database platform '{platform}' is not supported.")
-    };
-    
+        return platform.ToUpperInvariant() switch
+        {
+            "MSSQL" => new SqlServerDatabaseProvider(),
+            "POSTGRESQL" => new PostgreSqlDatabaseProvider(),
+            "MYSQL" => new MySQLDatabaseProvider(),
+            _ => throw new NotSupportedException($"{side} Database platform '{platform}' is not supported.")
+        };
+    }
+
     private static IHostApplicationBuilder AddDapperPersistenceRegistrations(
         this IHostApplicationBuilder builder,
         IDatabaseProvider queryDatabaseProvider,

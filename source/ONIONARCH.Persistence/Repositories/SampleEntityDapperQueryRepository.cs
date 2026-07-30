@@ -14,7 +14,7 @@ public sealed class SampleEntityDapperQueryRepository(IDbReadOnlyConnectionFacto
         using var connection = connectionFactory.CreateConnection();
         var command = new CommandDefinition(sql, cancellationToken: cancellationToken);
         var response = await connection.QueryAsync<SampleEntityDefinition>(command);
-        return response.ToList();
+        return [.. response];
     }
 
     public async Task<SampleEntityDefinition?> GetByIdAsync(int sampleId, CancellationToken cancellationToken = default)

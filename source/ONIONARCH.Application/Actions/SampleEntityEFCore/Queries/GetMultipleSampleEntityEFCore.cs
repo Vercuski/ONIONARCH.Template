@@ -1,7 +1,5 @@
-﻿using Microsoft.Extensions.Logging;
-using ONIONARCH.Application.Abstractions;
+﻿using ONIONARCH.Application.Abstractions;
 using ONIONARCH.Application.Abstractions.Context;
-using ONIONARCH.Application.Actions.SampleEntityEFCore.Commands;
 using ONIONARCH.Domain.Entities;
 
 namespace ONIONARCH.Application.Actions.SampleEntityEFCore.Queries;
@@ -11,7 +9,7 @@ public sealed class GetMultipleSampleEntityEFCoresRequest
 internal sealed class GetMultipleSampleEntityEFCoresHandler(IQueryDbContext queryDbContext)
     : IMediatRQueryHandler<GetMultipleSampleEntityEFCoresRequest, Result<List<SampleEntityDefinition>>>
 {
-    public async Task<Result<List<SampleEntityDefinition> >> Handle(
+    public async Task<Result<List<SampleEntityDefinition>>> Handle(
         GetMultipleSampleEntityEFCoresRequest request,
         CancellationToken cancellationToken)
     {

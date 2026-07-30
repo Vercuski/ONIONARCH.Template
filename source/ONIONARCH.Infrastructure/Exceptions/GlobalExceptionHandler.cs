@@ -2,12 +2,16 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using ONIONARCH.Infrastructure.Correlation;
 
 namespace ONIONARCH.Infrastructure.Exceptions;
 
-public sealed class GlobalExceptionHandler(ILogger<GlobalExceptionHandler> logger) : IExceptionHandler
+public sealed class GlobalExceptionHandler(
+    ILogger<GlobalExceptionHandler> logger,
+    CorrelationIdAccessor correlationIdAccessor) : IExceptionHandler
 {
     private readonly ILogger<GlobalExceptionHandler> _logger = logger;
+    private readonly CorrelationIdAccessor _correlationIdAccessor = correlationIdAccessor;
 
     public async ValueTask<bool> TryHandleAsync(
         HttpContext httpContext,
@@ -22,6 +26,7 @@ public sealed class GlobalExceptionHandler(ILogger<GlobalExceptionHandler> logge
             Status = StatusCodes.Status500InternalServerError,
             Title = "Server error"
         };
+        problemDetails.Extensions["correlationId"] = _correlationIdAccessor.CorrelationId;
 
         httpContext.Response.StatusCode = problemDetails.Status.Value;
 

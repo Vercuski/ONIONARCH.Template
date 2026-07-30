@@ -1,5 +1,4 @@
-﻿using Microsoft.Extensions.Logging;
-using ONIONARCH.Application.Abstractions;
+﻿using ONIONARCH.Application.Abstractions;
 using ONIONARCH.Application.Abstractions.Repositories;
 
 namespace ONIONARCH.Application.Actions.SampleEntityDapper.Commands;

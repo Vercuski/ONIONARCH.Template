@@ -4,9 +4,9 @@ using ONIONARCH.Application.Abstractions.Repositories;
 namespace ONIONARCH.Application.Actions.SampleEntityDapper.Commands;
 
 public sealed record DeleteSampleEntityDapperRequest(int SampleId)
-    : IMediatRCommandRequest<Result<int>>;
+    : ICommandRequest<Result<int>>;
 internal sealed class DeleteSampleEntityDapperHandler(ISampleEntityDapperCommandRepository repository)
-    : IMediatRCommandHandler<DeleteSampleEntityDapperRequest, Result<int>>
+    : ICommandHandler<DeleteSampleEntityDapperRequest, Result<int>>
 {
     public async Task<Result<int>> Handle(
         DeleteSampleEntityDapperRequest request,

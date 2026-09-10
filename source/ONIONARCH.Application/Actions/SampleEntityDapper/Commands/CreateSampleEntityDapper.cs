@@ -5,9 +5,9 @@ using ONIONARCH.Domain.Entities;
 namespace ONIONARCH.Application.Actions.SampleEntityDapper.Commands;
 
 public sealed record CreateSampleEntityDapperRequest(SampleEntityDefinition SampleEntity)
-    : IMediatRCommandRequest<Result<int>>;
+    : ICommandRequest<Result<int>>;
 internal sealed class CreateSampleEntityDapperHandler(ISampleEntityDapperCommandRepository repository)
-    : IMediatRCommandHandler<CreateSampleEntityDapperRequest, Result<int>>
+    : ICommandHandler<CreateSampleEntityDapperRequest, Result<int>>
 {
     public async Task<Result<int>> Handle(
         CreateSampleEntityDapperRequest request,

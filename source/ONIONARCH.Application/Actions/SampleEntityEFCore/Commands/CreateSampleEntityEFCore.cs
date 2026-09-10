@@ -5,9 +5,9 @@ using ONIONARCH.Domain.Entities;
 namespace ONIONARCH.Application.Actions.SampleEntityEFCore.Commands;
 
 public sealed record CreateSampleEntityEFCoreRequest(SampleEntityDefinition SampleEntity)
-    : IMediatRCommandRequest<Result<int>>;
+    : ICommandRequest<Result<int>>;
 internal sealed class CreateSampleEntityEFCoreHandler(ICommandDbContext commandDbContext)
-    : IMediatRCommandHandler<CreateSampleEntityEFCoreRequest, Result<int>>
+    : ICommandHandler<CreateSampleEntityEFCoreRequest, Result<int>>
 {
     public async Task<Result<int>> Handle(
         CreateSampleEntityEFCoreRequest request,

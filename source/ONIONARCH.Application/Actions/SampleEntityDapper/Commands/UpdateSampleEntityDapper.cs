@@ -5,9 +5,9 @@ using ONIONARCH.Domain.Entities;
 namespace ONIONARCH.Application.Actions.SampleEntityDapper.Commands;
 
 public sealed record UpdateSampleEntityDapperRequest(SampleEntityDefinition SampleEntity)
-    : IMediatRCommandRequest<Result<int>>;
+    : ICommandRequest<Result<int>>;
 internal sealed class UpdateSampleEntityDapperHandler(ISampleEntityDapperCommandRepository repository)
-    : IMediatRCommandHandler<UpdateSampleEntityDapperRequest, Result<int>>
+    : ICommandHandler<UpdateSampleEntityDapperRequest, Result<int>>
 {
     public async Task<Result<int>> Handle(
         UpdateSampleEntityDapperRequest request,

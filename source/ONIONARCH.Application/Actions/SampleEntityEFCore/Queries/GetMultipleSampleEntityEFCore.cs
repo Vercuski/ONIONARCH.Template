@@ -5,9 +5,9 @@ using ONIONARCH.Domain.Entities;
 namespace ONIONARCH.Application.Actions.SampleEntityEFCore.Queries;
 
 public sealed class GetMultipleSampleEntityEFCoresRequest
-    : IMediatRQueryRequest<Result<List<SampleEntityDefinition>>>;
+    : IQueryRequest<Result<List<SampleEntityDefinition>>>;
 internal sealed class GetMultipleSampleEntityEFCoresHandler(IQueryDbContext queryDbContext)
-    : IMediatRQueryHandler<GetMultipleSampleEntityEFCoresRequest, Result<List<SampleEntityDefinition>>>
+    : IQueryHandler<GetMultipleSampleEntityEFCoresRequest, Result<List<SampleEntityDefinition>>>
 {
     public async Task<Result<List<SampleEntityDefinition>>> Handle(
         GetMultipleSampleEntityEFCoresRequest request,

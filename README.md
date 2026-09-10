@@ -8,9 +8,13 @@
 
 ## Application Layer
 - Third Party Libraries
-  - MediatR
   - Microsoft.EntityFrameworkCore
   - Microsoft.Extensions.Hosting
+
+  CQRS dispatch (`ISender`, request/handler contracts, pipeline behaviors) is a small in-house
+  implementation in `Application/Sender.cs` and `Application/Abstractions/`, rather than a
+  third-party mediator library — see `IRequestHandler<,>`, `IQueryHandler<,>`,
+  `ICommandHandler<,>`, and `IPipelineBehavior<,>`.
 
 ## Presentation Layer
 ### Presentation.API

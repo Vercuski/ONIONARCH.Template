@@ -5,9 +5,9 @@ using ONIONARCH.Domain.Entities;
 namespace ONIONARCH.Application.Actions.SampleEntityEFCore.Commands;
 
 public sealed record UpdateSampleEntityEFCoreRequest(SampleEntityDefinition SampleEntity)
-    : IMediatRCommandRequest<Result<int>>;
+    : ICommandRequest<Result<int>>;
 internal sealed class UpdateSampleEntityEFCoreHandler(ICommandDbContext commandDbContext)
-    : IMediatRCommandHandler<UpdateSampleEntityEFCoreRequest, Result<int>>
+    : ICommandHandler<UpdateSampleEntityEFCoreRequest, Result<int>>
 {
     public Task<Result<int>> Handle(
         UpdateSampleEntityEFCoreRequest request,

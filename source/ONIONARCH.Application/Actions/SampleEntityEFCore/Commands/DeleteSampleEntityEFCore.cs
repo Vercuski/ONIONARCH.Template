@@ -5,9 +5,9 @@ using ONIONARCH.Domain.Entities;
 namespace ONIONARCH.Application.Actions.SampleEntityEFCore.Commands;
 
 public sealed record DeleteSampleEntityEFCoreRequest(SampleEntityDefinition Entity)
-    : IMediatRCommandRequest<Result<int>>;
+    : ICommandRequest<Result<int>>;
 internal sealed class DeleteSampleEntityEFCoreHandler(ICommandDbContext commandDbContext)
-    : IMediatRCommandHandler<DeleteSampleEntityEFCoreRequest, Result<int>>
+    : ICommandHandler<DeleteSampleEntityEFCoreRequest, Result<int>>
 {
     public Task<Result<int>> Handle(
         DeleteSampleEntityEFCoreRequest request,

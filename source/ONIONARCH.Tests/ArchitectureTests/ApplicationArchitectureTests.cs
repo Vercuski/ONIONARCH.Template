@@ -18,7 +18,7 @@ public class ApplicationArchitectureTests
             .That()
             .ResideInNamespaceMatching("ONIONARCH.Application.Actions.*.Queries.*")
             .And()
-            .ImplementInterface(typeof(IMediatRQueryHandler<,>))
+            .ImplementInterface(typeof(IQueryHandler<,>))
             .Should()
             .MeetCustomRule(customRuleIQueryDbContextMustBeConstructorParameter)
             .And()
@@ -46,7 +46,7 @@ public class ApplicationArchitectureTests
             .That()
             .ResideInNamespaceMatching("ONIONARCH.Application.Actions.*.Commands.*")
             .And()
-            .ImplementInterface(typeof(IMediatRCommandHandler<,>))
+            .ImplementInterface(typeof(ICommandHandler<,>))
             .Should()
             .MeetCustomRule(customRuleICommandDbContextMustBeConstructorParameter)
             .And()
@@ -71,7 +71,7 @@ public class ApplicationArchitectureTests
         // ISampleEntityDapperQueryRepository, ISampleEntityDapperCommandRepository, etc.) that
         // are implemented in Persistence. This is a whole-assembly check, independent of the
         // constructor-shape rules above, so it also catches Dapper usage introduced outside a
-        // MediatR handler (e.g. a helper class, static method, or future feature slice).
+        // request handler (e.g. a helper class, static method, or future feature slice).
         var result = Types
             .InAssembly(ApplicationAssembly)
             .ShouldNot()

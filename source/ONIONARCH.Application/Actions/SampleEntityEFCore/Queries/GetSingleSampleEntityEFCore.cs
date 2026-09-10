@@ -5,10 +5,10 @@ using ONIONARCH.Domain.Entities;
 namespace ONIONARCH.Application.Actions.SampleEntityEFCore.Queries;
 
 public sealed record GetSingleSampleEntityEFCoreRequest(int Id)
-    : IMediatRQueryRequest<Result<SampleEntityDefinition>>;
+    : IQueryRequest<Result<SampleEntityDefinition>>;
 internal sealed class GetSingleSampleEntityEFCoreHandler(
     IQueryDbContext queryDbContext)
-    : IMediatRQueryHandler<GetSingleSampleEntityEFCoreRequest, Result<SampleEntityDefinition>>
+    : IQueryHandler<GetSingleSampleEntityEFCoreRequest, Result<SampleEntityDefinition>>
 {
     public async Task<Result<SampleEntityDefinition>> Handle(
         GetSingleSampleEntityEFCoreRequest request,

@@ -12,7 +12,7 @@ public class PresentationArchitectureTests
     // composition root and legitimately calls AddPersistenceRegistrations()/AddEFCorePersistenceRegistrations()
     // to wire up DI, so an assembly-wide ban on referencing Persistence would fail for the wrong
     // reason. Controllers, on the other hand, have no legitimate reason to see Persistence at all —
-    // they should only talk to Application via MediatR and get DTOs back.
+    // they should only talk to Application via ISender and get DTOs back.
     [Test]
     public void Controllers_ShouldNot_ReferencePersistenceDirectly()
     {
@@ -39,7 +39,7 @@ public class PresentationArchitectureTests
     public void Controllers_ShouldNot_ReferenceDapperDirectly()
     {
         // Same rationale as ApplicationAssembly_ShouldNot_ReferenceDapper: raw SQL access belongs
-        // behind a repository abstraction in Persistence, invoked through Application/MediatR —
+        // behind a repository abstraction in Persistence, invoked through Application/ISender —
         // never directly in a controller.
         var result = Types
             .InAssembly(PresentationAssembly)

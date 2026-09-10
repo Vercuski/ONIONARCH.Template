@@ -13,7 +13,7 @@ public class CorrelationIdMiddlewareTests
         var accessor = new CorrelationIdAccessor();
         string? observedInsideNext = null;
 
-        // The lambda below stands in for "the rest of the pipeline" — a MediatR handler or
+        // The lambda below stands in for "the rest of the pipeline" — a request handler or
         // repository call several layers deep. It reads the accessor with no parameter having
         // been passed to it, which is the "invisible" propagation this middleware exists for.
         var middleware = new CorrelationIdMiddleware(context =>

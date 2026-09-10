@@ -1,5 +1,4 @@
-﻿using MediatR;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using ONIONARCH.Application.Abstractions;
 using ONIONARCH.Application.Actions.SampleEntityDapper.Commands;
 using ONIONARCH.Application.Actions.SampleEntityDapper.Queries;
@@ -12,14 +11,14 @@ namespace ONIONARCH.Presentation.API.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
-public class SampleController(IMediator mediator) : ControllerBase
+public class SampleController(ISender sender) : ControllerBase
 {
     // GET api/<SampleController>/5
     [HttpGet("EFCore/{sampleId}")]
     public async Task<IActionResult> GetEFCore(int sampleId)
     {
         GetSingleSampleEntityEFCoreRequest request = new(sampleId);
-        var result = await mediator.Send(request, CancellationToken.None);
+        var result = await sender.Send(request, CancellationToken.None);
         return result.ToActionResult(this, SampleDtoRecord.Create);
     }
 
@@ -28,7 +27,7 @@ public class SampleController(IMediator mediator) : ControllerBase
     public async Task<IActionResult> GetDapper(int sampleId)
     {
         GetSingleSampleEntityDapperRequest request = new(sampleId);
-        var result = await mediator.Send(request, CancellationToken.None);
+        var result = await sender.Send(request, CancellationToken.None);
         return result.ToActionResult(this, SampleDtoRecord.Create);
     }
 
@@ -38,7 +37,7 @@ public class SampleController(IMediator mediator) : ControllerBase
     {
         var entity = dto.MapToDomain();
         CreateSampleEntityEFCoreRequest request = new(entity);
-        var result = await mediator.Send(request, CancellationToken.None);
+        var result = await sender.Send(request, CancellationToken.None);
         return result.ToActionResult(this);
     }
 
@@ -48,7 +47,7 @@ public class SampleController(IMediator mediator) : ControllerBase
     {
         var entity = dto.MapToDomain();
         CreateSampleEntityDapperRequest request = new(entity);
-        var result = await mediator.Send(request, CancellationToken.None);
+        var result = await sender.Send(request, CancellationToken.None);
         return result.ToActionResult(this);
     }
 
@@ -58,7 +57,7 @@ public class SampleController(IMediator mediator) : ControllerBase
     {
         var entity = dto.MapToDomain();
         UpdateSampleEntityEFCoreRequest request = new(entity);
-        var result = await mediator.Send(request, CancellationToken.None);
+        var result = await sender.Send(request, CancellationToken.None);
         return result.ToActionResult(this);
     }
 
@@ -68,7 +67,7 @@ public class SampleController(IMediator mediator) : ControllerBase
     {
         var entity = dto.MapToDomain();
         UpdateSampleEntityDapperRequest request = new(entity);
-        var result = await mediator.Send(request, CancellationToken.None);
+        var result = await sender.Send(request, CancellationToken.None);
         return result.ToActionResult(this);
     }
 
@@ -77,7 +76,7 @@ public class SampleController(IMediator mediator) : ControllerBase
     public async Task<IActionResult> DeleteEFCore(int sampleId)
     {
         GetSingleSampleEntityEFCoreRequest request = new(sampleId);
-        var entity = await mediator.Send(request, CancellationToken.None);
+        var entity = await sender.Send(request, CancellationToken.None);
         if (!entity.IsSuccess || entity.Value is null)
         {
             return entity.ErrorType switch
@@ -91,7 +90,7 @@ public class SampleController(IMediator mediator) : ControllerBase
         else
         {
             DeleteSampleEntityEFCoreRequest deleteRequest = new(entity.Value);
-            var result = await mediator.Send(deleteRequest, CancellationToken.None);
+            var result = await sender.Send(deleteRequest, CancellationToken.None);
             return result.ToActionResult(this);
         }
     }
@@ -101,7 +100,7 @@ public class SampleController(IMediator mediator) : ControllerBase
     public async Task<IActionResult> DeleteDapper(int sampleId)
     {
         DeleteSampleEntityDapperRequest request = new(sampleId);
-        var result = await mediator.Send(request, CancellationToken.None);
+        var result = await sender.Send(request, CancellationToken.None);
         return result.ToActionResult(this);
     }
 }

@@ -5,10 +5,10 @@ using ONIONARCH.Domain.Entities;
 namespace ONIONARCH.Application.Actions.SampleEntityDapper.Queries;
 
 public sealed record GetSingleSampleEntityDapperRequest(int Id)
-    : IMediatRQueryRequest<Result<SampleEntityDefinition>>;
+    : IQueryRequest<Result<SampleEntityDefinition>>;
 internal sealed class GetSingleSampleEntityDapperHandler(
     ISampleEntityDapperQueryRepository repository
-    ) : IMediatRQueryHandler<GetSingleSampleEntityDapperRequest, Result<SampleEntityDefinition>>
+    ) : IQueryHandler<GetSingleSampleEntityDapperRequest, Result<SampleEntityDefinition>>
 {
     public async Task<Result<SampleEntityDefinition>> Handle(
         GetSingleSampleEntityDapperRequest request,

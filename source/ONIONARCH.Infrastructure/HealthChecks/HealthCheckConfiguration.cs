@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
+using ONIONARCH.Infrastructure.Versioning;
 using System.Text;
 using System.Text.Json;
 
@@ -17,7 +18,8 @@ public class HealthCheckConfiguration
 
     /// <summary>
     /// Writes <paramref name="healthReport"/> to the response as indented JSON containing the
-    /// overall status plus, for each registered check, its status, description, and data.
+    /// overall status, the application version (<see cref="ApplicationVersion"/>), and, for each
+    /// registered check, its status, description, and data.
     /// </summary>
     /// <param name="context">The HTTP context of the health check request.</param>
     /// <param name="healthReport">The aggregated health check results.</param>
@@ -26,6 +28,8 @@ public class HealthCheckConfiguration
     /// <code>
     /// {
     ///   "status": "Healthy",
+    ///   "version": "1.4.1-alpha.0.3",
+    ///   "informationalVersion": "1.4.1-alpha.0.3+2057147a6910abdd18c2360adb13dea4c2cb3df6",
     ///   "results": {
     ///     "SimpleHealthCheck": { "status": "Healthy", "description": "Value was 3", "data": { "Value": 3 } }
     ///   }
@@ -43,6 +47,8 @@ public class HealthCheckConfiguration
         {
             jsonWriter.WriteStartObject();
             jsonWriter.WriteString("status", healthReport.Status.ToString());
+            jsonWriter.WriteString("version", ApplicationVersion.Current.SemanticVersion);
+            jsonWriter.WriteString("informationalVersion", ApplicationVersion.Current.InformationalVersion);
             jsonWriter.WriteStartObject("results");
 
             foreach (var healthReportEntry in healthReport.Entries)

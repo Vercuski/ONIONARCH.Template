@@ -6,6 +6,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using ONIONARCH.Infrastructure.Correlation;
 using ONIONARCH.Infrastructure.HealthChecks;
+using ONIONARCH.Infrastructure.Versioning;
 using System.Reflection;
 
 namespace ONIONARCH.Infrastructure;
@@ -48,7 +49,8 @@ public static class DependencyInjection
 
     /// <summary>
     /// Registers the Infrastructure layer's services: health checks, logging providers,
-    /// the singleton <see cref="CorrelationIdAccessor"/>, and ProblemDetails support.
+    /// the singleton <see cref="CorrelationIdAccessor"/>, the singleton <see cref="ApplicationVersion"/>
+    /// (plus a hosted service that logs it at startup), and ProblemDetails support.
     /// </summary>
     /// <param name="builder">The host builder to register services with.</param>
     /// <returns>The same <paramref name="builder"/>, for chaining.</returns>
@@ -61,6 +63,8 @@ public static class DependencyInjection
         builder.AddHealthChecksRegistration();
         builder.AddLoggingRegistration();
         builder.Services.AddSingleton<CorrelationIdAccessor>();
+        builder.Services.AddSingleton(ApplicationVersion.Current);
+        builder.Services.AddHostedService<ApplicationVersionLogger>();
         builder.Services.AddProblemDetails();
         return builder;
     }

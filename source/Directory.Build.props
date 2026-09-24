@@ -6,30 +6,34 @@
     <IsPublishable>true</IsPublishable>
     <ProjectKey Condition="'$(ProjectKey)'==''">ONIONARCH</ProjectKey>
   </PropertyGroup>
+  <!--
+    Semantic versioning (https://semver.org) via MinVer (https://github.com/adamralph/minver).
+    The version comes entirely from git tags. There are no version numbers to edit anywhere
+    in the solution.
+
+      * A commit tagged v1.4.0 builds as 1.4.0.
+      * Commits after that tag build as 1.4.1-alpha.0.{height}, where {height} is the number
+        of commits since the tag, so every build has a unique, correctly ordered version.
+      * A pre-release tag such as v1.5.0-rc.1 builds as 1.5.0-rc.1, and commits after it
+        build as 1.5.0-rc.1.{height}.
+      * With no tags at all, versions start from MinVerMinimumMajorMinor (1.0.0-alpha.0.{height}).
+
+    MinVer sets Version and PackageVersion to the full SemVer 2.0 version,
+    InformationalVersion to the same plus build metadata (the .NET SDK appends the commit SHA),
+    FileVersion to {Major}.{Minor}.{Patch}.0, and AssemblyVersion to {Major}.0.0.0 so binding
+    redirects only change on breaking releases.
+
+    Builds without git history (e.g. Docker builds, whose context excludes .git) should pass
+    the version explicitly: -p:MinVerVersionOverride=1.4.0 (see the Dockerfiles and README).
+  -->
   <PropertyGroup>
-    <VersionName Condition="'$(VersionName)'==''">1.0.0</VersionName>
-
-    <ReleaseName Condition="'$(ReleaseName)'==''"></ReleaseName>
-    <CommitID Condition="'$(CommitID)'==''">0</CommitID>
-    <BuildID Condition="'$(BuildID)'==''">0</BuildID>
-
-    <BuildNumber>$(CommitID).$(BuildID)</BuildNumber>
-    <BranchName Condition="'$(BranchName)'==''">main</BranchName>
-
-    <VersionPrefix>$(VersionName)</VersionPrefix>
-    <VersionSuffix>$(BuildNumber)</VersionSuffix>
-    <VersionPrerelease Condition="'$(BranchName)'!=''">$(ReleaseName).$(BranchName.Replace("-", "_"))</VersionPrerelease>
-    <VersionPrerelease Condition="'$(BranchName)'=='main'">$(ReleaseName)</VersionPrerelease>
-
-    <!--override default to msbuild which defaults to prerelease instead of build notation-->
-    <Version>$(VersionPrefix)+$(VersionSuffix)</Version>
-    <AssemblyVersion>$(VersionPrefix).0</AssemblyVersion>
-    <!--just first three segments of version to allow avoiding assembly reference updates when undesired-->
-    <FileVersion>$(VersionPrefix).$(CommitID)</FileVersion>
-
-    <InformationalVersion Condition="'$(VersionPrerelease)'!=''">$(VersionPrefix)-$(VersionPrerelease)+$(VersionSuffix)</InformationalVersion>
-    <InformationalVersion Condition="'$(VersionPrerelease)'==''">$(Version)</InformationalVersion>
+    <MinVerTagPrefix>v</MinVerTagPrefix>
+    <MinVerMinimumMajorMinor>1.0</MinVerMinimumMajorMinor>
+    <MinVerDefaultPreReleaseIdentifiers>alpha.0</MinVerDefaultPreReleaseIdentifiers>
   </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="MinVer" Version="8.0.0" PrivateAssets="all" />
+  </ItemGroup>
   <PropertyGroup>
     <!--Enabled Dynamic Compile Flags from CI-->
     <DefineConstants Condition=" '$(CompileFlags)' != '' ">$(CompileFlags);$(DefineConstants)</DefineConstants>

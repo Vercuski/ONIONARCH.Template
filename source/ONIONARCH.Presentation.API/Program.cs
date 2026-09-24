@@ -3,6 +3,7 @@
 using ONIONARCH.Application;
 using ONIONARCH.Infrastructure;
 using ONIONARCH.Infrastructure.Exceptions;
+using ONIONARCH.Infrastructure.Versioning;
 using ONIONARCH.Persistence;
 using Scalar.AspNetCore;
 
@@ -10,7 +11,12 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Service registration: MVC controllers, OpenAPI, the global exception handler, then each layer.
 builder.Services.AddControllers();
-builder.Services.AddOpenApi();
+// The OpenAPI document's info.version reports the build's semantic version (from git tags via MinVer).
+builder.Services.AddOpenApi(options => options.AddDocumentTransformer((document, context, _) =>
+{
+    document.Info.Version = context.ApplicationServices.GetRequiredService<ApplicationVersion>().SemanticVersion;
+    return Task.CompletedTask;
+}));
 builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
 builder.AddApplicationRegistration();
 builder.AddPersistenceRegistrations();

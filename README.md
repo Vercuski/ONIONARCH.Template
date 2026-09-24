@@ -123,3 +123,22 @@ features, PATCH for backward-compatible fixes. Tags must start with `v`.
 
   The image also gets an `org.opencontainers.image.version` label.
 - Any other build can force a version with `-p:MinVerVersionOverride=1.4.0`.
+# Documentation
+
+API documentation is generated from the XML documentation comments (`///`) with
+[DocFX](https://dotnet.github.io/docfx/). The configuration lives in `Documentation/DocFX`.
+
+- On every push to `main`, the `Documentation` workflow (`.github/workflows/docs.yml`) builds the site
+  and publishes it to [Vercuski/RepoDocumentation](https://github.com/Vercuski/RepoDocumentation)
+  under a folder named after this repository (`ONIONARCH.Template/`).
+- Broken `cref`s and links fail the build (`--warningsAsErrors`), the same as `TreatWarningsAsErrors`
+  does for code.
+- Publishing requires a `DOCS_REPO_TOKEN` secret: a fine-grained personal access token with
+  **Contents: Read and write** on `Vercuski/RepoDocumentation` only.
+- To preview locally:
+
+  ```bash
+  dotnet tool install --global docfx
+  cd Documentation/DocFX
+  docfx docfx.json --serve   # http://localhost:8080
+  ```

@@ -1,11 +1,14 @@
-# Generates API documentation from the XML documentation comments (///) in the source with DocFX,
-# then publishes the generated site to the documentation repository, into a folder named after this
-# repository:
+# Generates Markdown API documentation from the XML documentation comments (///) in the source with
+# DocFX, then publishes it to the documentation repository, into a folder named after this
+# repository, where GitHub renders it directly:
 #
 #   https://github.com/Vercuski/RepoDocumentation/tree/main/<this repo's name>/
+#     README.md   landing page (from Documentation/DocFX/landing-page.md)
+#     api/*.md    one page per namespace and type
+#     images/     copied from Documentation/Images
 #
-# The DocFX configuration lives in Documentation/DocFX (run `docfx docfx.json` there to preview
-# locally; add `--serve` to browse it at http://localhost:8080).
+# The DocFX configuration and the post-processor live in Documentation/DocFX. To generate the same
+# output locally, run the two commands from the "Generate" steps below in that folder.
 #
 # One-time setup: the default GITHUB_TOKEN cannot write to another repository, so this workflow
 # pushes with a fine-grained personal access token stored as the DOCS_REPO_TOKEN secret:
@@ -56,11 +59,18 @@ jobs:
         run: dotnet tool install --global docfx --version "$DOCFX_VERSION"
 
       # DocFX restores and loads each project in docfx.json with Roslyn and reads the /// comments
-      # straight from the source. --warningsAsErrors keeps a broken <see cref="..."/> or link from
-      # being published silently, matching the solution's TreatWarningsAsErrors policy.
-      - name: Build documentation
+      # straight from the source; "outputFormat": "markdown" writes one .md page per namespace and
+      # type to api/. --warningsAsErrors matches the solution's TreatWarningsAsErrors policy.
+      - name: Generate Markdown API pages
         working-directory: Documentation/DocFX
-        run: docfx docfx.json --warningsAsErrors
+        run: docfx metadata docfx.json --warningsAsErrors
+
+      # DocFX's Markdown output leaves <see cref="..."/> references as raw <xref> tags, which
+      # GitHub renders as blank text. PostProcess.cs (a .NET 10 file-based app) turns them into
+      # links, adds the README.md landing page and images, and fails on any broken link or anchor.
+      - name: Resolve cross-references and assemble output
+        working-directory: Documentation/DocFX
+        run: dotnet run PostProcess.cs
 
       - name: Checkout documentation repository
         uses: actions/checkout@v7

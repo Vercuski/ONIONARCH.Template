@@ -125,20 +125,25 @@ features, PATCH for backward-compatible fixes. Tags must start with `v`.
 - Any other build can force a version with `-p:MinVerVersionOverride=1.4.0`.
 # Documentation
 
-API documentation is generated from the XML documentation comments (`///`) with
+API documentation is generated as Markdown from the XML documentation comments (`///`) with
 [DocFX](https://dotnet.github.io/docfx/). The configuration lives in `Documentation/DocFX`.
 
-- On every push to `main`, the `Documentation` workflow (`.github/workflows/docs.yml`) builds the site
-  and publishes it to [Vercuski/RepoDocumentation](https://github.com/Vercuski/RepoDocumentation)
-  under a folder named after this repository (`ONIONARCH.Template/`).
-- Broken `cref`s and links fail the build (`--warningsAsErrors`), the same as `TreatWarningsAsErrors`
-  does for code.
+- On every push to `main`, the `Documentation` workflow (`.github/workflows/docs.yml`) generates the
+  pages and publishes them to [Vercuski/RepoDocumentation](https://github.com/Vercuski/RepoDocumentation)
+  under a folder named after this repository (`ONIONARCH.Template/`), where GitHub renders them
+  directly: a `README.md` landing page (from `Documentation/DocFX/landing-page.md`) and one page per
+  namespace and type under `api/`.
+- DocFX's Markdown output leaves `<see cref="..."/>` references unresolved, so
+  `Documentation/DocFX/PostProcess.cs` (a .NET 10 file-based app) turns them into links. It fails the
+  build on any broken link or anchor, and DocFX runs with `--warningsAsErrors`, matching
+  `TreatWarningsAsErrors` for code.
 - Publishing requires a `DOCS_REPO_TOKEN` secret: a fine-grained personal access token with
   **Contents: Read and write** on `Vercuski/RepoDocumentation` only.
-- To preview locally:
+- To generate the same output locally (written to `Documentation/DocFX/_site`):
 
   ```bash
   dotnet tool install --global docfx
   cd Documentation/DocFX
-  docfx docfx.json --serve   # http://localhost:8080
+  docfx metadata docfx.json
+  dotnet run PostProcess.cs
   ```

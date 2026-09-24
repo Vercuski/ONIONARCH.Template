@@ -1,4 +1,6 @@
 ﻿@page "/Error"
+@* Generic error page shown for unhandled exceptions outside Development; displays the request
+   ID so the failure can be matched to server logs. *@
 @using System.Diagnostics
 
 <PageTitle>Error</PageTitle>
@@ -25,12 +27,19 @@
 </p>
 
 @code{
+    /// <summary>Gets or sets the current HTTP context, cascaded during static server-side rendering.</summary>
     [CascadingParameter]
     private HttpContext? HttpContext { get; set; }
 
+    /// <summary>Gets or sets the identifier of the failed request, if one is available.</summary>
     private string? RequestId { get; set; }
+    /// <summary>Gets a value indicating whether <see cref="RequestId"/> should be displayed.</summary>
     private bool ShowRequestId => !string.IsNullOrEmpty(RequestId);
 
+    /// <summary>
+    /// Captures the request ID from the current <see cref="Activity"/>, falling back to the HTTP
+    /// context's trace identifier.
+    /// </summary>
     protected override void OnInitialized() =>
         RequestId = Activity.Current?.Id ?? HttpContext?.TraceIdentifier;
 }

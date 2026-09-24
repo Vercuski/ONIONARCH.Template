@@ -6,9 +6,17 @@ using System.Text.Json;
 
 namespace ONIONARCH.Tests.InfrastructureTests;
 
+/// <summary>
+/// Unit tests for <see cref="GlobalExceptionHandler"/>.
+/// </summary>
 [TestFixture]
 public class GlobalExceptionHandlerTests
 {
+    /// <summary>
+    /// Verifies that the handler reports the exception as handled, sets a 500 status, and writes
+    /// the current correlation ID as a top-level <c>correlationId</c> member of the problem details body.
+    /// </summary>
+    /// <returns>A task representing the asynchronous test.</returns>
     [Test]
     public async Task TryHandleAsync_Should_IncludeCorrelationId_InProblemDetailsResponse()
     {

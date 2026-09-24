@@ -14,17 +14,24 @@ namespace ONIONARCH.Tests.InfrastructureTests;
 [TestFixture]
 public class CorrelationIdIntegrationTests
 {
+    /// <summary>Per-test setup (currently empty; each test creates its own factory).</summary>
     [SetUp]
     public void SetUp()
     {
         
     }
 
+    /// <summary>Per-test teardown (currently empty; factories are disposed by each test).</summary>
     [TearDown]
     public void TearDown()
     {
     }
 
+    /// <summary>
+    /// Verifies that a request without an incoming correlation ID receives a newly generated GUID
+    /// in the <see cref="CorrelationIdMiddleware.HeaderName"/> response header.
+    /// </summary>
+    /// <returns>A task representing the asynchronous test.</returns>
     [Test]
     public async Task HealthEndpoint_Should_ReturnCorrelationIdResponseHeader()
     {
@@ -38,6 +45,11 @@ public class CorrelationIdIntegrationTests
         Assert.That(Guid.TryParse(headerValue, out _), Is.True);
     }
 
+    /// <summary>
+    /// Verifies that successive requests without an incoming correlation ID each receive a
+    /// distinct ID.
+    /// </summary>
+    /// <returns>A task representing the asynchronous test.</returns>
     [Test]
     public async Task Requests_WithoutIncomingHeader_Should_GetADifferentCorrelationIdEachTime()
     {

@@ -1,4 +1,6 @@
 ﻿@page "/"
+@* Home page: buttons that emit a log entry at each log level so logger configuration and
+   correlation ID scopes can be verified interactively. *@
 @using Microsoft.Extensions.Options
 
 <PageTitle>Home</PageTitle>
@@ -22,31 +24,40 @@
 
 @inject ILogger<Program> Logger
 @code{
+    /// <summary>Writes a sample entry at <see cref="LogLevel.Information"/>.</summary>
     private void LogInformationTest()
     {
         Logger.LogInformation("Log Information Test");
     }
 
+    /// <summary>Writes a sample entry at <see cref="LogLevel.Warning"/>.</summary>
     private void LogWarningTest()
     {
         Logger.LogWarning("Log Warning Test");
     }
 
+    /// <summary>Writes a sample entry at <see cref="LogLevel.Debug"/>.</summary>
     private void LogDebugTest()
     {
         Logger.LogDebug("Log Debug Test");
     }
 
+    /// <summary>Writes a sample entry at <see cref="LogLevel.Critical"/>.</summary>
     private void LogCriticalTest()
     {
         Logger.LogCritical("Log Critical Test");
     }
 
+    /// <summary>Writes a sample entry at <see cref="LogLevel.Trace"/>.</summary>
     private void LogTraceTest()
     {
         Logger.LogTrace("Log Trace Test");
     }
 
+    /// <summary>
+    /// Triggers and catches a <see cref="DivideByZeroException"/>, then logs it at
+    /// <see cref="LogLevel.Error"/> so exception details can be seen in the log output.
+    /// </summary>
     private void LogErrorTest()
     {
         try

@@ -15,8 +15,20 @@ using ONIONARCH.Persistence.Repositories;
 
 namespace ONIONARCH.Persistence;
 
+/// <summary>
+/// Composition-root extensions that register the Persistence layer: configuration options,
+/// the database provider for each side of the CQRS split, and both the Dapper and EF Core
+/// implementations of the Application-layer persistence ports.
+/// </summary>
 public static class DependencyInjection
 {
+    /// <summary>
+    /// Registers all Persistence-layer services.
+    /// </summary>
+    /// <param name="builder">The host builder to register services with.</param>
+    /// <returns>The same <paramref name="builder"/>, for chaining.</returns>
+    /// <exception cref="InvalidOperationException">The <c>DatabasePlatform</c> configuration section is missing or invalid.</exception>
+    /// <exception cref="NotSupportedException">A configured database platform is not recognized.</exception>
     public static IHostApplicationBuilder AddPersistenceRegistrations(this IHostApplicationBuilder builder)
     {
         builder.AddOptionsRegistration();
@@ -24,6 +36,12 @@ public static class DependencyInjection
         return builder;
     }
 
+    /// <summary>
+    /// Binds <see cref="ConnectionStringOptions"/> and <see cref="DatabasePlatformOptions"/> to
+    /// their configuration sections.
+    /// </summary>
+    /// <param name="builder">The host builder to register services with.</param>
+    /// <returns>The same <paramref name="builder"/>, for chaining.</returns>
     private static IHostApplicationBuilder AddOptionsRegistration(this IHostApplicationBuilder builder)
     {
         builder.Services.Configure<ConnectionStringOptions>(GetSection<ConnectionStringOptions>(builder.Configuration));
@@ -31,6 +49,13 @@ public static class DependencyInjection
         return builder;
     }
 
+    /// <summary>
+    /// Reads <see cref="DatabasePlatformOptions"/> eagerly at startup, creates the query- and
+    /// command-side <see cref="IDatabaseProvider"/>s, and registers both persistence paths with them.
+    /// </summary>
+    /// <param name="builder">The host builder to register services with.</param>
+    /// <returns>The same <paramref name="builder"/>, for chaining.</returns>
+    /// <exception cref="InvalidOperationException">The <c>DatabasePlatform</c> configuration section is missing or invalid.</exception>
     private static IHostApplicationBuilder AddDatabaseProviderRegistration(
         this IHostApplicationBuilder builder)
     {
@@ -47,6 +72,16 @@ public static class DependencyInjection
         return builder;
     }
 
+    /// <summary>
+    /// Maps a configured platform name to its <see cref="IDatabaseProvider"/>.
+    /// </summary>
+    /// <param name="platform">
+    /// The platform name from configuration; case-insensitive. Supported values:
+    /// <c>MSSQL</c>, <c>POSTGRESQL</c>, <c>MYSQL</c>.
+    /// </param>
+    /// <param name="side">"Query" or "Command"; used only in the error message.</param>
+    /// <returns>The provider for <paramref name="platform"/>.</returns>
+    /// <exception cref="NotSupportedException"><paramref name="platform"/> is not a supported value.</exception>
     private static IDatabaseProvider CreateDatabaseProvider(string platform, string side)
     {
         return platform.ToUpperInvariant() switch
@@ -58,6 +93,14 @@ public static class DependencyInjection
         };
     }
 
+    /// <summary>
+    /// Registers the Dapper path: read and write connection factories bound to their respective
+    /// providers, plus the scoped Dapper query and command repositories.
+    /// </summary>
+    /// <param name="builder">The host builder to register services with.</param>
+    /// <param name="queryDatabaseProvider">The provider for the query database.</param>
+    /// <param name="commandDatabaseProvider">The provider for the command database.</param>
+    /// <returns>The same <paramref name="builder"/>, for chaining.</returns>
     private static IHostApplicationBuilder AddDapperPersistenceRegistrations(
         this IHostApplicationBuilder builder,
         IDatabaseProvider queryDatabaseProvider,
@@ -79,6 +122,16 @@ public static class DependencyInjection
         return builder;
     }
 
+    /// <summary>
+    /// Registers the EF Core path: <see cref="CommandDbContext"/> and <see cref="QueryDbContext"/>
+    /// configured for their providers (with detailed errors and sensitive data logging outside
+    /// Production), and maps <see cref="ICommandDbContext"/>, <see cref="IUnitOfWork"/>, and
+    /// <see cref="IQueryDbContext"/> onto those scoped context instances.
+    /// </summary>
+    /// <param name="builder">The host builder to register services with.</param>
+    /// <param name="queryDatabaseProvider">The provider for the query database.</param>
+    /// <param name="commandDatabaseProvider">The provider for the command database.</param>
+    /// <returns>The same <paramref name="builder"/>, for chaining.</returns>
     private static IHostApplicationBuilder AddEFCorePersistenceRegistrations(
         this IHostApplicationBuilder builder,
         IDatabaseProvider queryDatabaseProvider,
@@ -111,6 +164,13 @@ public static class DependencyInjection
         return builder;
     }
 
+    /// <summary>
+    /// Returns the configuration section named by <typeparamref name="T"/>'s
+    /// <see cref="IBaseOptionsConfig.Section"/>.
+    /// </summary>
+    /// <typeparam name="T">An options type with a public parameterless constructor.</typeparam>
+    /// <param name="configuration">The application configuration.</param>
+    /// <returns>The matching configuration section (empty if it does not exist).</returns>
     private static IConfigurationSection GetSection<T>(IConfiguration configuration)
     where T : IBaseOptionsConfig
     {

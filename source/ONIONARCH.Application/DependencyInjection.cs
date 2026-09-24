@@ -6,14 +6,34 @@ using System.Reflection;
 
 namespace ONIONARCH.Application;
 
+/// <summary>
+/// Composition-root extensions that register the Application layer's services.
+/// </summary>
 public static class DependencyInjection
 {
+    /// <summary>
+    /// Registers the Application layer: the <see cref="ISender"/> dispatcher, every request handler
+    /// in this assembly, and the pipeline behaviors.
+    /// </summary>
+    /// <param name="builder">The host builder to register services with.</param>
+    /// <returns>The same <paramref name="builder"/>, for chaining.</returns>
     public static IHostApplicationBuilder AddApplicationRegistration(this IHostApplicationBuilder builder)
     {
         builder.AddMediatorRegistration();
         return builder;
     }
 
+    /// <summary>
+    /// Registers the in-process mediator: <see cref="Sender"/> (scoped), all request handlers
+    /// (scoped), and <see cref="LoggingBehavior{TRequest,TResponse}"/> as an open-generic
+    /// pipeline behavior (transient).
+    /// </summary>
+    /// <param name="builder">The host builder to register services with.</param>
+    /// <returns>The same <paramref name="builder"/>, for chaining.</returns>
+    /// <remarks>
+    /// Behaviors run in registration order (first registered is outermost); add further
+    /// <c>IPipelineBehavior&lt;,&gt;</c> registrations here in the order they should wrap.
+    /// </remarks>
     private static IHostApplicationBuilder AddMediatorRegistration(this IHostApplicationBuilder builder)
     {
         builder.Services.AddScoped<ISender, Sender>();
@@ -34,6 +54,9 @@ public static class DependencyInjection
     /// IRequestHandler&lt;,&gt; those interfaces inherit from — no separate registration path is needed
     /// per marker interface. Scoped to mirror the lifetime EF Core's DbContext-backed handlers need.
     /// </summary>
+    /// <param name="services">The service collection to register handlers with.</param>
+    /// <param name="assembly">The assembly to scan for handler implementations.</param>
+    /// <returns>The same <paramref name="services"/>, for chaining.</returns>
     private static IServiceCollection AddRequestHandlers(this IServiceCollection services, Assembly assembly)
     {
         var openHandlerType = typeof(IRequestHandler<,>);

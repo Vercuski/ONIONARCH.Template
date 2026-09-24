@@ -10,8 +10,15 @@ namespace ONIONARCH.Application;
 /// <see cref="IPipelineBehavior{TRequest,TResponse}"/> in registration order (outermost first),
 /// mirroring the behavior chain MediatR's AddOpenBehavior used to build.
 /// </summary>
+/// <param name="provider">The scoped service provider used to resolve handlers and behaviors.</param>
 internal sealed class Sender(IServiceProvider provider) : ISender
 {
+    /// <inheritdoc />
+    /// <remarks>
+    /// The handler and behaviors are closed over the request's <em>runtime</em> type and invoked via
+    /// <see langword="dynamic"/>, because <typeparamref name="TResponse"/> is the only generic
+    /// argument known at compile time.
+    /// </remarks>
     public Task<TResponse> Send<TResponse>(IAppRequest<TResponse> request, CancellationToken cancellationToken = default)
     {
         var requestType = request.GetType();

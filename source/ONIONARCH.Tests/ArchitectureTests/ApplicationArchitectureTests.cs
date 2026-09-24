@@ -5,9 +5,18 @@ using static ONIONARCH.Tests.ArchitectureTests.AssemblyReferences;
 
 namespace ONIONARCH.Tests.ArchitectureTests;
 
+/// <summary>
+/// Architecture fitness tests for the Application layer: handler shape rules and the ban on
+/// referencing persistence technologies (Dapper, EF Core) directly.
+/// </summary>
 [TestFixture]
 public class ApplicationArchitectureTests
 {
+    /// <summary>
+    /// Verifies that every query handler under <c>Actions.*.Queries</c> is sealed and takes a
+    /// query-side persistence abstraction in its constructor
+    /// (see <see cref="IQueryDbContextMustBeConstructorParameter"/>).
+    /// </summary>
     [Test]
     public void ApplicationEntityQueryHandlers_Should_HaveAnIQueryDbContextParameterInTheConstructor()
     {
@@ -36,6 +45,11 @@ public class ApplicationArchitectureTests
         Assert.That(result.IsSuccessful, Is.True);
     }
 
+    /// <summary>
+    /// Verifies that every command handler under <c>Actions.*.Commands</c> is sealed and takes a
+    /// command-side persistence abstraction in its constructor
+    /// (see <see cref="ICommandDbContextMustBeConstructorParameter"/>).
+    /// </summary>
     [Test]
     public void ApplicationEntityCommandHandlers_Should_HaveAnICommandDbContextParameterInTheConstructor()
     {
@@ -64,6 +78,9 @@ public class ApplicationArchitectureTests
         Assert.That(result.IsSuccessful, Is.True);
     }
 
+    /// <summary>
+    /// Verifies that no type in the Application assembly depends on Dapper.
+    /// </summary>
     [Test]
     public void ApplicationAssembly_ShouldNot_ReferenceDapper()
     {
@@ -89,6 +106,10 @@ public class ApplicationArchitectureTests
         Assert.That(result.IsSuccessful, Is.True);
     }
 
+    /// <summary>
+    /// Verifies that no type in the Application assembly depends on EF Core, keeping the
+    /// persistence ports (<c>IQueryDbContext</c>, <c>ICommandDbContext</c>) free of EF Core types.
+    /// </summary>
     [Test]
     public void ApplicationAssembly_ShouldNot_ReferenceEntityFrameworkCore()
     {

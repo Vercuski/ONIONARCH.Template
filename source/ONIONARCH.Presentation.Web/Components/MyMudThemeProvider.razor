@@ -1,8 +1,13 @@
-﻿<CascadingValue Value=false Name="UsePopoverProvider">
+﻿@* Applies the application's MudBlazor theme (see MyTheme). *@
+<CascadingValue Value=false Name="UsePopoverProvider">
     <MudThemeProvider Theme="MyTheme"></MudThemeProvider>
 </CascadingValue>
 
 @code {
+    /// <summary>
+    /// Gets the application's MudBlazor theme (light and dark palettes share the same primary and
+    /// app bar colors). A new instance is created on each access.
+    /// </summary>
     public static MudTheme MyTheme => new()
         {
             PaletteLight = new PaletteLight()

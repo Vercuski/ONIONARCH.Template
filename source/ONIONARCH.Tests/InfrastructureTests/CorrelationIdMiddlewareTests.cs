@@ -4,9 +4,19 @@ using ONIONARCH.Infrastructure.Correlation;
 
 namespace ONIONARCH.Tests.InfrastructureTests;
 
+/// <summary>
+/// Unit tests for <see cref="CorrelationIdMiddleware"/> in isolation, using a
+/// <see cref="DefaultHttpContext"/> and a stub next delegate.
+/// </summary>
 [TestFixture]
 public class CorrelationIdMiddlewareTests
 {
+    /// <summary>
+    /// Verifies that, with no incoming header, the middleware generates a GUID, writes it to the
+    /// response header, and makes the same value visible to downstream code via
+    /// <see cref="CorrelationIdAccessor"/>.
+    /// </summary>
+    /// <returns>A task representing the asynchronous test.</returns>
     [Test]
     public async Task InvokeAsync_Should_SetResponseHeader_AndMakeIdAvailableDownstream()
     {
@@ -36,6 +46,10 @@ public class CorrelationIdMiddlewareTests
         }
     }
 
+    /// <summary>
+    /// Verifies that an incoming correlation ID header is reused and echoed back unchanged.
+    /// </summary>
+    /// <returns>A task representing the asynchronous test.</returns>
     [Test]
     public async Task InvokeAsync_Should_ReuseIncomingCorrelationIdHeader_WhenPresent()
     {

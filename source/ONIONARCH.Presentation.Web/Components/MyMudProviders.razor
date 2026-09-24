@@ -1,10 +1,16 @@
 ﻿@inject ISnackbar Snackbar
+@* Hosts the MudBlazor popover, dialog, and snackbar providers and applies the app-wide
+   snackbar defaults. *@
 
 <MudPopoverProvider></MudPopoverProvider>
 <MudDialogProvider />
 <MudSnackbarProvider />
 
 @code {
+    /// <summary>
+    /// Clears any pending snackbars and configures snackbar defaults: top-center position, at most
+    /// five visible, filled variant, duplicates suppressed.
+    /// </summary>
     protected override void OnInitialized()
     {
         Snackbar.Clear();

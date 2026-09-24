@@ -15,6 +15,13 @@ namespace ONIONARCH.Tests.ArchitectureTests.CustomRules;
 /// </summary>
 internal class ICommandDbContextMustBeConstructorParameter : ICustomRule
 {
+    /// <summary>
+    /// Checks that every constructor of <paramref name="type"/> has a parameter whose type name is
+    /// <see cref="ICommandDbContext"/> or <see cref="ISampleEntityDapperCommandRepository"/>.
+    /// </summary>
+    /// <param name="type">The Mono.Cecil definition of the type under test.</param>
+    /// <returns><see langword="true"/> if every constructor satisfies the rule; otherwise <see langword="false"/>.</returns>
+    /// <remarks>Parameter types are compared by simple name only, not by namespace.</remarks>
     public bool MeetsRule(TypeDefinition type)
     {
         bool isValid = true;

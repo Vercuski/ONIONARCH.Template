@@ -1,3 +1,4 @@
+// Composition root for the Blazor Server (MudBlazor) web host.
 using MudBlazor.Services;
 using ONIONARCH.Application;
 using ONIONARCH.Infrastructure;
@@ -19,6 +20,7 @@ builder.Services.AddMudServices();
 
 var app = builder.Build();
 
+// Correlation ID middleware must run before the exception handler so error responses carry the ID.
 app.UseCorrelationIdMiddleware();
 app.UseExceptionHandler();
 // Configure the HTTP request pipeline.

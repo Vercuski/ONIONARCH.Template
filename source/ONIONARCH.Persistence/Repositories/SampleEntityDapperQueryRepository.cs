@@ -5,9 +5,15 @@ using ONIONARCH.Domain.Entities;
 
 namespace ONIONARCH.Persistence.Repositories;
 
+/// <summary>
+/// Dapper implementation of <see cref="ISampleEntityDapperQueryRepository"/>, executing
+/// parameterized SQL against the <c>SampleTable</c> table in the query database.
+/// </summary>
+/// <param name="connectionFactory">Creates connections to the query database.</param>
 public sealed class SampleEntityDapperQueryRepository(IDbReadOnlyConnectionFactory connectionFactory)
     : ISampleEntityDapperQueryRepository
 {
+    /// <inheritdoc />
     public async Task<List<SampleEntityDefinition>> GetAllAsync(CancellationToken cancellationToken = default)
     {
         const string sql = "SELECT SampleId, SampleString, SampleBoolean, SampleInt, SampleDecimal FROM SampleTable";
@@ -17,6 +23,7 @@ public sealed class SampleEntityDapperQueryRepository(IDbReadOnlyConnectionFacto
         return [.. response];
     }
 
+    /// <inheritdoc />
     public async Task<SampleEntityDefinition?> GetByIdAsync(int sampleId, CancellationToken cancellationToken = default)
     {
         const string sql = "SELECT SampleId, SampleString, SampleBoolean, SampleInt, SampleDecimal FROM SampleTable WHERE SampleId = @SampleId";

@@ -3,16 +3,23 @@ using static ONIONARCH.Tests.ArchitectureTests.AssemblyReferences;
 
 namespace ONIONARCH.Tests.ArchitectureTests;
 
+/// <summary>
+/// Architecture fitness tests for the API presentation layer, scoped to its controllers.
+/// </summary>
 [TestFixture]
 public class PresentationArchitectureTests
 {
+    /// <summary>The namespace containing the API controllers under test.</summary>
     private const string ControllersNamespace = "ONIONARCH.Presentation.API.Controllers";
 
     // Scoped to the Controllers namespace rather than the whole assembly: Program.cs is the
-    // composition root and legitimately calls AddPersistenceRegistrations()/AddEFCorePersistenceRegistrations()
+    // composition root and legitimately calls AddPersistenceRegistrations()
     // to wire up DI, so an assembly-wide ban on referencing Persistence would fail for the wrong
     // reason. Controllers, on the other hand, have no legitimate reason to see Persistence at all —
     // they should only talk to Application via ISender and get DTOs back.
+    /// <summary>
+    /// Verifies that no controller depends on the Persistence layer.
+    /// </summary>
     [Test]
     public void Controllers_ShouldNot_ReferencePersistenceDirectly()
     {
@@ -35,6 +42,9 @@ public class PresentationArchitectureTests
         Assert.That(result.IsSuccessful, Is.True);
     }
 
+    /// <summary>
+    /// Verifies that no controller depends on Dapper.
+    /// </summary>
     [Test]
     public void Controllers_ShouldNot_ReferenceDapperDirectly()
     {

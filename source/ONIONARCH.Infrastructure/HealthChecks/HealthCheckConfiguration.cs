@@ -5,10 +5,33 @@ using System.Text.Json;
 
 namespace ONIONARCH.Infrastructure.HealthChecks;
 
+/// <summary>
+/// Formats health check results for the <c>/health</c> endpoint.
+/// </summary>
 public class HealthCheckConfiguration
 {
+    /// <summary>
+    /// Prevents instantiation; this type only exposes static members.
+    /// </summary>
     protected HealthCheckConfiguration() { }
 
+    /// <summary>
+    /// Writes <paramref name="healthReport"/> to the response as indented JSON containing the
+    /// overall status plus, for each registered check, its status, description, and data.
+    /// </summary>
+    /// <param name="context">The HTTP context of the health check request.</param>
+    /// <param name="healthReport">The aggregated health check results.</param>
+    /// <returns>A task that completes when the response body has been written.</returns>
+    /// <example>
+    /// <code>
+    /// {
+    ///   "status": "Healthy",
+    ///   "results": {
+    ///     "SimpleHealthCheck": { "status": "Healthy", "description": "Value was 3", "data": { "Value": 3 } }
+    ///   }
+    /// }
+    /// </code>
+    /// </example>
     public static Task WriteResponse(HttpContext context, HealthReport healthReport)
     {
         context.Response.ContentType = "application/json; charset=utf-8";

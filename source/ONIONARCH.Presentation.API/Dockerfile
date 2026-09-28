@@ -19,6 +19,13 @@ ENV MinVerVersionOverride=${APP_VERSION}
 WORKDIR /src
 COPY ["Directory.Build.props", "./"]
 COPY ["ONIONARCH.Presentation.API/ONIONARCH.Presentation.API.csproj", "ONIONARCH.Presentation.API/"]
+COPY ["ONIONARCH.Application/ONIONARCH.Application.csproj", "ONIONARCH.Application/"]
+COPY ["ONIONARCH.Domain/ONIONARCH.Domain.csproj", "ONIONARCH.Domain/"]
+COPY ["ONIONARCH.Infrastructure/ONIONARCH.Infrastructure.csproj", "ONIONARCH.Infrastructure/"]
+COPY ["ONIONARCH.Persistence/ONIONARCH.Persistence.csproj", "ONIONARCH.Persistence/"]
+COPY ["ONIONARCH.Persistence.SqlServer/ONIONARCH.Persistence.SqlServer.csproj", "ONIONARCH.Persistence.SqlServer/"]
+COPY ["ONIONARCH.Persistence.PostgreSql/ONIONARCH.Persistence.PostgreSql.csproj", "ONIONARCH.Persistence.PostgreSql/"]
+COPY ["ONIONARCH.Persistence.MySql/ONIONARCH.Persistence.MySql.csproj", "ONIONARCH.Persistence.MySql/"]
 RUN dotnet restore "./ONIONARCH.Presentation.API/ONIONARCH.Presentation.API.csproj"
 COPY . .
 WORKDIR "/src/ONIONARCH.Presentation.API"

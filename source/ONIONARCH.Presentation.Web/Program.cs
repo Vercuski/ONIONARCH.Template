@@ -4,13 +4,23 @@ using ONIONARCH.Application;
 using ONIONARCH.Infrastructure;
 using ONIONARCH.Infrastructure.Exceptions;
 using ONIONARCH.Persistence;
+using ONIONARCH.Persistence.MySql;
+using ONIONARCH.Persistence.PostgreSql;
+using ONIONARCH.Persistence.SqlServer;
 using ONIONARCH.Presentation.Web.Components;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
 builder.AddApplicationRegistration();
-builder.AddPersistenceRegistrations();
+// Database providers this host can run against; DatabasePlatform in appsettings.json picks one
+// per CQRS side. Remove a line (and its project reference) to drop that platform.
+builder.AddPersistenceRegistrations(providers =>
+{
+    providers.AddSqlServer();
+    providers.AddPostgreSql();
+    providers.AddMySql();
+});
 builder.AddInfrastructureRegistration();
 
 // Add services to the container.

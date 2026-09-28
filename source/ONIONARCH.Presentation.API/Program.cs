@@ -5,6 +5,9 @@ using ONIONARCH.Infrastructure;
 using ONIONARCH.Infrastructure.Exceptions;
 using ONIONARCH.Infrastructure.Versioning;
 using ONIONARCH.Persistence;
+using ONIONARCH.Persistence.MySql;
+using ONIONARCH.Persistence.PostgreSql;
+using ONIONARCH.Persistence.SqlServer;
 using Scalar.AspNetCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -19,7 +22,14 @@ builder.Services.AddOpenApi(options => options.AddDocumentTransformer((document,
 }));
 builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
 builder.AddApplicationRegistration();
-builder.AddPersistenceRegistrations();
+// Database providers this host can run against; DatabasePlatform in appsettings.json picks one
+// per CQRS side. Remove a line (and its project reference) to drop that platform.
+builder.AddPersistenceRegistrations(providers =>
+{
+    providers.AddSqlServer();
+    providers.AddPostgreSql();
+    providers.AddMySql();
+});
 builder.AddInfrastructureRegistration();
 
 builder.Services.AddEndpointsApiExplorer();

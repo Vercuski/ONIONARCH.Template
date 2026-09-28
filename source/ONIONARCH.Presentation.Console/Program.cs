@@ -5,12 +5,22 @@ using Microsoft.Extensions.Hosting;
 using ONIONARCH.Application;
 using ONIONARCH.Infrastructure;
 using ONIONARCH.Persistence;
+using ONIONARCH.Persistence.MySql;
+using ONIONARCH.Persistence.PostgreSql;
+using ONIONARCH.Persistence.SqlServer;
 using ONIONARCH.Presentation.Console;
 using Spectre.Console;
 
 HostApplicationBuilder builder = Host.CreateApplicationBuilder(args);
 builder.AddApplicationRegistration();
-builder.AddPersistenceRegistrations();
+// Database providers this host can run against; DatabasePlatform in appsettings.json picks one
+// per CQRS side. Remove a line (and its project reference) to drop that platform.
+builder.AddPersistenceRegistrations(providers =>
+{
+    providers.AddSqlServer();
+    providers.AddPostgreSql();
+    providers.AddMySql();
+});
 builder.AddInfrastructureRegistration();
 builder.Services.AddHostedService<Worker>();
 

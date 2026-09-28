@@ -36,20 +36,44 @@
   - MudBlazor
   
 ## Persistence Layer
+Persistence is split into a provider-agnostic core and one project per database platform.
+The core never references a concrete provider; each host opts providers in at its
+composition root.
+
+### Persistence (core)
 - Third Party Libraries
   - Dapper
-  - Microsoft.Data.SqlClient
-  - Microsoft.EntityFrameworkCore.SqlServer
-  - MySql.EntityFrameworkCore
-  - MySqlConnector
-  - Npgsql
-  - Npgsql.EntityFrameworkCore.PostgreSQL
+  - Microsoft.EntityFrameworkCore.Relational
+  - Microsoft.EntityFrameworkCore.Design
 
-  SQL Server, PostgreSQL, and MySQL packages are all referenced because the
-  database backend is swappable via `IDatabaseProvider` (`SqlServerDatabaseProvider` /
-  `PostgreSqlDatabaseProvider` / `MySQLDatabaseProvider`). The active provider is
-  selected per query/command side via `DatabasePlatformOptions` in each
-  Presentation project's `appsettings.json`, resolved in `Persistence/DependencyInjection.cs`.
+  Owns the DbContexts, Dapper repositories, connection factories, the `IDatabaseProvider`
+  port and the `DatabaseProviderRegistry`. The active provider is selected per
+  query/command side via `DatabasePlatformOptions` in each Presentation project's
+  `appsettings.json` and resolved from the registry at startup; an unregistered
+  platform fails fast with the list of registered ones.
+
+### Persistence.SqlServer / Persistence.PostgreSql / Persistence.MySql
+| Project | Platform key | Third Party Libraries |
+|---|---|---|
+| `Persistence.SqlServer` | `MSSQL` | Microsoft.EntityFrameworkCore.SqlServer, Microsoft.Data.SqlClient |
+| `Persistence.PostgreSql` | `PostgreSQL` | Npgsql.EntityFrameworkCore.PostgreSQL, Npgsql |
+| `Persistence.MySql` | `MySQL` | MySql.EntityFrameworkCore, MySqlConnector |
+
+  Each project exposes a single public registration extension; its `IDatabaseProvider`
+  implementation is internal. Hosts register every platform either side may be configured for:
+
+```csharp
+builder.AddPersistenceRegistrations(providers =>
+{
+    providers.AddSqlServer();
+    providers.AddPostgreSql();
+    providers.AddMySql();
+});
+```
+
+  To drop a platform, remove its `Add…()` call and its project reference from each host.
+  `PersistenceArchitectureTests` enforce that the core stays provider-agnostic and that
+  provider projects don't reference each other.
 
 ## Infrastructure Layer
 - Third Party Libraries

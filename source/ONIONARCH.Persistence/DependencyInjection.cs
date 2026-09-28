@@ -17,7 +17,8 @@ namespace ONIONARCH.Persistence;
 
 /// <summary>
 /// Composition-root extensions that register the Persistence layer: configuration options,
-/// the database provider for each side of the CQRS split, and both the Dapper and EF Core
+/// the database provider for each side of the CQRS split (resolved from the providers the host
+/// registers in a <see cref="DatabaseProviderRegistry"/>), and both the Dapper and EF Core
 /// implementations of the Application-layer persistence ports.
 /// </summary>
 public static class DependencyInjection
@@ -26,13 +27,26 @@ public static class DependencyInjection
     /// Registers all Persistence-layer services.
     /// </summary>
     /// <param name="builder">The host builder to register services with.</param>
+    /// <param name="configureProviders">
+    /// Opts the host in to the provider-specific projects it references, e.g.
+    /// <c>providers.AddSqlServer()</c>. The query and command sides may use different platforms, so
+    /// register every platform either side's configuration can name.
+    /// </param>
     /// <returns>The same <paramref name="builder"/>, for chaining.</returns>
+    /// <exception cref="ArgumentNullException"><paramref name="configureProviders"/> is <see langword="null"/>.</exception>
     /// <exception cref="InvalidOperationException">The <c>DatabasePlatform</c> configuration section is missing or invalid.</exception>
-    /// <exception cref="NotSupportedException">A configured database platform is not recognized.</exception>
-    public static IHostApplicationBuilder AddPersistenceRegistrations(this IHostApplicationBuilder builder)
+    /// <exception cref="NotSupportedException">A configured database platform has no registered provider.</exception>
+    public static IHostApplicationBuilder AddPersistenceRegistrations(
+        this IHostApplicationBuilder builder,
+        Action<DatabaseProviderRegistry> configureProviders)
     {
+        ArgumentNullException.ThrowIfNull(configureProviders);
+
+        var registry = new DatabaseProviderRegistry();
+        configureProviders(registry);
+
         builder.AddOptionsRegistration();
-        builder.AddDatabaseProviderRegistration();
+        builder.AddDatabaseProviderRegistration(registry);
         return builder;
     }
 
@@ -50,21 +64,25 @@ public static class DependencyInjection
     }
 
     /// <summary>
-    /// Reads <see cref="DatabasePlatformOptions"/> eagerly at startup, creates the query- and
-    /// command-side <see cref="IDatabaseProvider"/>s, and registers both persistence paths with them.
+    /// Reads <see cref="DatabasePlatformOptions"/> eagerly at startup, resolves the query- and
+    /// command-side <see cref="IDatabaseProvider"/>s from <paramref name="registry"/>, and registers
+    /// both persistence paths with them.
     /// </summary>
     /// <param name="builder">The host builder to register services with.</param>
+    /// <param name="registry">The providers the host opted into.</param>
     /// <returns>The same <paramref name="builder"/>, for chaining.</returns>
     /// <exception cref="InvalidOperationException">The <c>DatabasePlatform</c> configuration section is missing or invalid.</exception>
+    /// <exception cref="NotSupportedException">A configured database platform has no registered provider.</exception>
     private static IHostApplicationBuilder AddDatabaseProviderRegistration(
-        this IHostApplicationBuilder builder)
+        this IHostApplicationBuilder builder,
+        DatabaseProviderRegistry registry)
     {
         var databasePlatformOptions = GetSection<DatabasePlatformOptions>(builder.Configuration)
             .Get<DatabasePlatformOptions>()
             ?? throw new InvalidOperationException("Missing or invalid 'DatabasePlatform' configuration section.");
 
-        var queryDatabaseProvider = CreateDatabaseProvider(databasePlatformOptions.QueryDbPlatform, "Query");
-        var commandDatabaseProvider = CreateDatabaseProvider(databasePlatformOptions.CommandDbPlatform, "Command");
+        var queryDatabaseProvider = ResolveDatabaseProvider(registry, databasePlatformOptions.QueryDbPlatform, "Query");
+        var commandDatabaseProvider = ResolveDatabaseProvider(registry, databasePlatformOptions.CommandDbPlatform, "Command");
 
         builder.AddDapperPersistenceRegistrations(queryDatabaseProvider, commandDatabaseProvider);
         builder.AddEFCorePersistenceRegistrations(queryDatabaseProvider, commandDatabaseProvider);
@@ -73,24 +91,27 @@ public static class DependencyInjection
     }
 
     /// <summary>
-    /// Maps a configured platform name to its <see cref="IDatabaseProvider"/>.
+    /// Resolves the provider registered for a configured platform name, prefixing any failure with
+    /// the CQRS side so a misconfiguration is attributable at a glance.
     /// </summary>
-    /// <param name="platform">
-    /// The platform name from configuration; case-insensitive. Supported values:
-    /// <c>MSSQL</c>, <c>POSTGRESQL</c>, <c>MYSQL</c>.
-    /// </param>
+    /// <param name="registry">The providers the host opted into.</param>
+    /// <param name="platform">The platform name from configuration; case-insensitive.</param>
     /// <param name="side">"Query" or "Command"; used only in the error message.</param>
     /// <returns>The provider for <paramref name="platform"/>.</returns>
-    /// <exception cref="NotSupportedException"><paramref name="platform"/> is not a supported value.</exception>
-    private static IDatabaseProvider CreateDatabaseProvider(string platform, string side)
+    /// <exception cref="NotSupportedException">
+    /// <paramref name="platform"/> is missing or has no registered provider. The message lists the
+    /// registered platforms.
+    /// </exception>
+    private static IDatabaseProvider ResolveDatabaseProvider(DatabaseProviderRegistry registry, string platform, string side)
     {
-        return platform.ToUpperInvariant() switch
+        try
         {
-            "MSSQL" => new SqlServerDatabaseProvider(),
-            "POSTGRESQL" => new PostgreSqlDatabaseProvider(),
-            "MYSQL" => new MySQLDatabaseProvider(),
-            _ => throw new NotSupportedException($"{side} Database platform '{platform}' is not supported.")
-        };
+            return registry.GetProvider(platform);
+        }
+        catch (Exception ex) when (ex is NotSupportedException or ArgumentException)
+        {
+            throw new NotSupportedException($"{side} database platform could not be resolved: {ex.Message}", ex);
+        }
     }
 
     /// <summary>

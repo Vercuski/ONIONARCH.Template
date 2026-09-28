@@ -23,6 +23,9 @@ COPY ["ONIONARCH.Application/ONIONARCH.Application.csproj", "ONIONARCH.Applicati
 COPY ["ONIONARCH.Domain/ONIONARCH.Domain.csproj", "ONIONARCH.Domain/"]
 COPY ["ONIONARCH.Infrastructure/ONIONARCH.Infrastructure.csproj", "ONIONARCH.Infrastructure/"]
 COPY ["ONIONARCH.Persistence/ONIONARCH.Persistence.csproj", "ONIONARCH.Persistence/"]
+COPY ["ONIONARCH.Persistence.SqlServer/ONIONARCH.Persistence.SqlServer.csproj", "ONIONARCH.Persistence.SqlServer/"]
+COPY ["ONIONARCH.Persistence.PostgreSql/ONIONARCH.Persistence.PostgreSql.csproj", "ONIONARCH.Persistence.PostgreSql/"]
+COPY ["ONIONARCH.Persistence.MySql/ONIONARCH.Persistence.MySql.csproj", "ONIONARCH.Persistence.MySql/"]
 RUN dotnet restore "./ONIONARCH.Presentation.Web/ONIONARCH.Presentation.Web.csproj"
 COPY . .
 WORKDIR "/src/ONIONARCH.Presentation.Web"

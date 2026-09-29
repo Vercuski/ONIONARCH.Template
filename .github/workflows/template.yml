@@ -82,4 +82,6 @@ jobs:
       - name: Verify ${{ matrix.case }}
         env:
           VERIFY_EXPECT_REFERENCE_PROJECTS: ${{ matrix.reference || 'false' }}
-        run: template/verify-template.sh ${{ matrix.case }} ${{ matrix.options }}
+        # Invoked through bash so the check does not depend on the executable bit, which commits
+        # made on Windows (core.fileMode=false) do not preserve.
+        run: bash template/verify-template.sh ${{ matrix.case }} ${{ matrix.options }}

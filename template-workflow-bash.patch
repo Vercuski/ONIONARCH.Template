@@ -1,0 +1,25 @@
+From 9ef78d6b1abc888e3ccdea8693ea82922f9b318b Mon Sep 17 00:00:00 2001
+From: x <x@x>
+Date: Tue, 29 Sep 2026 10:58:25 +0000
+Subject: [PATCH] Run template verification through bash so it doesn't depend
+ on the executable bit
+
+---
+ .github/workflows/template.yml | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
+
+diff --git a/.github/workflows/template.yml b/.github/workflows/template.yml
+index f7668fd..1a9961e 100644
+--- a/.github/workflows/template.yml
++++ b/.github/workflows/template.yml
+@@ -82,4 +82,6 @@ jobs:
+       - name: Verify ${{ matrix.case }}
+         env:
+           VERIFY_EXPECT_REFERENCE_PROJECTS: ${{ matrix.reference || 'false' }}
+-        run: template/verify-template.sh ${{ matrix.case }} ${{ matrix.options }}
++        # Invoked through bash so the check does not depend on the executable bit, which commits
++        # made on Windows (core.fileMode=false) do not preserve.
++        run: bash template/verify-template.sh ${{ matrix.case }} ${{ matrix.options }}
+-- 
+2.43.0
+

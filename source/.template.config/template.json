@@ -19,7 +19,8 @@
   "preferNameDirectory": true,
   "tags": {
     "language": "C#",
-    "type": "solution"
+    "type": "solution",
+    "editorTreatAs": "solution"
   },
   "guids": [
     "BFD27282-943E-4B5C-9C53-1544F19CDDC8",
@@ -40,6 +41,10 @@
     "201d387b-5ed9-4b0c-bf03-3ca7ec5d352a"
   ],
   "symbols": {
+    "HostIdentifier": {
+      "type": "bind",
+      "binding": "HostIdentifier"
+    },
     "IncludeApi": {
       "type": "parameter",
       "datatype": "bool",
@@ -386,7 +391,21 @@
     {
       "source": ".template.config/solution/",
       "target": "./",
-      "exclude": []
+      "exclude": [],
+      "modifiers": [
+        {
+          "condition": "(HostIdentifier == \"dotnetcli\" || HostIdentifier == \"dotnetcli-preview\")",
+          "rename": {
+            "ONIONARCH.App.sln": "ONIONARCH.sln"
+          }
+        }
+      ]
+    }
+  ],
+  "primaryOutputs": [
+    {
+      "condition": "(HostIdentifier != \"dotnetcli\" && HostIdentifier != \"dotnetcli-preview\")",
+      "path": "*.App.sln"
     }
   ],
   "SpecialCustomOperations": {

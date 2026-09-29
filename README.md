@@ -188,9 +188,13 @@ provider set and leaves the per-side choice to `appsettings.json`.
 ## Authoring rules
 - The repository stays the reference implementation: every template directive is a comment
   (`//#if`, `<!--#if -->`, `#if` in Dockerfiles), so `source/ONIONARCH.sln` builds and tests as-is.
-- The generated solution file comes from `source/.template.config/solution/ONIONARCH.sln`, a copy
-  of the real solution with conditional blocks, kept separate because Visual Studio rewrites
-  `ONIONARCH.sln` on save. When you add or remove a project, update both.
+- The generated solution file comes from `source/.template.config/solution/ONIONARCH.App.sln`, a
+  copy of the real solution with conditional blocks, kept separate because Visual Studio rewrites
+  `ONIONARCH.sln` on save. When you add or remove a project, update both. Its name deliberately
+  differs from `sourceName`: Visual Studio opens `<Name>.App.sln` (found through `primaryOutputs`
+  and the `editorTreatAs: solution` tag) and re-saves it under the name chosen in the New Project
+  dialog, while `dotnet new` renames it to `<Name>.sln`. A solution named after `sourceName` makes
+  Visual Studio stop on a "File Modification Detected" prompt right after creation.
 - Where a variant needs *different* code rather than less code, the alternate lives in a `//#else`
   branch on lines prefixed `//~`. They stay comments in the repository and are uncommented in
   generated output (see `SpecialCustomOperations` in `template.json`; the replacement operation must

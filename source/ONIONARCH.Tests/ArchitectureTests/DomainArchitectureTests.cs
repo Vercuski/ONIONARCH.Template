@@ -39,12 +39,14 @@ public class DomainArchitectureTests
     }
 
     /// <summary>
-    /// Verifies that the Domain assembly does not depend on any outer layer.
+    /// Verifies that no type in the Domain assembly depends on any outer layer or on the tests.
     /// </summary>
     /// <remarks>
-    /// <c>HaveDependencyOnAll</c> only flags a type that references <em>every</em> listed namespace,
-    /// so a single stray reference to one layer is not detected; <c>HaveDependencyOnAny</c> would
-    /// enforce the intent strictly.
+    /// Uses <c>HaveDependencyOnAny</c>, so a single reference to any one listed namespace fails the
+    /// test. (<c>HaveDependencyOnAll</c> would only flag a type referencing every listed namespace at
+    /// once.) NetArchTest matches dependencies by namespace prefix, so the names must be fully
+    /// qualified: an unqualified <c>"Application"</c> never matches <c>ONIONARCH.Application</c>.
+    /// The <c>ONIONARCH.Persistence</c> prefix also covers the provider-specific projects.
     /// </remarks>
     [Test]
     public void DomainAssembly_ShouldNot_ReferenceAnyOtherProjects()
@@ -52,12 +54,12 @@ public class DomainArchitectureTests
         var result = Types
             .InAssembly(DomainAssembly)
             .ShouldNot()
-            .HaveDependencyOnAll([
-                "Application",
-                "Infrastructure",
-                "Persistence",
-                "Presentation",
-                "Tests"
+            .HaveDependencyOnAny([
+                "ONIONARCH.Application",
+                "ONIONARCH.Infrastructure",
+                "ONIONARCH.Persistence",
+                "ONIONARCH.Presentation",
+                "ONIONARCH.Tests"
             ])
             .GetResult();
 

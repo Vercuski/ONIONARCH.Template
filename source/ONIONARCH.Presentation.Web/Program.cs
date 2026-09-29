@@ -19,7 +19,7 @@ builder.AddPersistenceRegistrations(providers =>
 {
     providers.AddSqlServer();
     providers.AddPostgreSql();
-    providers.AddMySql();
+    providers.AddMySql(builder.Configuration);
 });
 builder.AddInfrastructureRegistration();
 

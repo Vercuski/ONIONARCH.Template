@@ -6,11 +6,16 @@ using System.Data;
 namespace ONIONARCH.Persistence.MySql;
 
 /// <summary>
-/// <see cref="IDatabaseProvider"/> for MySQL. Uses the MySql.EntityFrameworkCore provider for
-/// EF Core and MySqlConnector for Dapper connections.
-/// Internal so hosts can only obtain it through <see cref="DependencyInjection.AddMySql"/>.
+/// <see cref="IDatabaseProvider"/> for MySQL and MariaDB. Both the EF Core path (via the
+/// Microting.EntityFrameworkCore.MySql provider) and the Dapper path use MySqlConnector, so the
+/// platform runs on a single ADO.NET driver. Internal so hosts can only obtain it through
+/// <see cref="DependencyInjection.AddMySql"/>.
 /// </summary>
-internal sealed class MySqlDatabaseProvider : IDatabaseProvider
+/// <param name="serverVersion">
+/// The server version EF Core generates SQL for. Supplied explicitly rather than auto-detected, because
+/// <c>ServerVersion.AutoDetect</c> opens a database connection just to configure a DbContext.
+/// </param>
+internal sealed class MySqlDatabaseProvider(ServerVersion serverVersion) : IDatabaseProvider
 {
     /// <summary>
     /// The <c>DatabasePlatform</c> configuration value that selects this provider.
@@ -23,7 +28,7 @@ internal sealed class MySqlDatabaseProvider : IDatabaseProvider
     /// <inheritdoc />
     public void ConfigureEfCore(DbContextOptionsBuilder optionsBuilder, string connectionString)
     {
-        optionsBuilder.UseMySQL(connectionString);
+        optionsBuilder.UseMySql(connectionString, serverVersion);
     }
 
     /// <inheritdoc />

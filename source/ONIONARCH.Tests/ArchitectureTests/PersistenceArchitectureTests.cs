@@ -23,9 +23,21 @@ public class PersistenceArchitectureTests
         "Microsoft.Data.SqlClient",
         "Npgsql.EntityFrameworkCore.PostgreSQL",
         "Npgsql",
+        "Microting.EntityFrameworkCore.MySql",
+        "Pomelo.EntityFrameworkCore.MySql",
         "MySql.EntityFrameworkCore",
         "MySql.Data",
         "MySqlConnector"
+    ];
+
+    /// <summary>
+    /// Oracle's MySQL assemblies. The MySQL provider standardizes on MySqlConnector for both the EF Core
+    /// and Dapper paths, so neither may appear alongside it.
+    /// </summary>
+    private static readonly string[] OracleMySqlAssemblyNames =
+    [
+        "MySql.EntityFrameworkCore",
+        "MySql.Data"
     ];
 
     /// <summary>
@@ -123,6 +135,21 @@ public class PersistenceArchitectureTests
 
         Assert.That(result.IsSuccessful, Is.True,
             $"Provider types must be internal and sealed: {string.Join(", ", result.FailingTypeNames ?? [])}");
+    }
+
+    /// <summary>
+    /// Verifies that the MySQL provider references no Oracle MySQL assembly, keeping the platform on
+    /// a single ADO.NET driver (MySqlConnector).
+    /// </summary>
+    [Test]
+    public void MySqlProvider_ShouldNot_ReferenceOracleMySqlAssemblies()
+    {
+        var offending = ReferencedAssemblyNames(MySqlPersistenceAssembly)
+            .Intersect(OracleMySqlAssemblyNames, StringComparer.OrdinalIgnoreCase)
+            .ToList();
+
+        Assert.That(offending, Is.Empty,
+            $"ONIONARCH.Persistence.MySql must use MySqlConnector only but references: {string.Join(", ", offending)}");
     }
 
     /// <summary>

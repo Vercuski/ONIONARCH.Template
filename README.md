@@ -57,7 +57,7 @@ composition root.
 |---|---|---|
 | `Persistence.SqlServer` | `MSSQL` | Microsoft.EntityFrameworkCore.SqlServer, Microsoft.Data.SqlClient |
 | `Persistence.PostgreSql` | `PostgreSQL` | Npgsql.EntityFrameworkCore.PostgreSQL, Npgsql |
-| `Persistence.MySql` | `MySQL` | MySql.EntityFrameworkCore, MySqlConnector |
+| `Persistence.MySql` | `MySQL` | Microting.EntityFrameworkCore.MySql, MySqlConnector |
 
   Each project exposes a single public registration extension; its `IDatabaseProvider`
   implementation is internal. Hosts register every platform either side may be configured for:
@@ -67,9 +67,16 @@ builder.AddPersistenceRegistrations(providers =>
 {
     providers.AddSqlServer();
     providers.AddPostgreSql();
-    providers.AddMySql();
+    providers.AddMySql(builder.Configuration);
 });
 ```
+
+  MySQL (and MariaDB) uses `Microting.EntityFrameworkCore.MySql`, a community fork of
+  Pomelo.EntityFrameworkCore.MySql that tracks EF Core 10; Pomelo itself has no EF Core 10 release
+  yet. It is built on MySqlConnector, so the EF Core and Dapper paths share one ADO.NET driver.
+  EF Core targets the server version in `DatabasePlatform:MySqlServerVersion` (e.g. `8.4.0-mysql`
+  or `11.4.2-mariadb`) rather than auto-detecting it, which would open a connection just to
+  configure a DbContext. The value is validated at startup whenever `AddMySql` is registered.
 
   To drop a platform, remove its `Add…()` call and its project reference from each host.
   `PersistenceArchitectureTests` enforce that the core stays provider-agnostic and that

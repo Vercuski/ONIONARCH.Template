@@ -19,9 +19,9 @@ public class InfrastructureArchitectureTests
     /// Persistence, or Presentation layers.
     /// </summary>
     /// <remarks>
-    /// <c>HaveDependencyOnAll</c> only flags a type that references <em>every</em> listed namespace,
-    /// so a single stray reference to one layer is not detected; <c>HaveDependencyOnAny</c> would
-    /// enforce the intent strictly.
+    /// Uses <c>HaveDependencyOnAny</c>, so a single reference to any one listed layer fails the test.
+    /// (<c>HaveDependencyOnAll</c> would only flag a type referencing every listed layer at once.)
+    /// The <c>ONIONARCH.Persistence</c> prefix also covers the provider-specific projects.
     /// </remarks>
     [Test]
     public void InfrastructureAssembly_ShouldNot_ReferenceApplicationDomainPersistenceOrPresentation()
@@ -29,7 +29,7 @@ public class InfrastructureArchitectureTests
         var result = Types
             .InAssembly(InfrastrcutureAssembly)
             .ShouldNot()
-            .HaveDependencyOnAll([
+            .HaveDependencyOnAny([
                 "ONIONARCH.Application",
                 "ONIONARCH.Domain",
                 "ONIONARCH.Persistence",

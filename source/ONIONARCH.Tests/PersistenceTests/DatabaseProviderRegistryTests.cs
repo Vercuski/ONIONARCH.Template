@@ -1,7 +1,9 @@
-﻿using ONIONARCH.Persistence.MySql;
+﻿using Microsoft.Extensions.Configuration;
+using ONIONARCH.Persistence.MySql;
 using ONIONARCH.Persistence.PostgreSql;
 using ONIONARCH.Persistence.Providers;
 using ONIONARCH.Persistence.SqlServer;
+using MySqlRegistration = ONIONARCH.Persistence.MySql.DependencyInjection;
 
 namespace ONIONARCH.Tests.PersistenceTests;
 
@@ -67,10 +69,17 @@ public class DatabaseProviderRegistryTests
     [Test]
     public void ProviderRegistrations_Should_ExposeTheConfiguredPlatformKeys()
     {
+        var configuration = new ConfigurationBuilder()
+            .AddInMemoryCollection(new Dictionary<string, string?>
+            {
+                [MySqlRegistration.ServerVersionConfigurationKey] = "8.4.0-mysql"
+            })
+            .Build();
+
         var registry = new DatabaseProviderRegistry()
             .AddSqlServer()
             .AddPostgreSql()
-            .AddMySql();
+            .AddMySql(configuration);
 
         Assert.That(registry.Platforms, Is.EquivalentTo(new[] { "MSSQL", "PostgreSQL", "MySQL" }));
     }

@@ -1,5 +1,7 @@
-﻿//#if (HasMySql)
+﻿//#if (HasMySql && HasEfCore)
 using Microsoft.Extensions.Configuration;
+//#endif
+//#if (HasMySql)
 using ONIONARCH.Persistence.MySql;
 //#endif
 //#if (HasPostgreSql)
@@ -9,7 +11,7 @@ using ONIONARCH.Persistence.Providers;
 //#if (HasSqlServer)
 using ONIONARCH.Persistence.SqlServer;
 //#endif
-//#if (HasMySql)
+//#if (HasMySql && HasEfCore)
 using MySqlRegistration = ONIONARCH.Persistence.MySql.DependencyInjection;
 //#endif
 
@@ -89,6 +91,7 @@ public class DatabaseProviderRegistryTests
         expectedPlatforms.Add("PostgreSQL");
 //#endif
 //#if (HasMySql)
+//#if (HasEfCore)
         var configuration = new ConfigurationBuilder()
             .AddInMemoryCollection(new Dictionary<string, string?>
             {
@@ -96,6 +99,9 @@ public class DatabaseProviderRegistryTests
             })
             .Build();
         registry.AddMySql(configuration);
+//#else
+//~        registry.AddMySql();
+//#endif
         expectedPlatforms.Add("MySQL");
 //#endif
 

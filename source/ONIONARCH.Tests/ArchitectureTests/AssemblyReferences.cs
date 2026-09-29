@@ -1,7 +1,7 @@
-﻿using ONIONARCH.Application.Abstractions.Context;
+﻿using ONIONARCH.Application.Abstractions;
 using ONIONARCH.Domain.Abstractions;
 using ONIONARCH.Infrastructure.HealthChecks;
-using ONIONARCH.Persistence.Contexts;
+using ONIONARCH.Persistence.Providers;
 //#if (HasMySql)
 using MySqlRegistration = ONIONARCH.Persistence.MySql.DependencyInjection;
 //#endif
@@ -12,7 +12,7 @@ using PostgreSqlRegistration = ONIONARCH.Persistence.PostgreSql.DependencyInject
 using SqlServerRegistration = ONIONARCH.Persistence.SqlServer.DependencyInjection;
 //#endif
 //#if (HasApi)
-using ONIONARCH.Presentation.API.Controllers;
+using ONIONARCH.Presentation.API;
 //#endif
 using System.Reflection;
 
@@ -20,18 +20,19 @@ namespace ONIONARCH.Tests.ArchitectureTests;
 
 /// <summary>
 /// Assembly handles for each layer, resolved from a known type in that layer, shared by the
-/// architecture fitness tests.
+/// architecture fitness tests. Each anchor type exists whatever persistence path and sample options
+/// the solution was generated with.
 /// </summary>
 internal static class AssemblyReferences
 {
     /// <summary>The ONIONARCH.Domain assembly.</summary>
     internal static readonly Assembly DomainAssembly = typeof(Entity).Assembly;
     /// <summary>The ONIONARCH.Application assembly.</summary>
-    internal static readonly Assembly ApplicationAssembly = typeof(IQueryDbContext).Assembly;
+    internal static readonly Assembly ApplicationAssembly = typeof(ISender).Assembly;
     /// <summary>The ONIONARCH.Infrastructure assembly.</summary>
     internal static readonly Assembly InfrastrcutureAssembly = typeof(SimpleHealthCheck).Assembly;
     /// <summary>The ONIONARCH.Persistence assembly.</summary>
-    internal static readonly Assembly PersistenceAssembly = typeof(QueryDbContext).Assembly;
+    internal static readonly Assembly PersistenceAssembly = typeof(DatabaseProviderRegistry).Assembly;
 //#if (HasSqlServer)
     /// <summary>The ONIONARCH.Persistence.SqlServer assembly.</summary>
     internal static readonly Assembly SqlServerPersistenceAssembly = typeof(SqlServerRegistration).Assembly;
@@ -59,7 +60,7 @@ internal static class AssemblyReferences
     ];
 //#if (HasApi)
     /// <summary>The ONIONARCH.Presentation.API assembly.</summary>
-    internal static readonly Assembly PresentationAssembly = typeof(SampleController).Assembly;
+    internal static readonly Assembly PresentationAssembly = typeof(ApiAssemblyMarker).Assembly;
 //#endif
     /// <summary>The ONIONARCH.Tests assembly.</summary>
     internal static readonly Assembly TestsAssembly = typeof(DomainArchitectureTests).Assembly;

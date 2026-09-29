@@ -15,12 +15,12 @@ public class ApplicationArchitectureTests
     /// <summary>
     /// Verifies that every query handler under <c>Actions.*.Queries</c> is sealed and takes a
     /// query-side persistence abstraction in its constructor
-    /// (see <see cref="IQueryDbContextMustBeConstructorParameter"/>).
+    /// (see <see cref="QueryHandlerMustDependOnQueryPort"/>).
     /// </summary>
     [Test]
-    public void ApplicationEntityQueryHandlers_Should_HaveAnIQueryDbContextParameterInTheConstructor()
+    public void ApplicationEntityQueryHandlers_Should_DependOnAQuerySidePort()
     {
-        var customRuleIQueryDbContextMustBeConstructorParameter = new IQueryDbContextMustBeConstructorParameter();
+        var queryPortRule = new QueryHandlerMustDependOnQueryPort();
 
         var result = Types
             .InAssembly(ApplicationAssembly)
@@ -29,7 +29,7 @@ public class ApplicationArchitectureTests
             .And()
             .ImplementInterface(typeof(IQueryHandler<,>))
             .Should()
-            .MeetCustomRule(customRuleIQueryDbContextMustBeConstructorParameter)
+            .MeetCustomRule(queryPortRule)
             .And()
             .BeSealed()
             .GetResult();
@@ -48,12 +48,12 @@ public class ApplicationArchitectureTests
     /// <summary>
     /// Verifies that every command handler under <c>Actions.*.Commands</c> is sealed and takes a
     /// command-side persistence abstraction in its constructor
-    /// (see <see cref="ICommandDbContextMustBeConstructorParameter"/>).
+    /// (see <see cref="CommandHandlerMustDependOnCommandPort"/>).
     /// </summary>
     [Test]
-    public void ApplicationEntityCommandHandlers_Should_HaveAnICommandDbContextParameterInTheConstructor()
+    public void ApplicationEntityCommandHandlers_Should_DependOnACommandSidePort()
     {
-        var customRuleICommandDbContextMustBeConstructorParameter = new ICommandDbContextMustBeConstructorParameter();
+        var commandPortRule = new CommandHandlerMustDependOnCommandPort();
 
         var result = Types
             .InAssembly(ApplicationAssembly)
@@ -62,7 +62,7 @@ public class ApplicationArchitectureTests
             .And()
             .ImplementInterface(typeof(ICommandHandler<,>))
             .Should()
-            .MeetCustomRule(customRuleICommandDbContextMustBeConstructorParameter)
+            .MeetCustomRule(commandPortRule)
             .And()
             .BeSealed()
             .GetResult();
@@ -84,11 +84,10 @@ public class ApplicationArchitectureTests
     [Test]
     public void ApplicationAssembly_ShouldNot_ReferenceDapper()
     {
-        // Application must depend only on abstractions (ICommandDbContext, IQueryDbContext,
-        // ISampleEntityDapperQueryRepository, ISampleEntityDapperCommandRepository, etc.) that
-        // are implemented in Persistence. This is a whole-assembly check, independent of the
-        // constructor-shape rules above, so it also catches Dapper usage introduced outside a
-        // request handler (e.g. a helper class, static method, or future feature slice).
+        // Application must depend only on persistence ports (the EF Core contexts and/or the Dapper
+        // repository ports) that are implemented in Persistence. This is a whole-assembly check,
+        // independent of the constructor-shape rules above, so it also catches Dapper usage introduced
+        // outside a request handler (e.g. a helper class, static method, or future feature slice).
         var result = Types
             .InAssembly(ApplicationAssembly)
             .ShouldNot()
@@ -108,7 +107,7 @@ public class ApplicationArchitectureTests
 
     /// <summary>
     /// Verifies that no type in the Application assembly depends on EF Core, keeping the
-    /// persistence ports (<c>IQueryDbContext</c>, <c>ICommandDbContext</c>) free of EF Core types.
+    /// persistence ports free of EF Core types.
     /// </summary>
     [Test]
     public void ApplicationAssembly_ShouldNot_ReferenceEntityFrameworkCore()

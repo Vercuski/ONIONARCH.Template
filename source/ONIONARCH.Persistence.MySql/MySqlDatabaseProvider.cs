@@ -1,7 +1,13 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿//#if (HasEfCore)
+using Microsoft.EntityFrameworkCore;
+//#endif
+//#if (HasDapper)
 using MySqlConnector;
+//#endif
 using ONIONARCH.Persistence.Providers;
+//#if (HasDapper)
 using System.Data;
+//#endif
 
 namespace ONIONARCH.Persistence.MySql;
 
@@ -11,11 +17,17 @@ namespace ONIONARCH.Persistence.MySql;
 /// platform runs on a single ADO.NET driver. Internal so hosts can only obtain it through
 /// <see cref="DependencyInjection.AddMySql"/>.
 /// </summary>
+//#if (HasEfCore)
 /// <param name="serverVersion">
 /// The server version EF Core generates SQL for. Supplied explicitly rather than auto-detected, because
 /// <c>ServerVersion.AutoDetect</c> opens a database connection just to configure a DbContext.
 /// </param>
+//#endif
+//#if (HasEfCore)
 internal sealed class MySqlDatabaseProvider(ServerVersion serverVersion) : IDatabaseProvider
+//#else
+//~internal sealed class MySqlDatabaseProvider : IDatabaseProvider
+//#endif
 {
     /// <summary>
     /// The <c>DatabasePlatform</c> configuration value that selects this provider.
@@ -24,16 +36,20 @@ internal sealed class MySqlDatabaseProvider(ServerVersion serverVersion) : IData
 
     /// <inheritdoc />
     public string Platform => PlatformKey;
+//#if (HasEfCore)
 
     /// <inheritdoc />
     public void ConfigureEfCore(DbContextOptionsBuilder optionsBuilder, string connectionString)
     {
         optionsBuilder.UseMySql(connectionString, serverVersion);
     }
+//#endif
+//#if (HasDapper)
 
     /// <inheritdoc />
     public IDbConnection CreateConnection(string connectionString)
     {
         return new MySqlConnection(connectionString);
     }
+//#endif
 }

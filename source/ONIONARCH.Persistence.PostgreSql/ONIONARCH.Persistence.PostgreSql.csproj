@@ -8,8 +8,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <!--#if (HasEfCore) -->
     <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="10.0.3" />
+    <!--#endif -->
+    <!--#if (HasDapper) -->
     <PackageReference Include="Npgsql" Version="10.0.3" />
+    <!--#endif -->
   </ItemGroup>
 
   <ItemGroup>

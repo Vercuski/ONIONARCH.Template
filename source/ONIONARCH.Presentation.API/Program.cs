@@ -39,7 +39,11 @@ builder.AddPersistenceRegistrations(providers =>
     providers.AddPostgreSql();
 //#endif
 //#if (HasMySql)
+//#if (HasEfCore)
     providers.AddMySql(builder.Configuration);
+//#else
+//~    providers.AddMySql();
+//#endif
 //#endif
 });
 builder.AddInfrastructureRegistration();

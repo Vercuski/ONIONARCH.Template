@@ -8,10 +8,14 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <!--#if (HasEfCore) -->
     <!-- Community fork of Pomelo.EntityFrameworkCore.MySql tracking EF Core 10 (Pomelo has no EF Core 10
          release yet). Built on MySqlConnector, so EF Core and Dapper share one ADO.NET driver. -->
     <PackageReference Include="Microting.EntityFrameworkCore.MySql" Version="10.0.10" />
+    <!--#endif -->
+    <!--#if (HasDapper) -->
     <PackageReference Include="MySqlConnector" Version="2.6.1" />
+    <!--#endif -->
   </ItemGroup>
 
   <ItemGroup>

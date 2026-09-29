@@ -86,6 +86,34 @@
         }
       ]
     },
+    "DataAccess": {
+      "type": "parameter",
+      "datatype": "choice",
+      "defaultValue": "Both",
+      "displayName": "Data access",
+      "description": "The persistence path(s) to include: EF Core (DbContexts, unit of work), Dapper (connection factories, repository ports), or both side by side.",
+      "choices": [
+        {
+          "choice": "EfCore",
+          "displayName": "EF Core"
+        },
+        {
+          "choice": "Dapper",
+          "displayName": "Dapper"
+        },
+        {
+          "choice": "Both",
+          "displayName": "EF Core and Dapper"
+        }
+      ]
+    },
+    "IncludeSamples": {
+      "type": "parameter",
+      "datatype": "bool",
+      "defaultValue": "true",
+      "displayName": "Sample feature",
+      "description": "Include the SampleEntity slice (entity, CQRS actions for each included data-access path, DTOs, Dapper repositories, and the API's SampleController)."
+    },
     "IncludeTests": {
       "type": "parameter",
       "datatype": "bool",
@@ -237,6 +265,14 @@
       "valueTransform": "identity",
       "replaces": "OnionArch",
       "description": "SonarQube project key in SonarqubeAnalysis.bat; the name's automatic forms don't match its mixed-case spelling."
+    },
+    "HasEfCore": {
+      "type": "computed",
+      "value": "(DataAccess == \"EfCore\" || DataAccess == \"Both\")"
+    },
+    "HasDapper": {
+      "type": "computed",
+      "value": "(DataAccess == \"Dapper\" || DataAccess == \"Both\")"
     }
   },
   "sources": [
@@ -312,6 +348,38 @@
             "SonarqubeAnalysis.bat",
             "coverConfig.xml"
           ]
+        },
+        {
+          "condition": "(!HasEfCore)",
+          "exclude": [
+            "ONIONARCH.Application/Abstractions/Context/**",
+            "ONIONARCH.Application/Abstractions/IUnitOfWork.cs",
+            "ONIONARCH.Application/Abstractions/IUnitOfWorkTransaction.cs",
+            "ONIONARCH.Application/Actions/SampleEntityEFCore/**",
+            "ONIONARCH.Persistence/Contexts/**",
+            "ONIONARCH.Persistence/Transactions/**"
+          ]
+        },
+        {
+          "condition": "(!HasDapper)",
+          "exclude": [
+            "ONIONARCH.Application/Abstractions/ConnectionFactory/**",
+            "ONIONARCH.Application/Abstractions/Repositories/**",
+            "ONIONARCH.Application/Actions/SampleEntityDapper/**",
+            "ONIONARCH.Persistence/ConnectionFactory/**",
+            "ONIONARCH.Persistence/Repositories/**"
+          ]
+        },
+        {
+          "condition": "(!IncludeSamples)",
+          "exclude": [
+            "ONIONARCH.Domain/Entities/SampleEntity.cs",
+            "ONIONARCH.Application/Actions/**",
+            "ONIONARCH.Application/Abstractions/Repositories/ISampleEntity*.cs",
+            "ONIONARCH.Application/Contracts/Dtos/**",
+            "ONIONARCH.Persistence/Repositories/SampleEntity*.cs",
+            "ONIONARCH.Presentation.API/Controllers/SampleController.cs"
+          ]
         }
       ]
     },
@@ -366,6 +434,17 @@
             "trim": true,
             "wholeLine": true,
             "evaluator": "C++"
+          }
+        }
+      ]
+    },
+    "**/*.cs": {
+      "operations": [
+        {
+          "type": "replacement",
+          "configuration": {
+            "original": "//~",
+            "replacement": ""
           }
         }
       ]

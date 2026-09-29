@@ -2,7 +2,7 @@
 # Generates a solution from the ONIONARCH template for one option combination and verifies it:
 #   1. builds with zero warnings (TreatWarningsAsErrors comes from Directory.Build.props)
 #   2. all generated tests pass (when the test project is included)
-#   3. no template directives survived generation
+#   3. no template directives (including //~ alternate-branch markers) survived generation
 #   4. no identity leaks (ONIONARCH / Vercuski) remain
 #   5. the generated .sln lists exactly the .csproj files on disk
 #   7. generated JSON parses strictly, and host database settings match the generated providers
@@ -26,7 +26,7 @@ dotnet new onionarch -n "$NAME" -o "$WORK" "$@" >/dev/null
 cd "$WORK"
 
 # 3. leftover template directives
-if grep -rnE '^[[:space:]]*(//)?#(if|else|elseif|elif|endif)\b|<!--#(if|else|elseif|endif)' \
+if grep -rnE '^[[:space:]]*(//)?#(if|else|elseif|elif|endif)\b|<!--#(if|else|elseif|endif)|^[[:space:]]*//~' \
      --include='*.cs' --include='*.csproj' --include='*.json' --include='*.sln' --include='Dockerfile' --include='*.props' . ; then
   fail "template directives left in generated output"
 fi
@@ -80,15 +80,16 @@ for path in pathlib.Path(".").rglob("*.json"):
     except Exception as e: print(f"  invalid JSON: {path}: {e}"); ok = False
 
 provider_project = {"MSSQL": "SqlServer", "POSTGRESQL": "PostgreSql", "MYSQL": "MySql"}
-has_mysql = pathlib.Path(f"{name}.Persistence.MySql").is_dir()
+# The MySQL server version only exists for EF Core, which is present when the DbContexts are.
+needs_server_version = pathlib.Path(f"{name}.Persistence.MySql").is_dir() and pathlib.Path(f"{name}.Persistence/Contexts").is_dir()
 for settings in pathlib.Path(".").glob(f"{name}.Presentation.*/appsettings.json"):
     platform = json.loads(strip_jsonc(settings.read_text(encoding="utf-8-sig")))["DatabasePlatform"]
     for side in ("QueryDbPlatform", "CommandDbPlatform"):
         project = provider_project.get(platform[side].upper())
         if project is None or not pathlib.Path(f"{name}.Persistence.{project}").is_dir():
             print(f"  {settings}: {side}={platform[side]} has no generated provider project"); ok = False
-    if ("MySqlServerVersion" in platform) != has_mysql:
-        print(f"  {settings}: MySqlServerVersion present={'MySqlServerVersion' in platform}, MySQL provider present={has_mysql}"); ok = False
+    if ("MySqlServerVersion" in platform) != needs_server_version:
+        print(f"  {settings}: MySqlServerVersion present={'MySqlServerVersion' in platform}, expected={needs_server_version} (MySQL provider with EF Core)"); ok = False
 sys.exit(0 if ok else 1)
 PY
 

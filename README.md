@@ -176,6 +176,8 @@ SonarQube project key. Solution GUIDs, `UserSecretsId`s, and development ports a
 | `--web` | bool | `false` | Presentation.Web host (Blazor + MudBlazor) |
 | `--console` | bool | `false` | Presentation.Console worker host |
 | `--database`, `-db` | `SqlServer`, `PostgreSql`, `MySql`, `All` | `SqlServer` | Provider projects, their registrations, Dockerfile lines, and the `DatabasePlatform` settings |
+| `--data-access`, `-da` | `EfCore`, `Dapper`, `Both` | `Both` | The EF Core path (DbContexts, unit of work), the Dapper path (connection factories, repository ports), their provider methods and packages, and the MySQL server-version setting (EF only) |
+| `--samples` | bool | `true` | The `SampleEntity` slice: entity, actions for each included path, DTOs, Dapper repositories, `SampleController` |
 | `--tests` | bool | `true` | The test project |
 | `--docker` | bool | `true` | Dockerfiles, `.dockerignore`, container launch profiles and tooling |
 | `--quality-tooling` | bool | `false` | `SonarqubeAnalysis.bat`, `coverConfig.xml` |
@@ -189,6 +191,10 @@ provider set and leaves the per-side choice to `appsettings.json`.
 - The generated solution file comes from `source/.template.config/solution/ONIONARCH.sln`, a copy
   of the real solution with conditional blocks, kept separate because Visual Studio rewrites
   `ONIONARCH.sln` on save. When you add or remove a project, update both.
+- Where a variant needs *different* code rather than less code, the alternate lives in a `//#else`
+  branch on lines prefixed `//~`. They stay comments in the repository and are uncommented in
+  generated output (see `SpecialCustomOperations` in `template.json`; the replacement operation must
+  not be given an `id`, which leaves it disabled).
 - `template/verify-template.sh` generates one option combination and checks that it builds with zero
   warnings, passes its tests, contains no template directives or `ONIONARCH`/`Vercuski` leftovers,
   has valid JSON and database settings that match the generated providers, and that its `.sln`

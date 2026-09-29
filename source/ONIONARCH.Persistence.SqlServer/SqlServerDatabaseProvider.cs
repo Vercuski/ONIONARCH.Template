@@ -1,7 +1,13 @@
-﻿using Microsoft.Data.SqlClient;
+﻿//#if (HasDapper)
+using Microsoft.Data.SqlClient;
+//#endif
+//#if (HasEfCore)
 using Microsoft.EntityFrameworkCore;
+//#endif
 using ONIONARCH.Persistence.Providers;
+//#if (HasDapper)
 using System.Data;
+//#endif
 
 namespace ONIONARCH.Persistence.SqlServer;
 
@@ -19,16 +25,20 @@ internal sealed class SqlServerDatabaseProvider : IDatabaseProvider
 
     /// <inheritdoc />
     public string Platform => PlatformKey;
+//#if (HasEfCore)
 
     /// <inheritdoc />
     public void ConfigureEfCore(DbContextOptionsBuilder optionsBuilder, string connectionString)
     {
         optionsBuilder.UseSqlServer(connectionString);
     }
+//#endif
+//#if (HasDapper)
 
     /// <inheritdoc />
     public IDbConnection CreateConnection(string connectionString)
     {
         return new SqlConnection(connectionString);
     }
+//#endif
 }

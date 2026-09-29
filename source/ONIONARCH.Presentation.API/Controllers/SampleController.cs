@@ -1,9 +1,13 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using ONIONARCH.Application.Abstractions;
+//#if (HasDapper)
 using ONIONARCH.Application.Actions.SampleEntityDapper.Commands;
 using ONIONARCH.Application.Actions.SampleEntityDapper.Queries;
+//#endif
+//#if (HasEfCore)
 using ONIONARCH.Application.Actions.SampleEntityEFCore.Commands;
 using ONIONARCH.Application.Actions.SampleEntityEFCore.Queries;
+//#endif
 using ONIONARCH.Application.Contracts.Dtos;
 using ONIONARCH.Presentation.API.Extensions;
 
@@ -22,6 +26,7 @@ namespace ONIONARCH.Presentation.API.Controllers;
 [ApiController]
 public class SampleController(ISender sender) : ControllerBase
 {
+//#if (HasEfCore)
     /// <summary>
     /// Gets a sample entity by key via EF Core.
     /// </summary>
@@ -35,7 +40,11 @@ public class SampleController(ISender sender) : ControllerBase
         var result = await sender.Send(request, CancellationToken.None);
         return result.ToActionResult(this, SampleDtoRecord.Create);
     }
+//#endif
+//#if (HasDapper)
+//#if (HasEfCore)
 
+//#endif
     /// <summary>
     /// Gets a sample entity by key via Dapper.
     /// </summary>
@@ -49,6 +58,8 @@ public class SampleController(ISender sender) : ControllerBase
         var result = await sender.Send(request, CancellationToken.None);
         return result.ToActionResult(this, SampleDtoRecord.Create);
     }
+//#endif
+//#if (HasEfCore)
 
     /// <summary>
     /// Creates a sample entity via EF Core.
@@ -64,6 +75,8 @@ public class SampleController(ISender sender) : ControllerBase
         var result = await sender.Send(request, CancellationToken.None);
         return result.ToActionResult(this);
     }
+//#endif
+//#if (HasDapper)
 
     /// <summary>
     /// Creates a sample entity via Dapper.
@@ -79,6 +92,8 @@ public class SampleController(ISender sender) : ControllerBase
         var result = await sender.Send(request, CancellationToken.None);
         return result.ToActionResult(this);
     }
+//#endif
+//#if (HasEfCore)
 
     /// <summary>
     /// Updates a sample entity via EF Core.
@@ -94,6 +109,8 @@ public class SampleController(ISender sender) : ControllerBase
         var result = await sender.Send(request, CancellationToken.None);
         return result.ToActionResult(this);
     }
+//#endif
+//#if (HasDapper)
 
     /// <summary>
     /// Updates a sample entity via Dapper.
@@ -109,6 +126,8 @@ public class SampleController(ISender sender) : ControllerBase
         var result = await sender.Send(request, CancellationToken.None);
         return result.ToActionResult(this);
     }
+//#endif
+//#if (HasEfCore)
 
     /// <summary>
     /// Deletes a sample entity via EF Core. The entity is loaded first so a missing key is
@@ -139,6 +158,8 @@ public class SampleController(ISender sender) : ControllerBase
             return result.ToActionResult(this);
         }
     }
+//#endif
+//#if (HasDapper)
 
     /// <summary>
     /// Deletes a sample entity via Dapper.
@@ -153,4 +174,5 @@ public class SampleController(ISender sender) : ControllerBase
         var result = await sender.Send(request, CancellationToken.None);
         return result.ToActionResult(this);
     }
+//#endif
 }

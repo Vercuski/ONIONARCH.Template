@@ -1,5 +1,7 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿//#if (HasEfCore)
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+//#endif
 using ONIONARCH.Persistence.Providers;
 
 namespace ONIONARCH.Persistence.MySql;
@@ -10,6 +12,7 @@ namespace ONIONARCH.Persistence.MySql;
 /// </summary>
 public static class DependencyInjection
 {
+//#if (HasEfCore)
     /// <summary>
     /// The configuration key holding the MySQL/MariaDB server version EF Core targets, e.g.
     /// <c>8.4.0-mysql</c> or <c>11.4.2-mariadb</c>.
@@ -59,4 +62,20 @@ public static class DependencyInjection
 
         return registry.Add(new MySqlDatabaseProvider(serverVersion));
     }
+//#else
+//~    /// <summary>
+//~    /// Registers the MySQL provider. It is selected at startup when the <c>DatabasePlatform</c>
+//~    /// configuration's <c>QueryDbPlatform</c> or <c>CommandDbPlatform</c> is <c>MySQL</c>
+//~    /// (case-insensitive).
+//~    /// </summary>
+//~    /// <param name="registry">The registry passed to <c>AddPersistenceRegistrations</c>.</param>
+//~    /// <returns>The same <paramref name="registry"/>, for chaining.</returns>
+//~    /// <exception cref="ArgumentNullException"><paramref name="registry"/> is <see langword="null"/>.</exception>
+//~    /// <exception cref="InvalidOperationException">A MySQL provider is already registered.</exception>
+//~    public static DatabaseProviderRegistry AddMySql(this DatabaseProviderRegistry registry)
+//~    {
+//~        ArgumentNullException.ThrowIfNull(registry);
+//~        return registry.Add(new MySqlDatabaseProvider());
+//~    }
+//#endif
 }

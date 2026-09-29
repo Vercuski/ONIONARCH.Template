@@ -28,6 +28,14 @@
     "IncludeQualityTooling": {
       "longName": "quality-tooling",
       "shortName": ""
+    },
+    "DataAccess": {
+      "longName": "data-access",
+      "shortName": "da"
+    },
+    "IncludeSamples": {
+      "longName": "samples",
+      "shortName": ""
     }
   }
 }

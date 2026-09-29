@@ -31,6 +31,20 @@
       "isVisible": true
     },
     {
+      "id": "DataAccess",
+      "name": {
+        "text": "Data access"
+      },
+      "isVisible": true
+    },
+    {
+      "id": "IncludeSamples",
+      "name": {
+        "text": "Sample feature (SampleEntity)"
+      },
+      "isVisible": true
+    },
+    {
       "id": "IncludeTests",
       "name": {
         "text": "Test project (architecture, unit and integration tests)"

@@ -1,7 +1,13 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿//#if (HasEfCore)
+using Microsoft.EntityFrameworkCore;
+//#endif
+//#if (HasDapper)
 using Npgsql;
+//#endif
 using ONIONARCH.Persistence.Providers;
+//#if (HasDapper)
 using System.Data;
+//#endif
 
 namespace ONIONARCH.Persistence.PostgreSql;
 
@@ -18,16 +24,20 @@ internal sealed class PostgreSqlDatabaseProvider : IDatabaseProvider
 
     /// <inheritdoc />
     public string Platform => PlatformKey;
+//#if (HasEfCore)
 
     /// <inheritdoc />
     public void ConfigureEfCore(DbContextOptionsBuilder optionsBuilder, string connectionString)
     {
         optionsBuilder.UseNpgsql(connectionString);
     }
+//#endif
+//#if (HasDapper)
 
     /// <inheritdoc />
     public IDbConnection CreateConnection(string connectionString)
     {
         return new NpgsqlConnection(connectionString);
     }
+//#endif
 }

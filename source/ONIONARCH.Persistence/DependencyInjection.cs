@@ -2,16 +2,30 @@
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
+//#if (HasEfCore)
 using ONIONARCH.Application.Abstractions;
+//#endif
+//#if (HasDapper)
 using ONIONARCH.Application.Abstractions.ConnectionFactory;
+//#endif
+//#if (HasEfCore)
 using ONIONARCH.Application.Abstractions.Context;
+//#endif
+//#if (HasDapper && IncludeSamples)
 using ONIONARCH.Application.Abstractions.Repositories;
+//#endif
 using ONIONARCH.Domain.Abstractions;
+//#if (HasDapper)
 using ONIONARCH.Persistence.ConnectionFactory;
+//#endif
+//#if (HasEfCore)
 using ONIONARCH.Persistence.Contexts;
+//#endif
 using ONIONARCH.Persistence.Options;
 using ONIONARCH.Persistence.Providers;
+//#if (HasDapper && IncludeSamples)
 using ONIONARCH.Persistence.Repositories;
+//#endif
 
 namespace ONIONARCH.Persistence;
 
@@ -84,8 +98,12 @@ public static class DependencyInjection
         var queryDatabaseProvider = ResolveDatabaseProvider(registry, databasePlatformOptions.QueryDbPlatform, "Query");
         var commandDatabaseProvider = ResolveDatabaseProvider(registry, databasePlatformOptions.CommandDbPlatform, "Command");
 
+//#if (HasDapper)
         builder.AddDapperPersistenceRegistrations(queryDatabaseProvider, commandDatabaseProvider);
+//#endif
+//#if (HasEfCore)
         builder.AddEFCorePersistenceRegistrations(queryDatabaseProvider, commandDatabaseProvider);
+//#endif
 
         return builder;
     }
@@ -113,6 +131,7 @@ public static class DependencyInjection
             throw new NotSupportedException($"{side} database platform could not be resolved: {ex.Message}", ex);
         }
     }
+//#if (HasDapper)
 
     /// <summary>
     /// Registers the Dapper path: read and write connection factories bound to their respective
@@ -136,12 +155,16 @@ public static class DependencyInjection
             new DbWriteConnectionFactory(
                 sp.GetRequiredService<IOptions<ConnectionStringOptions>>(),
                 commandDatabaseProvider));
+//#if (IncludeSamples)
 
         builder.Services.AddScoped<ISampleEntityDapperQueryRepository, SampleEntityDapperQueryRepository>();
         builder.Services.AddScoped<ISampleEntityDapperCommandRepository, SampleEntityDapperCommandRepository>();
+//#endif
 
         return builder;
     }
+//#endif
+//#if (HasEfCore)
 
     /// <summary>
     /// Registers the EF Core path: <see cref="CommandDbContext"/> and <see cref="QueryDbContext"/>
@@ -184,6 +207,7 @@ public static class DependencyInjection
 
         return builder;
     }
+//#endif
 
     /// <summary>
     /// Returns the configuration section named by <typeparamref name="T"/>'s

@@ -1,5 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
+//#if (IncludeSamples)
 using ONIONARCH.Domain.Entities;
+//#endif
 
 namespace ONIONARCH.Persistence.Contexts;
 
@@ -14,8 +16,10 @@ namespace ONIONARCH.Persistence.Contexts;
 /// <param name="options">The options for the derived context.</param>
 public abstract class BaseDbContext<T>(DbContextOptions<T> options) : DbContext(options) where T : DbContext
 {
+//#if (IncludeSamples)
     /// <summary>
     /// Gets or sets the set of <see cref="SampleEntityDefinition"/> entities.
     /// </summary>
     public DbSet<SampleEntityDefinition> SampleEntity { get; set; }
+//#endif
 }

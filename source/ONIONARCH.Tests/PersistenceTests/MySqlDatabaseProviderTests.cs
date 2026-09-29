@@ -1,8 +1,12 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿//#if (HasEfCore)
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+//#endif
 using ONIONARCH.Persistence.MySql;
 using ONIONARCH.Persistence.Providers;
+//#if (HasEfCore)
 using MySqlRegistration = ONIONARCH.Persistence.MySql.DependencyInjection;
+//#endif
 
 namespace ONIONARCH.Tests.PersistenceTests;
 
@@ -17,6 +21,7 @@ public class MySqlDatabaseProviderTests
     /// A syntactically valid connection string. No test opens a connection.
     /// </summary>
     private const string ConnectionString = "Server=localhost;Database=Sample;User ID=user;Password=pass";
+//#if (HasEfCore)
 
     /// <summary>
     /// Verifies that registration fails at startup, naming the configuration key, when no server
@@ -46,22 +51,15 @@ public class MySqlDatabaseProviderTests
     }
 
     /// <summary>
-    /// Verifies that the EF Core and Dapper paths both use MySqlConnector, so the platform runs on a
-    /// single ADO.NET driver.
+    /// Verifies that the EF Core path uses MySqlConnector, so the platform runs on a single ADO.NET
+    /// driver.
     /// </summary>
     [Test]
-    public void MySqlProvider_Should_UseMySqlConnector_ForBothEfCoreAndDapper()
+    public void MySqlProvider_Should_UseMySqlConnector_ForEfCore()
     {
-        var provider = RegisteredProvider("8.4.0-mysql");
+        using var context = CreateContext(RegisteredProvider("8.4.0-mysql"));
 
-        using var context = CreateContext(provider);
-        using var dapperConnection = provider.CreateConnection(ConnectionString);
-
-        Assert.Multiple(() =>
-        {
-            Assert.That(context.Database.GetDbConnection(), Is.TypeOf<MySqlConnector.MySqlConnection>());
-            Assert.That(dapperConnection, Is.TypeOf<MySqlConnector.MySqlConnection>());
-        });
+        Assert.That(context.Database.GetDbConnection(), Is.TypeOf<MySqlConnector.MySqlConnection>());
     }
 
     /// <summary>
@@ -83,6 +81,28 @@ public class MySqlDatabaseProviderTests
 
         Assert.That(configured?.ToString(), Is.EqualTo(serverVersion));
     }
+//#endif
+//#if (HasDapper)
+
+    /// <summary>
+    /// Verifies that the Dapper path uses MySqlConnector, so the platform runs on a single ADO.NET
+    /// driver.
+    /// </summary>
+    [Test]
+    public void MySqlProvider_Should_UseMySqlConnector_ForDapper()
+    {
+//#if (HasEfCore)
+        var provider = RegisteredProvider("8.4.0-mysql");
+//#else
+//~        var provider = new DatabaseProviderRegistry().AddMySql().GetProvider("MySQL");
+//#endif
+
+        using var connection = provider.CreateConnection(ConnectionString);
+
+        Assert.That(connection, Is.TypeOf<MySqlConnector.MySqlConnection>());
+    }
+//#endif
+//#if (HasEfCore)
 
     /// <summary>
     /// Registers the MySQL provider with <paramref name="serverVersion"/> and resolves it.
@@ -120,4 +140,5 @@ public class MySqlDatabaseProviderTests
         provider.ConfigureEfCore(optionsBuilder, ConnectionString);
         return new DbContext(optionsBuilder.Options);
     }
+//#endif
 }

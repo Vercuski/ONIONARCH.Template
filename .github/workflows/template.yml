@@ -58,6 +58,18 @@ jobs:
             options: --api false --console true --database PostgreSql --tests false
           - case: web-console-sqlserver
             options: --api false --web true --console true
+          - case: dapper-mysql
+            options: --data-access Dapper --database MySql
+          - case: efcore-mysql-nosamples
+            options: --data-access EfCore --database MySql --samples false
+          - case: dapper-all-nosamples-web
+            options: --data-access Dapper --database All --samples false --web true
+          - case: efcore-postgres-console
+            options: --data-access EfCore --database PostgreSql --api false --console true
+          - case: nosamples-sqlserver
+            options: --samples false
+          - case: minimal-dapper
+            options: --data-access Dapper --samples false --tests false --docker false
           - case: all-on
             options: --web true --console true --database All --quality-tooling true
             reference: 'true'

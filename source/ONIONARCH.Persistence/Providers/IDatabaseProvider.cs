@@ -1,5 +1,9 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿//#if (HasEfCore)
+using Microsoft.EntityFrameworkCore;
+//#endif
+//#if (HasDapper)
 using System.Data;
+//#endif
 
 namespace ONIONARCH.Persistence.Providers;
 
@@ -18,6 +22,7 @@ public interface IDatabaseProvider
     /// (e.g. <c>MSSQL</c>, <c>PostgreSQL</c>, <c>MySQL</c>).
     /// </summary>
     string Platform { get; }
+//#if (HasEfCore)
 
     /// <summary>
     /// Configures <paramref name="optionsBuilder"/> to use this platform's EF Core provider.
@@ -25,6 +30,8 @@ public interface IDatabaseProvider
     /// <param name="optionsBuilder">The EF Core options builder to configure.</param>
     /// <param name="connectionString">The connection string to use.</param>
     void ConfigureEfCore(DbContextOptionsBuilder optionsBuilder, string connectionString);
+//#endif
+//#if (HasDapper)
 
     /// <summary>
     /// Creates a new, unopened ADO.NET connection for this platform.
@@ -32,4 +39,5 @@ public interface IDatabaseProvider
     /// <param name="connectionString">The connection string to use.</param>
     /// <returns>A new connection; the caller owns it and must dispose it.</returns>
     IDbConnection CreateConnection(string connectionString);
+//#endif
 }

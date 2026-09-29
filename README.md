@@ -154,6 +154,47 @@ features, PATCH for backward-compatible fixes. Tags must start with `v`.
 
   The image also gets an `org.opencontainers.image.version` label.
 - Any other build can force a version with `-p:MinVerVersionOverride=1.4.0`.
+# Using as a `dotnet new` Template
+The solution in `source/` doubles as a `dotnet new` template (`source/.template.config/`), packaged by
+`template/Vercuski.OnionArch.Templates.csproj`. Installed templates also appear in Visual Studio's
+New Project dialog, where the options below show as checkboxes and a drop-down.
+
+```
+dotnet new install source/                    # from a clone, or:
+dotnet pack template/Vercuski.OnionArch.Templates.csproj -c Release -o artifacts
+dotnet new install artifacts/Vercuski.OnionArch.Templates.<version>.nupkg
+
+dotnet new onionarch -n Acme.Orders --web true --database PostgreSql
+```
+
+`-n` replaces `ONIONARCH` everywhere: project and solution names, namespaces, `ProjectKey`, and the
+SonarQube project key. Solution GUIDs, `UserSecretsId`s, and development ports are regenerated.
+
+| Option | Values | Default | Controls |
+|---|---|---|---|
+| `--api` | bool | `true` | Presentation.API host, its architecture and integration tests |
+| `--web` | bool | `false` | Presentation.Web host (Blazor + MudBlazor) |
+| `--console` | bool | `false` | Presentation.Console worker host |
+| `--database`, `-db` | `SqlServer`, `PostgreSql`, `MySql`, `All` | `SqlServer` | Provider projects, their registrations, Dockerfile lines, and the `DatabasePlatform` settings |
+| `--tests` | bool | `true` | The test project |
+| `--docker` | bool | `true` | Dockerfiles, `.dockerignore`, container launch profiles and tooling |
+| `--quality-tooling` | bool | `false` | `SonarqubeAnalysis.bat`, `coverConfig.xml` |
+
+If no host is selected, the API is included. `--database All` reproduces this repository's full
+provider set and leaves the per-side choice to `appsettings.json`.
+
+## Authoring rules
+- The repository stays the reference implementation: every template directive is a comment
+  (`//#if`, `<!--#if -->`, `#if` in Dockerfiles), so `source/ONIONARCH.sln` builds and tests as-is.
+- The generated solution file comes from `source/.template.config/solution/ONIONARCH.sln`, a copy
+  of the real solution with conditional blocks, kept separate because Visual Studio rewrites
+  `ONIONARCH.sln` on save. When you add or remove a project, update both.
+- `template/verify-template.sh` generates one option combination and checks that it builds with zero
+  warnings, passes its tests, contains no template directives or `ONIONARCH`/`Vercuski` leftovers,
+  has valid JSON and database settings that match the generated providers, and that its `.sln`
+  matches the projects on disk. The `Template` workflow runs it across a matrix of combinations;
+  its all-on case also fails if the template solution drifts from `source/ONIONARCH.sln`.
+
 # Documentation
 
 API documentation is generated as Markdown from the XML documentation comments (`///`) with

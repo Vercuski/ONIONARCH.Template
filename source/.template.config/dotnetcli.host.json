@@ -1,0 +1,33 @@
+{
+  "$schema": "http://json.schemastore.org/dotnetcli.host",
+  "symbolInfo": {
+    "IncludeApi": {
+      "longName": "api",
+      "shortName": ""
+    },
+    "IncludeWeb": {
+      "longName": "web",
+      "shortName": ""
+    },
+    "IncludeConsole": {
+      "longName": "console",
+      "shortName": ""
+    },
+    "Database": {
+      "longName": "database",
+      "shortName": "db"
+    },
+    "IncludeTests": {
+      "longName": "tests",
+      "shortName": ""
+    },
+    "IncludeDocker": {
+      "longName": "docker",
+      "shortName": ""
+    },
+    "IncludeQualityTooling": {
+      "longName": "quality-tooling",
+      "shortName": ""
+    }
+  }
+}

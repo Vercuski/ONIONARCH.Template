@@ -34,6 +34,16 @@
   <ItemGroup>
     <PackageReference Include="MinVer" Version="8.0.0" PrivateAssets="all" />
   </ItemGroup>
+  <!--
+    MinVer warns (MINVER1001) when the solution isn't inside a git working directory, which
+    TreatWarningsAsErrors would turn into a failed build. That is the normal state of a solution
+    freshly generated from the template, before `git init`. When no .git exists at the solution root
+    or one level up (the repo layout, where the solution lives in source/), the warning is demoted to
+    a message and the default version 0.0.0-alpha.0 is used. Once .git exists, the warning is active again.
+  -->
+  <PropertyGroup Condition="!Exists('$(MSBuildThisFileDirectory).git') And !Exists('$(MSBuildThisFileDirectory)../.git')">
+    <MSBuildWarningsAsMessages>$(MSBuildWarningsAsMessages);MINVER1001</MSBuildWarningsAsMessages>
+  </PropertyGroup>
   <PropertyGroup>
     <!--Enabled Dynamic Compile Flags from CI-->
     <DefineConstants Condition=" '$(CompileFlags)' != '' ">$(CompileFlags);$(DefineConstants)</DefineConstants>

@@ -23,9 +23,15 @@ COPY ["ONIONARCH.Application/ONIONARCH.Application.csproj", "ONIONARCH.Applicati
 COPY ["ONIONARCH.Domain/ONIONARCH.Domain.csproj", "ONIONARCH.Domain/"]
 COPY ["ONIONARCH.Infrastructure/ONIONARCH.Infrastructure.csproj", "ONIONARCH.Infrastructure/"]
 COPY ["ONIONARCH.Persistence/ONIONARCH.Persistence.csproj", "ONIONARCH.Persistence/"]
+#if (HasSqlServer)
 COPY ["ONIONARCH.Persistence.SqlServer/ONIONARCH.Persistence.SqlServer.csproj", "ONIONARCH.Persistence.SqlServer/"]
+#endif
+#if (HasPostgreSql)
 COPY ["ONIONARCH.Persistence.PostgreSql/ONIONARCH.Persistence.PostgreSql.csproj", "ONIONARCH.Persistence.PostgreSql/"]
+#endif
+#if (HasMySql)
 COPY ["ONIONARCH.Persistence.MySql/ONIONARCH.Persistence.MySql.csproj", "ONIONARCH.Persistence.MySql/"]
+#endif
 RUN dotnet restore "./ONIONARCH.Presentation.API/ONIONARCH.Presentation.API.csproj"
 COPY . .
 WORKDIR "/src/ONIONARCH.Presentation.API"

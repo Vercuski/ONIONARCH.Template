@@ -1,4 +1,4 @@
-{
+﻿{
   "profiles": {
     "https": {
       "commandName": "Project",
@@ -8,6 +8,7 @@
       },
       "dotnetRunMessages": true,
       "applicationUrl": "https://localhost:8081"
+//#if (IncludeDocker)
     },
     "Container (Dockerfile)": {
       "commandName": "Docker",
@@ -19,6 +20,7 @@
       },
       "publishAllPorts": true,
       "useSSL": true
+//#endif
     }
   },
   "$schema": "http://json.schemastore.org/launchsettings.json",

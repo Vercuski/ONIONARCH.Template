@@ -5,13 +5,17 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <UserSecretsId>45af9237-3f7f-4a82-ac07-088edd2577e9</UserSecretsId>
+    <!--#if (IncludeDocker) -->
     <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+    <!--#endif -->
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="10.0.10" />
     <PackageReference Include="Microsoft.OpenApi" Version="2.7.5" />
+    <!--#if (IncludeDocker) -->
     <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.23.0" />
+    <!--#endif -->
     <PackageReference Include="Scalar.AspNetCore" Version="2.16.16" />
   </ItemGroup>
 
@@ -20,9 +24,15 @@
     <ProjectReference Include="..\ONIONARCH.Domain\ONIONARCH.Domain.csproj" />
     <ProjectReference Include="..\ONIONARCH.Infrastructure\ONIONARCH.Infrastructure.csproj" />
     <ProjectReference Include="..\ONIONARCH.Persistence\ONIONARCH.Persistence.csproj" />
+    <!--#if (HasSqlServer) -->
     <ProjectReference Include="..\ONIONARCH.Persistence.SqlServer\ONIONARCH.Persistence.SqlServer.csproj" />
+    <!--#endif -->
+    <!--#if (HasPostgreSql) -->
     <ProjectReference Include="..\ONIONARCH.Persistence.PostgreSql\ONIONARCH.Persistence.PostgreSql.csproj" />
+    <!--#endif -->
+    <!--#if (HasMySql) -->
     <ProjectReference Include="..\ONIONARCH.Persistence.MySql\ONIONARCH.Persistence.MySql.csproj" />
+    <!--#endif -->
   </ItemGroup>
 
   <ItemGroup>

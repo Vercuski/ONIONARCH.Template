@@ -1,0 +1,55 @@
+{
+  "$schema": "http://json.schemastore.org/ide.host",
+  "order": 0,
+  "symbolInfo": [
+    {
+      "id": "IncludeApi",
+      "name": {
+        "text": "ASP.NET Core Web API host"
+      },
+      "isVisible": true
+    },
+    {
+      "id": "IncludeWeb",
+      "name": {
+        "text": "Blazor Web host (MudBlazor)"
+      },
+      "isVisible": true
+    },
+    {
+      "id": "IncludeConsole",
+      "name": {
+        "text": "Console / worker host"
+      },
+      "isVisible": true
+    },
+    {
+      "id": "Database",
+      "name": {
+        "text": "Database platform"
+      },
+      "isVisible": true
+    },
+    {
+      "id": "IncludeTests",
+      "name": {
+        "text": "Test project (architecture, unit and integration tests)"
+      },
+      "isVisible": true
+    },
+    {
+      "id": "IncludeDocker",
+      "name": {
+        "text": "Docker support"
+      },
+      "isVisible": true
+    },
+    {
+      "id": "IncludeQualityTooling",
+      "name": {
+        "text": "SonarQube and coverage tooling"
+      },
+      "isVisible": true
+    }
+  ]
+}

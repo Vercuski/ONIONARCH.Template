@@ -30,9 +30,15 @@
     <ProjectReference Include="..\ONIONARCH.Domain\ONIONARCH.Domain.csproj" />
     <ProjectReference Include="..\ONIONARCH.Infrastructure\ONIONARCH.Infrastructure.csproj" />
     <ProjectReference Include="..\ONIONARCH.Persistence\ONIONARCH.Persistence.csproj" />
+    <!--#if (HasSqlServer) -->
     <ProjectReference Include="..\ONIONARCH.Persistence.SqlServer\ONIONARCH.Persistence.SqlServer.csproj" />
+    <!--#endif -->
+    <!--#if (HasPostgreSql) -->
     <ProjectReference Include="..\ONIONARCH.Persistence.PostgreSql\ONIONARCH.Persistence.PostgreSql.csproj" />
+    <!--#endif -->
+    <!--#if (HasMySql) -->
     <ProjectReference Include="..\ONIONARCH.Persistence.MySql\ONIONARCH.Persistence.MySql.csproj" />
+    <!--#endif -->
   </ItemGroup>
 
 </Project>

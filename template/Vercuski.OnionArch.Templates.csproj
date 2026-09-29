@@ -1,0 +1,48 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!--
+    Packs source/ (including source/.template.config) as a `dotnet new` template package.
+      dotnet pack template/Vercuski.OnionArch.Templates.csproj -c Release -o artifacts
+      dotnet new install artifacts/Vercuski.OnionArch.Templates.<version>.nupkg
+    Installed template packages also appear in Visual Studio's New Project dialog.
+  -->
+
+  <PropertyGroup>
+    <PackageType>Template</PackageType>
+    <PackageId>Vercuski.OnionArch.Templates</PackageId>
+    <Title>Onion Architecture Solution Template</Title>
+    <Authors>Scott Vercuski</Authors>
+    <Description>A .NET 10 Onion Architecture solution template with a CQRS dispatcher, EF Core and Dapper persistence paths, pluggable database providers (SQL Server, PostgreSQL, MySQL/MariaDB), and architecture fitness tests.</Description>
+    <PackageTags>dotnet-new;templates;onion-architecture;clean-architecture;cqrs</PackageTags>
+    <PackageProjectUrl>https://github.com/Vercuski/ONIONARCH.Template</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/Vercuski/ONIONARCH.Template</RepositoryUrl>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+
+    <TargetFramework>net10.0</TargetFramework>
+    <IncludeContentInPack>true</IncludeContentInPack>
+    <IncludeBuildOutput>false</IncludeBuildOutput>
+    <ContentTargetFolders>content</ContentTargetFolders>
+    <EnableDefaultItems>false</EnableDefaultItems>
+    <!-- Keep dot-files and dot-folders (.template.config, .dockerignore) that pack skips by default. -->
+    <NoDefaultExcludes>true</NoDefaultExcludes>
+    <!-- NU5128: no lib/ folder is expected for a content-only template package. -->
+    <NoWarn>$(NoWarn);NU5128</NoWarn>
+
+    <!-- Same git-tag-driven versioning as the solution (see source/Directory.Build.props). -->
+    <MinVerTagPrefix>v</MinVerTagPrefix>
+    <MinVerMinimumMajorMinor>1.0</MinVerMinimumMajorMinor>
+    <MinVerDefaultPreReleaseIdentifiers>alpha.0</MinVerDefaultPreReleaseIdentifiers>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="MinVer" Version="8.0.0" PrivateAssets="all" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="..\source\**\*"
+             Exclude="..\source\**\bin\**;..\source\**\obj\**;..\source\**\.vs\**;..\source\**\*.user;..\source\**\TestResults\**"
+             PackagePath="content" />
+    <Compile Remove="**\*" />
+  </ItemGroup>
+
+</Project>

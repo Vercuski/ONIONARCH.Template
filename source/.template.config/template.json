@@ -1,0 +1,375 @@
+{
+  "$schema": "http://json.schemastore.org/template",
+  "author": "Scott Vercuski",
+  "classifications": [
+    "Web",
+    "API",
+    "Blazor",
+    "Console",
+    "Onion Architecture",
+    "Clean Architecture",
+    "CQRS"
+  ],
+  "identity": "Vercuski.OnionArch.Solution",
+  "groupIdentity": "Vercuski.OnionArch",
+  "name": "Onion Architecture Solution (CQRS)",
+  "description": "A .NET 10 Onion Architecture solution with a CQRS dispatcher, EF Core and Dapper persistence paths, pluggable database providers (SQL Server, PostgreSQL, MySQL/MariaDB), and architecture fitness tests.",
+  "shortName": "onionarch",
+  "sourceName": "ONIONARCH",
+  "preferNameDirectory": true,
+  "tags": {
+    "language": "C#",
+    "type": "solution"
+  },
+  "guids": [
+    "BFD27282-943E-4B5C-9C53-1544F19CDDC8",
+    "60A97873-29A0-4CFC-8B65-9F513C3939EB",
+    "E4E1E7E3-0082-4376-9086-4BCC66997964",
+    "92CAA2F2-0FA3-42BA-AA22-6239EEF0B439",
+    "F02F5CAF-9A5A-4073-82BB-CD9F69C72981",
+    "69AB6DB4-1086-4A84-9B9B-BE182C55037A",
+    "4E5CFCD7-7831-4706-BC66-74342F71C74E",
+    "0ADC93B7-0431-4EFD-8C11-EFAFA30BA0DC",
+    "65771023-95A8-4543-BFA4-A59B54B637A3",
+    "3135843A-A6CC-B059-DED8-5C4972E6CF4D",
+    "29C47894-3FD5-4A32-ABB2-4CFB0FC2F8D1",
+    "95B83671-D06B-40E0-BF13-AA3BAD52C691",
+    "5BBAEE2F-B06C-4776-B01F-5DE1AF9E0642",
+    "70FEBD2C-0F61-4732-9F1B-E3B477C35C32",
+    "45af9237-3f7f-4a82-ac07-088edd2577e9",
+    "201d387b-5ed9-4b0c-bf03-3ca7ec5d352a"
+  ],
+  "symbols": {
+    "IncludeApi": {
+      "type": "parameter",
+      "datatype": "bool",
+      "defaultValue": "true",
+      "displayName": "ASP.NET Core Web API host",
+      "description": "Include the Presentation.API host (controllers, OpenAPI/Scalar). If no host is selected, the API is included."
+    },
+    "IncludeWeb": {
+      "type": "parameter",
+      "datatype": "bool",
+      "defaultValue": "false",
+      "displayName": "Blazor Web host",
+      "description": "Include the Presentation.Web host (Blazor Server with MudBlazor)."
+    },
+    "IncludeConsole": {
+      "type": "parameter",
+      "datatype": "bool",
+      "defaultValue": "false",
+      "displayName": "Console/worker host",
+      "description": "Include the Presentation.Console generic-host worker."
+    },
+    "Database": {
+      "type": "parameter",
+      "datatype": "choice",
+      "defaultValue": "SqlServer",
+      "displayName": "Database platform",
+      "description": "The database provider project(s) to include. 'All' includes every provider and lets appsettings.json pick one per CQRS side.",
+      "choices": [
+        {
+          "choice": "SqlServer",
+          "displayName": "SQL Server"
+        },
+        {
+          "choice": "PostgreSql",
+          "displayName": "PostgreSQL"
+        },
+        {
+          "choice": "MySql",
+          "displayName": "MySQL / MariaDB"
+        },
+        {
+          "choice": "All",
+          "displayName": "All providers"
+        }
+      ]
+    },
+    "IncludeTests": {
+      "type": "parameter",
+      "datatype": "bool",
+      "defaultValue": "true",
+      "displayName": "Test project",
+      "description": "Include the NUnit test project with architecture fitness, unit, and integration tests."
+    },
+    "IncludeDocker": {
+      "type": "parameter",
+      "datatype": "bool",
+      "defaultValue": "true",
+      "displayName": "Docker support",
+      "description": "Include Dockerfiles, .dockerignore, and Visual Studio container tooling for the web hosts."
+    },
+    "IncludeQualityTooling": {
+      "type": "parameter",
+      "datatype": "bool",
+      "defaultValue": "false",
+      "displayName": "SonarQube / coverage tooling",
+      "description": "Include SonarqubeAnalysis.bat and coverConfig.xml."
+    },
+    "HasApi": {
+      "type": "computed",
+      "value": "(IncludeApi || (!IncludeWeb && !IncludeConsole))"
+    },
+    "HasWeb": {
+      "type": "computed",
+      "value": "(IncludeWeb)"
+    },
+    "HasConsole": {
+      "type": "computed",
+      "value": "(IncludeConsole)"
+    },
+    "HasSqlServer": {
+      "type": "computed",
+      "value": "(Database == \"SqlServer\" || Database == \"All\")"
+    },
+    "HasPostgreSql": {
+      "type": "computed",
+      "value": "(Database == \"PostgreSql\" || Database == \"All\")"
+    },
+    "HasMySql": {
+      "type": "computed",
+      "value": "(Database == \"MySql\" || Database == \"All\")"
+    },
+    "DefaultPlatformKey": {
+      "type": "generated",
+      "generator": "switch",
+      "datatype": "string",
+      "replaces": "MSSQL",
+      "onlyIf": [
+        {
+          "after": "DbPlatform\": \""
+        }
+      ],
+      "parameters": {
+        "evaluator": "C++",
+        "cases": [
+          {
+            "condition": "(Database == \"PostgreSql\")",
+            "value": "PostgreSQL"
+          },
+          {
+            "condition": "(Database == \"MySql\")",
+            "value": "MySQL"
+          },
+          {
+            "condition": "(true)",
+            "value": "MSSQL"
+          }
+        ]
+      }
+    },
+    "AvailablePlatformKeys": {
+      "type": "generated",
+      "generator": "switch",
+      "datatype": "string",
+      "replaces": "MSSQL, PostgreSQL, MySQL",
+      "parameters": {
+        "evaluator": "C++",
+        "cases": [
+          {
+            "condition": "(Database == \"SqlServer\")",
+            "value": "MSSQL"
+          },
+          {
+            "condition": "(Database == \"PostgreSql\")",
+            "value": "PostgreSQL"
+          },
+          {
+            "condition": "(Database == \"MySql\")",
+            "value": "MySQL"
+          },
+          {
+            "condition": "(true)",
+            "value": "MSSQL, PostgreSQL, MySQL"
+          }
+        ]
+      }
+    },
+    "ApiHttpsPort": {
+      "type": "generated",
+      "generator": "port",
+      "parameters": {
+        "low": 7000,
+        "high": 7300
+      },
+      "replaces": "7214"
+    },
+    "ApiIisHttpPort": {
+      "type": "generated",
+      "generator": "port",
+      "parameters": {
+        "low": 5000,
+        "high": 5300
+      },
+      "replaces": "9905"
+    },
+    "ApiIisSslPort": {
+      "type": "generated",
+      "generator": "port",
+      "parameters": {
+        "low": 44300,
+        "high": 44399
+      },
+      "replaces": "44347"
+    },
+    "WebIisHttpPort": {
+      "type": "generated",
+      "generator": "port",
+      "parameters": {
+        "low": 5000,
+        "high": 5300
+      },
+      "replaces": "23825"
+    },
+    "WebIisSslPort": {
+      "type": "generated",
+      "generator": "port",
+      "parameters": {
+        "low": 44300,
+        "high": 44399
+      },
+      "replaces": "44317"
+    },
+    "SonarProjectKey": {
+      "type": "derived",
+      "valueSource": "name",
+      "valueTransform": "identity",
+      "replaces": "OnionArch",
+      "description": "SonarQube project key in SonarqubeAnalysis.bat; the name's automatic forms don't match its mixed-case spelling."
+    }
+  },
+  "sources": [
+    {
+      "source": "./",
+      "target": "./",
+      "exclude": [
+        "**/[Bb]in/**",
+        "**/[Oo]bj/**",
+        ".template.config/**",
+        ".vs/**",
+        "**/*.user",
+        "**/*.lock.json",
+        "**/TestResults/**",
+        "ONIONARCH.sln"
+      ],
+      "modifiers": [
+        {
+          "condition": "(!HasApi)",
+          "exclude": [
+            "ONIONARCH.Presentation.API/**",
+            "ONIONARCH.Tests/ArchitectureTests/PresentationArchitectureTests.cs",
+            "ONIONARCH.Tests/InfrastructureTests/*IntegrationTests.cs"
+          ]
+        },
+        {
+          "condition": "(!HasWeb)",
+          "exclude": [
+            "ONIONARCH.Presentation.Web/**"
+          ]
+        },
+        {
+          "condition": "(!HasConsole)",
+          "exclude": [
+            "ONIONARCH.Presentation.Console/**"
+          ]
+        },
+        {
+          "condition": "(!HasSqlServer)",
+          "exclude": [
+            "ONIONARCH.Persistence.SqlServer/**"
+          ]
+        },
+        {
+          "condition": "(!HasPostgreSql)",
+          "exclude": [
+            "ONIONARCH.Persistence.PostgreSql/**"
+          ]
+        },
+        {
+          "condition": "(!HasMySql)",
+          "exclude": [
+            "ONIONARCH.Persistence.MySql/**",
+            "ONIONARCH.Tests/PersistenceTests/MySqlDatabaseProviderTests.cs"
+          ]
+        },
+        {
+          "condition": "(!IncludeTests)",
+          "exclude": [
+            "ONIONARCH.Tests/**"
+          ]
+        },
+        {
+          "condition": "(!IncludeDocker)",
+          "exclude": [
+            "**/Dockerfile",
+            ".dockerignore"
+          ]
+        },
+        {
+          "condition": "(!IncludeQualityTooling)",
+          "exclude": [
+            "SonarqubeAnalysis.bat",
+            "coverConfig.xml"
+          ]
+        }
+      ]
+    },
+    {
+      "source": ".template.config/solution/",
+      "target": "./",
+      "exclude": []
+    }
+  ],
+  "SpecialCustomOperations": {
+    "**/*.sln": {
+      "operations": [
+        {
+          "type": "conditional",
+          "configuration": {
+            "if": [
+              "#if"
+            ],
+            "else": [
+              "#else"
+            ],
+            "elseif": [
+              "#elseif"
+            ],
+            "endif": [
+              "#endif"
+            ],
+            "trim": true,
+            "wholeLine": true,
+            "evaluator": "C++"
+          }
+        }
+      ]
+    },
+    "**/Dockerfile": {
+      "operations": [
+        {
+          "type": "conditional",
+          "configuration": {
+            "if": [
+              "#if"
+            ],
+            "else": [
+              "#else"
+            ],
+            "elseif": [
+              "#elseif"
+            ],
+            "endif": [
+              "#endif"
+            ],
+            "trim": true,
+            "wholeLine": true,
+            "evaluator": "C++"
+          }
+        }
+      ]
+    }
+  },
+  "postActions": []
+}

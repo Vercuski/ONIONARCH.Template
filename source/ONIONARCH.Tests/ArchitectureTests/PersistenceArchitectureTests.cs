@@ -30,6 +30,7 @@ public class PersistenceArchitectureTests
         "MySqlConnector"
     ];
 
+//#if (HasMySql)
     /// <summary>
     /// Oracle's MySQL assemblies. The MySQL provider standardizes on MySqlConnector for both the EF Core
     /// and Dapper paths, so neither may appear alongside it.
@@ -39,6 +40,7 @@ public class PersistenceArchitectureTests
         "MySql.EntityFrameworkCore",
         "MySql.Data"
     ];
+//#endif
 
     /// <summary>
     /// Verifies that the Persistence core compiles against no provider-specific assembly, so any
@@ -137,6 +139,7 @@ public class PersistenceArchitectureTests
             $"Provider types must be internal and sealed: {string.Join(", ", result.FailingTypeNames ?? [])}");
     }
 
+//#if (HasMySql)
     /// <summary>
     /// Verifies that the MySQL provider references no Oracle MySQL assembly, keeping the platform on
     /// a single ADO.NET driver (MySqlConnector).
@@ -151,6 +154,7 @@ public class PersistenceArchitectureTests
         Assert.That(offending, Is.Empty,
             $"ONIONARCH.Persistence.MySql must use MySqlConnector only but references: {string.Join(", ", offending)}");
     }
+//#endif
 
     /// <summary>
     /// Supplies each provider assembly as a named test case.

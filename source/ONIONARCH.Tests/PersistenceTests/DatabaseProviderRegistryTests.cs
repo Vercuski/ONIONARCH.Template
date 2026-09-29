@@ -1,9 +1,17 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿//#if (HasMySql)
+using Microsoft.Extensions.Configuration;
 using ONIONARCH.Persistence.MySql;
+//#endif
+//#if (HasPostgreSql)
 using ONIONARCH.Persistence.PostgreSql;
+//#endif
 using ONIONARCH.Persistence.Providers;
+//#if (HasSqlServer)
 using ONIONARCH.Persistence.SqlServer;
+//#endif
+//#if (HasMySql)
 using MySqlRegistration = ONIONARCH.Persistence.MySql.DependencyInjection;
+//#endif
 
 namespace ONIONARCH.Tests.PersistenceTests;
 
@@ -69,19 +77,29 @@ public class DatabaseProviderRegistryTests
     [Test]
     public void ProviderRegistrations_Should_ExposeTheConfiguredPlatformKeys()
     {
+        var registry = new DatabaseProviderRegistry();
+        var expectedPlatforms = new List<string>();
+
+//#if (HasSqlServer)
+        registry.AddSqlServer();
+        expectedPlatforms.Add("MSSQL");
+//#endif
+//#if (HasPostgreSql)
+        registry.AddPostgreSql();
+        expectedPlatforms.Add("PostgreSQL");
+//#endif
+//#if (HasMySql)
         var configuration = new ConfigurationBuilder()
             .AddInMemoryCollection(new Dictionary<string, string?>
             {
                 [MySqlRegistration.ServerVersionConfigurationKey] = "8.4.0-mysql"
             })
             .Build();
+        registry.AddMySql(configuration);
+        expectedPlatforms.Add("MySQL");
+//#endif
 
-        var registry = new DatabaseProviderRegistry()
-            .AddSqlServer()
-            .AddPostgreSql()
-            .AddMySql(configuration);
-
-        Assert.That(registry.Platforms, Is.EquivalentTo(new[] { "MSSQL", "PostgreSQL", "MySQL" }));
+        Assert.That(registry.Platforms, Is.EquivalentTo(expectedPlatforms));
     }
 
     /// <summary>

@@ -361,8 +361,11 @@
             "ONIONARCH.Application/Abstractions/IUnitOfWork.cs",
             "ONIONARCH.Application/Abstractions/IUnitOfWorkTransaction.cs",
             "ONIONARCH.Application/Actions/SampleEntityEFCore/**",
+            "ONIONARCH.Persistence/Bulk/**",
             "ONIONARCH.Persistence/Contexts/**",
-            "ONIONARCH.Persistence/Transactions/**"
+            "ONIONARCH.Persistence/Transactions/**",
+            "ONIONARCH.Application/Contracts/Dtos/BulkUpdateSampleRequestDto.cs",
+            "ONIONARCH.Tests/PersistenceTests/BulkCommandDbContextTests.cs"
           ]
         },
         {
@@ -383,7 +386,8 @@
             "ONIONARCH.Application/Abstractions/Repositories/ISampleEntity*.cs",
             "ONIONARCH.Application/Contracts/Dtos/**",
             "ONIONARCH.Persistence/Repositories/SampleEntity*.cs",
-            "ONIONARCH.Presentation.API/Controllers/SampleController.cs"
+            "ONIONARCH.Presentation.API/Controllers/SampleController.cs",
+            "ONIONARCH.Tests/PersistenceTests/BulkCommandDbContextTests.cs"
           ]
         }
       ]

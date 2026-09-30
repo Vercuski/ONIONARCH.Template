@@ -10,6 +10,8 @@
   <ItemGroup>
     <!--#if (HasEfCore) -->
     <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="10.0.3" />
+    <!-- Platform adapter for EFCore.BulkExtensions (entity-list operations of IBulkCommandDbContext). -->
+    <PackageReference Include="EFCore.BulkExtensions.PostgreSql" Version="10.0.1" />
     <!--#endif -->
     <!--#if (HasDapper) -->
     <PackageReference Include="Npgsql" Version="10.0.3" />

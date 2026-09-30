@@ -30,6 +30,15 @@ public interface IDatabaseProvider
     /// <param name="optionsBuilder">The EF Core options builder to configure.</param>
     /// <param name="connectionString">The connection string to use.</param>
     void ConfigureEfCore(DbContextOptionsBuilder optionsBuilder, string connectionString);
+
+    /// <summary>
+    /// Gets a value indicating whether this platform supports the entity-list bulk operations of
+    /// <c>IBulkCommandDbContext</c> (insert, update, delete, upsert). They are implemented with
+    /// EFCore.BulkExtensions, which needs a platform adapter package; a provider returns
+    /// <see langword="true"/> only when its project references that adapter. Set-based
+    /// <c>UpdateWhereAsync</c>/<c>DeleteWhereAsync</c> use EF Core itself and work regardless.
+    /// </summary>
+    bool SupportsBulkOperations { get; }
 //#endif
 //#if (HasDapper)
 

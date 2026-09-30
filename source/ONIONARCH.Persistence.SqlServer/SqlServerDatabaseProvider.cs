@@ -32,6 +32,10 @@ internal sealed class SqlServerDatabaseProvider : IDatabaseProvider
     {
         optionsBuilder.UseSqlServer(connectionString);
     }
+
+    /// <inheritdoc />
+    /// <remarks>Backed by the <c>EFCore.BulkExtensions.SqlServer</c> adapter this project references.</remarks>
+    public bool SupportsBulkOperations => true;
 //#endif
 //#if (HasDapper)
 

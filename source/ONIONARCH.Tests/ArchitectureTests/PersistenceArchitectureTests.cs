@@ -12,7 +12,8 @@ namespace ONIONARCH.Tests.ArchitectureTests;
 public class PersistenceArchitectureTests
 {
     /// <summary>
-    /// Assemblies that only a provider-specific project may reference. Checked at the IL level
+    /// Assemblies that only a provider-specific project may reference, including EFCore.BulkExtensions'
+    /// platform adapters (the core may use only <c>EFCore.BulkExtensions.Core</c>). Checked at the IL level
     /// (<see cref="Assembly.GetReferencedAssemblies"/>) rather than by namespace, because EF Core
     /// provider extension methods such as <c>UseSqlServer</c> and <c>UseNpgsql</c> live in the shared
     /// <c>Microsoft.EntityFrameworkCore</c> namespace and would be invisible to a namespace-based rule.
@@ -27,7 +28,12 @@ public class PersistenceArchitectureTests
         "Pomelo.EntityFrameworkCore.MySql",
         "MySql.EntityFrameworkCore",
         "MySql.Data",
-        "MySqlConnector"
+        "MySqlConnector",
+        "EFCore.BulkExtensions.SqlServer",
+        "EFCore.BulkExtensions.PostgreSql",
+        "EFCore.BulkExtensions.MySql",
+        "EFCore.BulkExtensions.Sqlite",
+        "EFCore.BulkExtensions.Oracle"
     ];
 
 //#if (HasMySql)

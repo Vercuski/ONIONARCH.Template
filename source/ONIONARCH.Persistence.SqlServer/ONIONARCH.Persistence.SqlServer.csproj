@@ -10,6 +10,8 @@
   <ItemGroup>
     <!--#if (HasEfCore) -->
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="10.0.10" />
+    <!-- Platform adapter for EFCore.BulkExtensions (entity-list operations of IBulkCommandDbContext). -->
+    <PackageReference Include="EFCore.BulkExtensions.SqlServer" Version="10.0.1" />
     <!--#endif -->
     <!--#if (HasDapper) -->
     <PackageReference Include="Microsoft.Data.SqlClient" Version="7.0.2" />

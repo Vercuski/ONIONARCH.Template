@@ -15,6 +15,9 @@ using ONIONARCH.Application.Abstractions.Context;
 using ONIONARCH.Application.Abstractions.Repositories;
 //#endif
 using ONIONARCH.Domain.Abstractions;
+//#if (HasEfCore)
+using ONIONARCH.Persistence.Bulk;
+//#endif
 //#if (HasDapper)
 using ONIONARCH.Persistence.ConnectionFactory;
 //#endif
@@ -169,8 +172,10 @@ public static class DependencyInjection
     /// <summary>
     /// Registers the EF Core path: <see cref="CommandDbContext"/> and <see cref="QueryDbContext"/>
     /// configured for their providers (with detailed errors and sensitive data logging outside
-    /// Production), and maps <see cref="ICommandDbContext"/>, <see cref="IUnitOfWork"/>, and
-    /// <see cref="IQueryDbContext"/> onto those scoped context instances.
+    /// Production), maps <see cref="ICommandDbContext"/>, <see cref="IUnitOfWork"/>, and
+    /// <see cref="IQueryDbContext"/> onto those scoped context instances, and registers
+    /// <see cref="IBulkCommandDbContext"/> over the same command context, bound to the command-side
+    /// provider so it knows whether entity-list bulk operations are available.
     /// </summary>
     /// <param name="builder">The host builder to register services with.</param>
     /// <param name="queryDatabaseProvider">The provider for the query database.</param>
@@ -204,6 +209,8 @@ public static class DependencyInjection
         builder.Services.AddScoped<ICommandDbContext>(sp => sp.GetRequiredService<CommandDbContext>());
         builder.Services.AddScoped<IQueryDbContext>(sp => sp.GetRequiredService<QueryDbContext>());
         builder.Services.AddScoped<IUnitOfWork>(sp => sp.GetRequiredService<CommandDbContext>());
+        builder.Services.AddScoped<IBulkCommandDbContext>(sp =>
+            new EfCoreBulkCommandDbContext(sp.GetRequiredService<CommandDbContext>(), commandDatabaseProvider));
 
         return builder;
     }

@@ -175,4 +175,65 @@ public class SampleController(ISender sender) : ControllerBase
         return result.ToActionResult(this);
     }
 //#endif
+//#if (HasEfCore)
+
+    /// <summary>
+    /// Creates many sample entities in one bulk insert via the EF Core bulk port.
+    /// </summary>
+    /// <remarks><c>POST api/Sample/EFCore/Bulk</c>. Not available when the command database is MySQL (see README).</remarks>
+    /// <param name="dtos">The values for the new entities.</param>
+    /// <returns>200 with the generated keys in request order, or 400 if the list is empty.</returns>
+    [HttpPost("EFCore/Bulk")]
+    public async Task<IActionResult> BulkCreateEFCore([FromBody] IReadOnlyList<CreateSampleRequestDto> dtos)
+    {
+        var entities = dtos.Select(dto => dto.MapToDomain()).ToList();
+        BulkCreateSampleEntityEFCoreRequest request = new(entities);
+        var result = await sender.Send(request, CancellationToken.None);
+        return result.ToActionResult(this);
+    }
+
+    /// <summary>
+    /// Inserts or updates many sample entities by key in one bulk operation via the EF Core bulk port.
+    /// An item with <c>dtoSampleId</c> 0 is inserted; any other key updates the matching row.
+    /// </summary>
+    /// <remarks><c>PUT api/Sample/EFCore/Bulk</c>. Not available when the command database is MySQL (see README).</remarks>
+    /// <param name="dtos">The keys and values to write.</param>
+    /// <returns>200 with the number of entities written, or 400 if the list is empty.</returns>
+    [HttpPut("EFCore/Bulk")]
+    public async Task<IActionResult> BulkUpsertEFCore([FromBody] IReadOnlyList<UpdateSampleRequestDto> dtos)
+    {
+        var entities = dtos.Select(dto => dto.MapToDomain()).ToList();
+        BulkUpsertSampleEntityEFCoreRequest request = new(entities);
+        var result = await sender.Send(request, CancellationToken.None);
+        return result.ToActionResult(this);
+    }
+
+    /// <summary>
+    /// Updates many sample entities with one set-based statement via the EF Core bulk port.
+    /// </summary>
+    /// <remarks><c>PATCH api/Sample/EFCore/Bulk</c></remarks>
+    /// <param name="dto">The keys to update and the changes to apply.</param>
+    /// <returns>200 with the number of rows updated, or 400 if no keys were supplied.</returns>
+    [HttpPatch("EFCore/Bulk")]
+    public async Task<IActionResult> BulkUpdateEFCore([FromBody] BulkUpdateSampleRequestDto dto)
+    {
+        BulkUpdateSampleEntityEFCoreRequest request = new(dto.DtoSampleIds, dto.DtoSampleBoolean, dto.DtoSampleIntIncrement);
+        var result = await sender.Send(request, CancellationToken.None);
+        return result.ToActionResult(this);
+    }
+
+    /// <summary>
+    /// Deletes many sample entities with one set-based statement via the EF Core bulk port.
+    /// </summary>
+    /// <remarks><c>DELETE api/Sample/EFCore/Bulk?sampleIds=1&amp;sampleIds=2</c></remarks>
+    /// <param name="sampleIds">The keys of the entities to delete (bound from the query string).</param>
+    /// <returns>200 with the number of rows deleted, or 400 if no keys were supplied.</returns>
+    [HttpDelete("EFCore/Bulk")]
+    public async Task<IActionResult> BulkDeleteEFCore([FromQuery] int[] sampleIds)
+    {
+        BulkDeleteSampleEntityEFCoreRequest request = new(sampleIds);
+        var result = await sender.Send(request, CancellationToken.None);
+        return result.ToActionResult(this);
+    }
+//#endif
 }

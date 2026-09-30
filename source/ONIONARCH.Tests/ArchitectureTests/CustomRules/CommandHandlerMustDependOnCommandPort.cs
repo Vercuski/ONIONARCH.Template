@@ -11,7 +11,8 @@ namespace ONIONARCH.Tests.ArchitectureTests.CustomRules;
 
 /// <summary>
 /// Requires every constructor of a command handler to take a command-side persistence port. Depending on
-/// the persistence paths the solution includes, that is the EF Core <c>ICommandDbContext</c> and/or a Dapper
+/// the persistence paths the solution includes, that is an EF Core write port (<c>ICommandDbContext</c> or
+/// <c>IBulkCommandDbContext</c>) and/or a Dapper
 /// repository port: any type in the Application layer's <c>Abstractions.Repositories</c> namespace whose
 /// name ends in <c>CommandRepository</c>. A query-side port does not qualify, which keeps the CQRS sides
 /// apart. Deliberately does NOT accept a raw connection factory (e.g. <c>IDbWriteConnectionFactory</c>): allowing that
@@ -51,7 +52,8 @@ internal sealed class CommandHandlerMustDependOnCommandPort : ICustomRule
     private static bool IsCommandPort(TypeReference parameterType)
     {
 //#if (HasEfCore)
-        if (parameterType.FullName == typeof(ICommandDbContext).FullName)
+        if (parameterType.FullName == typeof(ICommandDbContext).FullName
+            || parameterType.FullName == typeof(IBulkCommandDbContext).FullName)
         {
             return true;
         }

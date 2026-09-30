@@ -43,6 +43,14 @@ internal sealed class MySqlDatabaseProvider(ServerVersion serverVersion) : IData
     {
         optionsBuilder.UseMySql(connectionString, serverVersion);
     }
+
+    /// <inheritdoc />
+    /// <remarks>
+    /// <see langword="false"/>: EFCore.BulkExtensions publishes no EF Core 10 adapter for MySQL
+    /// (<c>EFCore.BulkExtensions.MySql</c> stops at 9.x, built on Pomelo/EF Core 9, which conflicts with the
+    /// Microting EF Core 10 provider used here). Revisit when an EF Core 10 MySQL adapter ships.
+    /// </remarks>
+    public bool SupportsBulkOperations => false;
 //#endif
 //#if (HasDapper)
 

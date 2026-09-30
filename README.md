@@ -43,6 +43,7 @@ composition root.
 ### Persistence (core)
 - Third Party Libraries
   - Dapper
+  - EFCore.BulkExtensions.Core (dual licensed, see [Bulk operations](#bulk-operations-ef-core))
   - Microsoft.EntityFrameworkCore.Relational
   - Microsoft.EntityFrameworkCore.Design
 
@@ -55,8 +56,8 @@ composition root.
 ### Persistence.SqlServer / Persistence.PostgreSql / Persistence.MySql
 | Project | Platform key | Third Party Libraries |
 |---|---|---|
-| `Persistence.SqlServer` | `MSSQL` | Microsoft.EntityFrameworkCore.SqlServer, Microsoft.Data.SqlClient |
-| `Persistence.PostgreSql` | `PostgreSQL` | Npgsql.EntityFrameworkCore.PostgreSQL, Npgsql |
+| `Persistence.SqlServer` | `MSSQL` | Microsoft.EntityFrameworkCore.SqlServer, Microsoft.Data.SqlClient, EFCore.BulkExtensions.SqlServer |
+| `Persistence.PostgreSql` | `PostgreSQL` | Npgsql.EntityFrameworkCore.PostgreSQL, Npgsql, EFCore.BulkExtensions.PostgreSql |
 | `Persistence.MySql` | `MySQL` | Microting.EntityFrameworkCore.MySql, MySqlConnector |
 
   Each project exposes a single public registration extension; its `IDatabaseProvider`
@@ -82,6 +83,57 @@ builder.AddPersistenceRegistrations(providers =>
   `PersistenceArchitectureTests` enforce that the core stays provider-agnostic and that
   provider projects don't reference each other.
 
+### Bulk operations (EF Core)
+`IBulkCommandDbContext` (Application) is the write-side port for bulk work that should skip the
+change tracker. `Persistence/Bulk/EfCoreBulkCommandDbContext` implements it over the same scoped
+`CommandDbContext`, so every call uses the command connection and joins a transaction started with
+`IUnitOfWork.BeginTransactionAsync`.
+
+| Method | Implementation | SQL Server | PostgreSQL | MySQL |
+|---|---|:-:|:-:|:-:|
+| `BulkInsertAsync(entities, retrieveGeneratedKeys)` | [EFCore.BulkExtensions](https://github.com/borisdj/EFCore.BulkExtensions) `BulkInsert` | ✓ | ✓ | ✗ |
+| `BulkUpdateAsync(entities)` (match by key) | EFCore.BulkExtensions `BulkUpdate` | ✓ | ✓ | ✗ |
+| `BulkDeleteAsync(entities)` (match by key) | EFCore.BulkExtensions `BulkDelete` | ✓ | ✓ | ✗ |
+| `BulkUpsertAsync(entities, retrieveGeneratedKeys)` | EFCore.BulkExtensions `BulkInsertOrUpdate` | ✓ | ✓ | ✗ |
+| `UpdateWhereAsync(predicate, set => set.Set(...))` | EF Core `ExecuteUpdateAsync` | ✓ | ✓ | ✓ |
+| `DeleteWhereAsync(predicate)` | EF Core `ExecuteDeleteAsync` | ✓ | ✓ | ✓ |
+
+```csharp
+await bulk.UpdateWhereAsync<Order>(
+    o => o.Status == OrderStatus.Pending && o.CreatedUtc < cutoff,
+    set => set
+        .Set(o => o.Status, OrderStatus.Expired)
+        .Set(o => o.RetryCount, o => o.RetryCount + 1),
+    cancellationToken);
+```
+
+  The core project uses only the provider-agnostic `EFCore.BulkExtensions.Core`. Each provider project
+  references its own platform adapter, which the library finds at runtime, and reports support through
+  `IDatabaseProvider.SupportsBulkOperations`. `PersistenceArchitectureTests` keep the adapters out of
+  the core. Things to know:
+  - **Licensing.** EFCore.BulkExtensions is dual licensed. It is free for open source software,
+    non-profits, and companies with under USD 1M annual gross revenue. Anyone else needs a
+    [commercial license](https://codis.tech/efcorebulk). A solution generated from this template
+    carries that dependency, so check the terms for your organization.
+  - **MySQL.** EFCore.BulkExtensions has no EF Core 10 adapter for MySQL. `EFCore.BulkExtensions.MySql`
+    stops at 9.x, is built on Pomelo/EF Core 9, and conflicts with the Microting EF Core 10 provider.
+    When the command database is MySQL, the entity-list methods throw `NotSupportedException`
+    (so do the sample `POST`/`PUT api/Sample/EFCore/Bulk` endpoints, which return 500).
+    `UpdateWhereAsync` and `DeleteWhereAsync` still work. Revisit when an EF Core 10 adapter ships.
+  - **Change tracker.** Bulk calls run immediately. Tracked entities are not refreshed, and
+    concurrency tokens are not checked. Don't mix tracked and bulk writes to the same rows.
+  - **Upsert with generated keys.** If an entity's store-generated key is still unset (e.g. `0`),
+    `BulkUpsertAsync` inserts it with `BulkInsert`. The rest go through `BulkInsertOrUpdate`, and both
+    steps run in one transaction. Sending unsaved entities straight to `BulkInsertOrUpdate` isn't
+    portable: PostgreSQL's adapter writes the `0` literally.
+  - **Generated keys.** Returning them (`retrieveGeneratedKeys: true`) adds a staging step. On SQL
+    Server it made a 100k-row insert about 3x slower, so ask for keys only when you need them.
+  - **One tuning point.** `EfCoreBulkCommandDbContext.CreateConfig` builds the `BulkConfig` for every
+    call. Batch size, timeouts, and SQL Server bulk-copy options belong there.
+
+  The sample exposes `POST` (insert, returns keys), `PUT` (upsert), `PATCH` (update-where) and
+  `DELETE` (delete-where) on `api/Sample/EFCore/Bulk`.
+
 ## Infrastructure Layer
 - Third Party Libraries
   - Azure.Identity
@@ -93,6 +145,9 @@ builder.AddPersistenceRegistrations(providers =>
 ## Testing Layer
 - Third Party Libraries
   - coverlet.collector
+  - EFCore.BulkExtensions.Sqlite, Microsoft.EntityFrameworkCore.Sqlite.Core, SQLitePCLRaw.bundle_e_sqlite3
+    (in-memory database for the bulk-operation tests. The SQLite bundle is pinned past the one EF Core
+    10.0.10 references, which GHSA-2m69-gcr7-jv3q flags)
   - FakeItEasy
   - Microsoft.NET.Test.Sdk
   - NetArchTest.Rules

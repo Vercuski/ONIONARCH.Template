@@ -17,6 +17,10 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="10.0.10" />
+    <!-- Provider-agnostic core of EFCore.BulkExtensions (dual licensed: free for open source, non-profits
+         and companies under 1M USD annual revenue; commercial license otherwise - see README). Platform
+         adapters are referenced by the provider projects, keeping this project provider-agnostic. -->
+    <PackageReference Include="EFCore.BulkExtensions.Core" Version="10.0.1" />
     <!--#endif -->
   </ItemGroup>
 

@@ -31,6 +31,10 @@ internal sealed class PostgreSqlDatabaseProvider : IDatabaseProvider
     {
         optionsBuilder.UseNpgsql(connectionString);
     }
+
+    /// <inheritdoc />
+    /// <remarks>Backed by the <c>EFCore.BulkExtensions.PostgreSql</c> adapter this project references.</remarks>
+    public bool SupportsBulkOperations => true;
 //#endif
 //#if (HasDapper)
 

@@ -34,7 +34,7 @@ public class CorrelationIdMiddlewareTests
 
         var httpContext = new DefaultHttpContext();
 
-        await middleware.InvokeAsync(httpContext, accessor, NullLogger<CorrelationIdMiddleware>.Instance);
+        await middleware.InvokeAsync(httpContext, NullLogger<CorrelationIdMiddleware>.Instance);
 
         var headerValue = httpContext.Response.Headers[CorrelationIdMiddleware.HeaderName].ToString();
 
@@ -60,7 +60,7 @@ public class CorrelationIdMiddlewareTests
 
         var middleware = new CorrelationIdMiddleware(_ => Task.CompletedTask);
 
-        await middleware.InvokeAsync(httpContext, accessor, NullLogger<CorrelationIdMiddleware>.Instance);
+        await middleware.InvokeAsync(httpContext, NullLogger<CorrelationIdMiddleware>.Instance);
 
         var headerValue = httpContext.Response.Headers[CorrelationIdMiddleware.HeaderName].ToString();
         Assert.That(headerValue, Is.EqualTo(incomingId));

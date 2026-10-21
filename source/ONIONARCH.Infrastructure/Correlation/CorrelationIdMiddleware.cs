@@ -31,7 +31,6 @@ public sealed class CorrelationIdMiddleware(RequestDelegate next)
     /// <returns>A task that completes when the rest of the pipeline has finished.</returns>
     public async Task InvokeAsync(
         HttpContext context,
-        CorrelationIdAccessor accessor,
         ILogger<CorrelationIdMiddleware> logger)
     {
         var correlationId = context.Request.Headers.TryGetValue(HeaderName, out var incoming)

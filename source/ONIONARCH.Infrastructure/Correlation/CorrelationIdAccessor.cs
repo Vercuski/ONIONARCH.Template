@@ -21,13 +21,13 @@ public sealed class CorrelationIdAccessor
     /// <summary>
     /// Gets the correlation ID for the current async flow, or <see cref="string.Empty"/> if none has been set.
     /// </summary>
-    public string CorrelationId => Current.Value ?? string.Empty;
+    public static string CorrelationId => Current.Value ?? string.Empty;
 
     /// <summary>
     /// Sets the correlation ID for the current async flow and every flow it subsequently spawns.
     /// </summary>
     /// <param name="correlationId">The correlation ID to make ambient.</param>
-    public void Set(string correlationId)
+    public static void Set(string correlationId)
     {
         Current.Value = correlationId;
     }

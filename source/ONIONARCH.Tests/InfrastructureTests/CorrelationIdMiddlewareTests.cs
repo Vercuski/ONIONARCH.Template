@@ -28,7 +28,7 @@ public class CorrelationIdMiddlewareTests
         // been passed to it, which is the "invisible" propagation this middleware exists for.
         var middleware = new CorrelationIdMiddleware(context =>
         {
-            observedInsideNext = accessor.CorrelationId;
+            observedInsideNext = CorrelationIdAccessor.CorrelationId;
             return Task.CompletedTask;
         });
 

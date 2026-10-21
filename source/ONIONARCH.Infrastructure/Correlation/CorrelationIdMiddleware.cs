@@ -39,7 +39,7 @@ public sealed class CorrelationIdMiddleware(RequestDelegate next)
                 ? incoming.ToString()
                 : Guid.NewGuid().ToString();
 
-        accessor.Set(correlationId);
+        CorrelationIdAccessor.Set(correlationId);
 
         // Set before next() runs — response headers become read-only once the body starts writing.
         context.Response.Headers[HeaderName] = correlationId;

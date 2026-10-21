@@ -5,6 +5,7 @@
     <IsTestProject>false</IsTestProject>
     <IsPublishable>true</IsPublishable>
     <ProjectKey Condition="'$(ProjectKey)'==''">ONIONARCH</ProjectKey>
+    <GenerateAssemblyVersionAttribute>true</GenerateAssemblyVersionAttribute>
   </PropertyGroup>
   <!--
     Semantic versioning (https://semver.org) via MinVer (https://github.com/adamralph/minver).

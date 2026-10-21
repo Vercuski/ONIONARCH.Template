@@ -10,7 +10,7 @@ namespace ONIONARCH.Presentation.Console;
 /// </summary>
 /// <param name="logger">The logger used for heartbeat entries.</param>
 /// <param name="correlationIdAccessor">The ambient correlation ID store.</param>
-public class Worker(ILogger<Worker> logger, CorrelationIdAccessor correlationIdAccessor) : BackgroundService
+public class Worker(ILogger<Worker> logger) : BackgroundService
 {
     /// <summary>
     /// Runs the worker loop until the host signals shutdown.
@@ -24,7 +24,7 @@ public class Worker(ILogger<Worker> logger, CorrelationIdAccessor correlationIdA
             // Console has no HTTP pipeline to generate one, so each unit of work gets its own ID
             // the same way CorrelationIdMiddleware does for a web request.
             var correlationId = Guid.NewGuid().ToString();
-            correlationIdAccessor.Set(correlationId);
+            CorrelationIdAccessor.Set(correlationId);
 
             using (logger.BeginScope(new Dictionary<string, object> { ["CorrelationId"] = correlationId }))
             {

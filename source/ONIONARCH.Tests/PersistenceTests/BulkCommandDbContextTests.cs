@@ -80,12 +80,12 @@ public class BulkCommandDbContextTests
         await Resolve<IBulkCommandDbContext>().BulkInsertAsync(entities, retrieveGeneratedKeys: true);
 
         var rows = await Rows();
-        Assert.Multiple(() =>
+        using (Assert.EnterMultipleScope())
         {
-            Assert.That(rows.Select(r => r.SampleString), Is.EquivalentTo(new[] { "a", "b", "c" }));
+            Assert.That(rows.Select(r => r.SampleString), Is.EquivalentTo(["a", "b", "c"]));
             Assert.That(entities.Select(e => e.SampleId), Is.Unique.And.All.GreaterThan(0));
             Assert.That(entities.Select(e => e.SampleId), Is.EquivalentTo(rows.Select(r => r.SampleId)));
-        });
+        }
     }
 
     /// <summary>
@@ -102,12 +102,12 @@ public class BulkCommandDbContextTests
         await Resolve<IBulkCommandDbContext>().BulkUpdateAsync([seeded[0], seeded[1]]);
 
         var rows = (await Rows()).ToDictionary(r => r.SampleId);
-        Assert.Multiple(() =>
+        using (Assert.EnterMultipleScope())
         {
             Assert.That(rows[seeded[0].SampleId].SampleString, Is.EqualTo("a2"));
             Assert.That(rows[seeded[1].SampleId].SampleInt, Is.EqualTo(20));
             Assert.That(rows[seeded[2].SampleId].SampleString, Is.EqualTo("c"));
-        });
+        }
     }
 
     /// <summary>
@@ -121,7 +121,7 @@ public class BulkCommandDbContextTests
 
         await Resolve<IBulkCommandDbContext>().BulkDeleteAsync([new SampleEntityDefinition { SampleId = seeded[1].SampleId }]);
 
-        Assert.That((await Rows()).Select(r => r.SampleString), Is.EquivalentTo(new[] { "a", "c" }));
+        Assert.That((await Rows()).Select(r => r.SampleString), Is.EquivalentTo(["a", "c"]));
     }
 
     /// <summary>
@@ -143,12 +143,12 @@ public class BulkCommandDbContextTests
         await Resolve<IBulkCommandDbContext>().BulkUpsertAsync(fresh, retrieveGeneratedKeys: true);
 
         var rows = await Rows();
-        Assert.Multiple(() =>
+        using (Assert.EnterMultipleScope())
         {
-            Assert.That(rows.Select(r => r.SampleString), Is.EquivalentTo(new[] { "a", "new", "newer" }));
+            Assert.That(rows.Select(r => r.SampleString), Is.EquivalentTo([ "a", "new", "newer" ]));
             Assert.That(rows.Select(r => r.SampleId), Is.Unique.And.All.GreaterThan(0));
             Assert.That(fresh.Select(e => e.SampleId), Is.SubsetOf(rows.Select(r => r.SampleId)).And.Unique);
-        });
+        }
     }
 
     /// <summary>
@@ -204,24 +204,23 @@ public class BulkCommandDbContextTests
                 .Set(e => e.SampleInt, e => e.SampleInt * 10));
 
         var rows = (await Rows()).ToDictionary(r => r.SampleString!);
-        Assert.Multiple(() =>
+        using (Assert.EnterMultipleScope())
         {
             Assert.That(updated, Is.EqualTo(2));
             Assert.That((rows["a"].SampleInt, rows["a"].SampleBoolean), Is.EqualTo((1, false)));
             Assert.That((rows["b"].SampleInt, rows["b"].SampleBoolean), Is.EqualTo((20, true)));
             Assert.That((rows["c"].SampleInt, rows["c"].SampleBoolean), Is.EqualTo((30, true)));
-        });
+        };
     }
 
     /// <summary>
     /// Verifies that an update declaring no assignments is rejected before any SQL is generated.
     /// </summary>
     [Test]
-    public void UpdateWhereAsync_Should_Throw_WhenNoPropertyIsSet()
+    public async System.Threading.Tasks.Task UpdateWhereAsync_Should_Throw_WhenNoPropertyIsSet()
     {
         var bulk = Resolve<IBulkCommandDbContext>();
-
-        Assert.ThrowsAsync<ArgumentException>(
+        await Assert.ThrowsAsync<ArgumentException>(
             () => bulk.UpdateWhereAsync<SampleEntityDefinition>(e => true, _ => { }));
     }
 
@@ -237,11 +236,11 @@ public class BulkCommandDbContextTests
         int deleted = await Resolve<IBulkCommandDbContext>().DeleteWhereAsync<SampleEntityDefinition>(e => e.SampleInt != 2);
 
         var remaining = await Rows();
-        Assert.Multiple(() =>
+        using (Assert.EnterMultipleScope())
         {
             Assert.That(deleted, Is.EqualTo(2));
-            Assert.That(remaining.Select(r => r.SampleString), Is.EqualTo(new[] { "b" }));
-        });
+            Assert.That(remaining.Select(r => r.SampleString), Is.EqualTo(["b"]));
+        }
     }
 
     /// <summary>
@@ -261,15 +260,15 @@ public class BulkCommandDbContextTests
         var deleted = await sender.Send(new BulkDeleteSampleEntityEFCoreRequest([ids[2]]), CancellationToken.None);
 
         var rows = await Rows();
-        Assert.Multiple(() =>
+        using (Assert.EnterMultipleScope())
         {
             Assert.That(ids, Has.Count.EqualTo(3).And.Unique.And.All.GreaterThan(0));
             Assert.That(upserted.Value, Is.EqualTo(2));
             Assert.That(updated.Value, Is.EqualTo(2));
             Assert.That(deleted.Value, Is.EqualTo(1));
             Assert.That(rows.Select(r => (r.SampleString, r.SampleInt, r.SampleBoolean)),
-                Is.EquivalentTo(new[] { ("a", 6, true), ("b", 7, true), ("d", 4, false), ("e", 5, false) }));
-        });
+                Is.EquivalentTo([ ("a", 6, true), ("b", 7, true), ("d", 4, false), ("e", 5, false) ]));
+        }
     }
 
     /// <summary>
@@ -290,12 +289,12 @@ public class BulkCommandDbContextTests
             await sender.Send(new BulkDeleteSampleEntityEFCoreRequest([]), CancellationToken.None)
         ];
 
-        Assert.Multiple(() =>
+        using (Assert.EnterMultipleScope())
         {
             Assert.That(created.IsSuccess, Is.False);
             Assert.That(created.ErrorType, Is.EqualTo(ResultErrorType.Validation));
             Assert.That(results, Has.All.Matches<Result<int>>(r => !r.IsSuccess && r.ErrorType == ResultErrorType.Validation));
-        });
+        }
     }
 
     /// <summary>
@@ -314,17 +313,17 @@ public class BulkCommandDbContextTests
         var bulk = noBulkScope.ServiceProvider.GetRequiredService<IBulkCommandDbContext>();
         SampleEntityDefinition[] entities = [Sample("a", 1)];
 
-        var ex = Assert.ThrowsAsync<NotSupportedException>(() => bulk.BulkInsertAsync(entities));
-        Assert.ThrowsAsync<NotSupportedException>(() => bulk.BulkUpdateAsync(entities));
-        Assert.ThrowsAsync<NotSupportedException>(() => bulk.BulkDeleteAsync(entities));
-        Assert.ThrowsAsync<NotSupportedException>(() => bulk.BulkUpsertAsync(entities));
+        var ex = await Assert.ThrowsAsync<NotSupportedException>(() => bulk.BulkInsertAsync(entities));
+        await Assert.ThrowsAsync<NotSupportedException>(() => bulk.BulkUpdateAsync(entities));
+        await Assert.ThrowsAsync<NotSupportedException>(() => bulk.BulkDeleteAsync(entities));
+        await Assert.ThrowsAsync<NotSupportedException>(() => bulk.BulkUpsertAsync(entities));
         int deleted = await bulk.DeleteWhereAsync<SampleEntityDefinition>(e => true);
 
-        Assert.Multiple(() =>
+        using (Assert.EnterMultipleScope())
         {
             Assert.That(ex!.Message, Does.Contain(platform));
             Assert.That(deleted, Is.Zero);
-        });
+        }
     }
 
     /// <summary>

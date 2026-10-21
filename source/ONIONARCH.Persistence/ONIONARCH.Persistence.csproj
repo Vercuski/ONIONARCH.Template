@@ -9,14 +9,14 @@
 
   <ItemGroup>
     <!--#if (HasDapper) -->
-    <PackageReference Include="Dapper" Version="2.1.79" />
+    <PackageReference Include="Dapper" Version="2.1.89" />
     <!--#endif -->
     <!--#if (HasEfCore) -->
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="10.0.10">
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="10.0.13">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="10.0.10" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="10.0.13" />
     <!-- Provider-agnostic core of EFCore.BulkExtensions (dual licensed: free for open source, non-profits
          and companies under 1M USD annual revenue; commercial license otherwise - see README). Platform
          adapters are referenced by the provider projects, keeping this project provider-agnostic. -->

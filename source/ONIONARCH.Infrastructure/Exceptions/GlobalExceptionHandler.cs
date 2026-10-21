@@ -52,7 +52,7 @@ public sealed class GlobalExceptionHandler(
             Status = StatusCodes.Status500InternalServerError,
             Title = "Server error"
         };
-        problemDetails.Extensions["correlationId"] = _correlationIdAccessor.CorrelationId;
+        problemDetails.Extensions["correlationId"] = CorrelationIdAccessor.CorrelationId;
 
         httpContext.Response.StatusCode = problemDetails.Status.Value;
 

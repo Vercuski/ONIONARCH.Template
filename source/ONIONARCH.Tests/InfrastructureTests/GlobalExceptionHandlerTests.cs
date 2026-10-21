@@ -22,7 +22,7 @@ public class GlobalExceptionHandlerTests
     {
         var accessor = new CorrelationIdAccessor();
         var correlationId = Guid.NewGuid().ToString();
-        accessor.Set(correlationId);
+        CorrelationIdAccessor.Set(correlationId);
 
         var handler = new GlobalExceptionHandler(NullLogger<GlobalExceptionHandler>.Instance, accessor);
 

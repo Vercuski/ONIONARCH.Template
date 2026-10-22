@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <!--
     Packs source/ (including source/.template.config) as a `dotnet new` template package.
@@ -27,11 +27,6 @@
     <NoDefaultExcludes>true</NoDefaultExcludes>
     <!-- NU5128: no lib/ folder is expected for a content-only template package. -->
     <NoWarn>$(NoWarn);NU5128</NoWarn>
-
-    <!-- Same git-tag-driven versioning as the solution (see source/Directory.Build.props). -->
-    <MinVerTagPrefix>v</MinVerTagPrefix>
-    <MinVerMinimumMajorMinor>1.0</MinVerMinimumMajorMinor>
-    <MinVerDefaultPreReleaseIdentifiers>alpha.0</MinVerDefaultPreReleaseIdentifiers>
   </PropertyGroup>
 
   <ItemGroup>

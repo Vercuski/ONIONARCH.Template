@@ -29,7 +29,7 @@
   -->
   <PropertyGroup>
     <MinVerTagPrefix>v</MinVerTagPrefix>
-    <MinVerMinimumMajorMinor>2.0.0</MinVerMinimumMajorMinor>
+    <MinVerMinimumMajorMinor>2.0</MinVerMinimumMajorMinor>
     <MinVerDefaultPreReleaseIdentifiers></MinVerDefaultPreReleaseIdentifiers>
   </PropertyGroup>
   <ItemGroup>

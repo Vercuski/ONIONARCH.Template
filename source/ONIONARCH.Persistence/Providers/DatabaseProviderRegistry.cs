@@ -11,7 +11,7 @@ public sealed class DatabaseProviderRegistry
     /// <summary>
     /// Registered providers keyed by <see cref="IDatabaseProvider.Platform"/>, compared case-insensitively.
     /// </summary>
-    private readonly Dictionary<string, IDatabaseProvider> _providers = [with(StringComparer.OrdinalIgnoreCase)];
+    private readonly Dictionary<string, IDatabaseProvider> _providers = new (StringComparer.OrdinalIgnoreCase);
 
     /// <summary>
     /// The platform keys of every registered provider.

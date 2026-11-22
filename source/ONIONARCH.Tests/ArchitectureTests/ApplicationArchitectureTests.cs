@@ -34,7 +34,7 @@ public class ApplicationArchitectureTests
             .BeSealed()
             .GetResult();
 
-        if (result.FailingTypeNames != null && result.FailingTypeNames.Count != 0))
+        if (result.FailingTypeNames != null && result.FailingTypeNames.Count != 0)
         {
             Console.WriteLine("Failing Entity Types:");
             foreach (var failingType in result.FailingTypeNames)

@@ -31,7 +31,7 @@ public class PresentationArchitectureTests
             .HaveDependencyOn("ONIONARCH.Persistence")
             .GetResult();
 
-        if (result.FailingTypeNames != null && result.FailingTypeNames.Any())
+        if (result.FailingTypeNames != null && result.FailingTypeNames.Count != 0)
         {
             Console.WriteLine("Controllers Referencing Persistence:");
             foreach (var failingType in result.FailingTypeNames)
@@ -59,7 +59,7 @@ public class PresentationArchitectureTests
             .HaveDependencyOn("Dapper")
             .GetResult();
 
-        if (result.FailingTypeNames != null && result.FailingTypeNames.Any())
+        if (result.FailingTypeNames != null && result.FailingTypeNames.Count != 0)
         {
             Console.WriteLine("Controllers Referencing Dapper:");
             foreach (var failingType in result.FailingTypeNames)

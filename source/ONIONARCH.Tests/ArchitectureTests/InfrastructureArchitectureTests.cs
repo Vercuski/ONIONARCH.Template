@@ -37,7 +37,7 @@ public class InfrastructureArchitectureTests
             ])
             .GetResult();
 
-        if (result.FailingTypeNames != null && result.FailingTypeNames.Any())
+        if (result.FailingTypeNames != null && result.FailingTypeNames.Count != 0)
         {
             Console.WriteLine("Infrastructure Types Referencing Other Layers:");
             foreach (var failingType in result.FailingTypeNames)

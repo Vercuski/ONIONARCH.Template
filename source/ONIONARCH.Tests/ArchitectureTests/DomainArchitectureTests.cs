@@ -27,7 +27,7 @@ public class DomainArchitectureTests
             .BeSealed()
             .GetResult();
 
-        if (result.FailingTypeNames != null && result.FailingTypeNames.Any())
+        if (result.FailingTypeNames != null && result.FailingTypeNames.Count != 0)
         {
             Console.WriteLine("Failing Entity Types:");
             foreach (var failingType in result.FailingTypeNames)
@@ -63,7 +63,7 @@ public class DomainArchitectureTests
             ])
             .GetResult();
 
-        if (result.FailingTypeNames != null && result.FailingTypeNames.Any())
+        if (result.FailingTypeNames != null && result.FailingTypeNames.Count != 0)
         {
             Console.WriteLine("Failing Reference Types:");
             foreach (var failingType in result.FailingTypeNames)
@@ -95,7 +95,7 @@ public class DomainArchitectureTests
             .BeSealed()
             .GetResult();
 
-        if (result.FailingTypeNames != null && result.FailingTypeNames.Any())
+        if (result.FailingTypeNames != null && result.FailingTypeNames.Count != 0)
         {
             Console.WriteLine("Failing Options Types:");
             foreach (var failingType in result.FailingTypeNames)

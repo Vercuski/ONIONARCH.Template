@@ -5,6 +5,9 @@
       dotnet pack template/Vercuski.OnionArch.Templates.csproj -c Release -o artifacts
       dotnet new install artifacts/Vercuski.OnionArch.Templates.<version>.nupkg
     Installed template packages also appear in Visual Studio's New Project dialog.
+
+    The package version comes from MinVer, configured in source/Directory.Build.props and imported
+    through template/Directory.Build.props, so the template and the solution share one Semantic Version.
   -->
 
   <PropertyGroup>
@@ -28,10 +31,6 @@
     <!-- NU5128: no lib/ folder is expected for a content-only template package. -->
     <NoWarn>$(NoWarn);NU5128</NoWarn>
   </PropertyGroup>
-
-  <ItemGroup>
-    <PackageReference Include="MinVer" Version="8.0.0" PrivateAssets="all" />
-  </ItemGroup>
 
   <ItemGroup>
     <Content Include="..\source\**\*"

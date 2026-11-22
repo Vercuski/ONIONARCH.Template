@@ -160,11 +160,13 @@ await bulk.UpdateWhereAsync<Order>(
 The solution follows [Semantic Versioning 2.0](https://semver.org). Versions are calculated at
 build time by [MinVer](https://github.com/adamralph/minver) from git tags, so there are no version
 numbers to edit in any project file. The configuration lives in `source/Directory.Build.props`, and
-every project gets the same version.
+every project gets the same version. The `dotnet new` template package
+(`template/Vercuski.OnionArch.Templates.csproj`) imports the same file through
+`template/Directory.Build.props`, so the template's package version matches the solution's.
 
 | Git state | Version |
 |---|---|
-| No tags yet | `1.0.0-alpha.0.{height}` |
+| No tags yet | `2.0.0-alpha.0.{height}` (from `MinVerMinimumMajorMinor`) |
 | Commit tagged `v1.4.0` | `1.4.0` |
 | 3 commits after `v1.4.0` | `1.4.1-alpha.0.3` |
 | Commit tagged `v1.5.0-rc.1` | `1.5.0-rc.1` |
@@ -180,13 +182,41 @@ sorts correctly. The assembly attributes are set as follows:
 
 ## Cutting a release
 
+Releases are tagged automatically. After every push to `main` whose build, tests, and Docker images
+succeed, the `Tag release` job in `.github/workflows/build.yml` has Claude
+([claude-code-action](https://github.com/anthropics/claude-code-action)) read the commits since the
+last release tag and classify them by the SemVer rules:
+
+| Classification | Meaning | Example from `v1.4.0` |
+|---|---|---|
+| `major` | Breaking change to the public API: public types and members, HTTP contracts, configuration schema, or a removed/renamed template option | `v2.0.0` |
+| `minor` | Backward-compatible feature, new template option, or deprecation | `v1.5.0` |
+| `patch` | Backward-compatible fix to anything under `source/` | `v1.4.1` |
+| `none` | Only CI, documentation, README, or the template verifier changed | no tag |
+
+The job pushes only the tag. MinVer reads the version from it, so nothing is committed to `main`. The
+tag push runs the Build and Template workflows again, which produce the release-versioned build and
+template package. The job's step summary shows the classification and Claude's rationale, which is
+also the tag's annotation (`git show v1.5.0`).
+
+One-time setup, in the repository's **Settings > Secrets and variables > Actions**:
+
+- `ANTHROPIC_API_KEY`, and the [Claude GitHub App](https://github.com/apps/claude) installed on the
+  repository.
+- `RELEASE_BOT_TOKEN`: a fine-grained personal access token for this repository only, with
+  Contents = Read and write. Tags pushed with the default `GITHUB_TOKEN` do not start workflow runs,
+  so without it the tag is still created but the release builds must be started by hand.
+
+You can still tag by hand, for a pre-release or to override the classification. The job skips any
+commit that already has a `v*` tag.
+
 ```bash
 git tag v1.4.0          # or a pre-release: git tag v1.5.0-rc.1
 git push origin v1.4.0
 ```
 
-Choose the number by the SemVer rules: MAJOR for breaking changes, MINOR for backward-compatible
-features, PATCH for backward-compatible fixes. Tags must start with `v`.
+Tags must start with `v`. Pre-release tags are ignored when the job looks for the last release, so
+the next automatic tag is still based on the last stable version.
 
 ## Where the version appears
 
@@ -201,7 +231,7 @@ features, PATCH for backward-compatible fixes. Tags must start with `v`.
 - The GitHub Actions workflow (`.github/workflows/build.yml`) checks out with `fetch-depth: 0`. MinVer
   needs the tags and history, and a shallow clone would make every build look untagged.
 - Docker builds have no `.git` in their context, so the version is passed in as a build argument.
-  Without it the image is built as `1.0.0-alpha.0` and MinVer logs warning `MINVER1001`.
+  Without it the image is built as `2.0.0-alpha.0` and MinVer logs warning `MINVER1001`.
 
   ```bash
   docker build source -f source/ONIONARCH.Presentation.API/Dockerfile --build-arg APP_VERSION=1.4.0

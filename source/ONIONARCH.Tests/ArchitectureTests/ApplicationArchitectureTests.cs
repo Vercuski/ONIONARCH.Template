@@ -34,7 +34,7 @@ public class ApplicationArchitectureTests
             .BeSealed()
             .GetResult();
 
-        if (result.FailingTypeNames != null && result.FailingTypeNames.Any())
+        if (result.FailingTypeNames != null && result.FailingTypeNames.Count != 0))
         {
             Console.WriteLine("Failing Entity Types:");
             foreach (var failingType in result.FailingTypeNames)
@@ -67,7 +67,7 @@ public class ApplicationArchitectureTests
             .BeSealed()
             .GetResult();
 
-        if (result.FailingTypeNames != null && result.FailingTypeNames.Any())
+        if (result.FailingTypeNames != null && result.FailingTypeNames.Count != 0)
         {
             Console.WriteLine("Failing Entity Types:");
             foreach (var failingType in result.FailingTypeNames)
@@ -94,7 +94,7 @@ public class ApplicationArchitectureTests
             .HaveDependencyOn("Dapper")
             .GetResult();
 
-        if (result.FailingTypeNames != null && result.FailingTypeNames.Any())
+        if (result.FailingTypeNames != null && result.FailingTypeNames.Count != 0)
         {
             Console.WriteLine("Types Referencing Dapper:");
             foreach (var failingType in result.FailingTypeNames)
@@ -118,7 +118,7 @@ public class ApplicationArchitectureTests
             .HaveDependencyOn("Microsoft.EntityFrameworkCore")
             .GetResult();
 
-        if (result.FailingTypeNames != null && result.FailingTypeNames.Any())
+        if (result.FailingTypeNames != null && result.FailingTypeNames.Count != 0)
         {
             Console.WriteLine("Types Referencing Microsoft.EntityFrameworkCore:");
             foreach (var failingType in result.FailingTypeNames)

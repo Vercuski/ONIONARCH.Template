@@ -35,9 +35,6 @@ if (!Directory.Exists(apiDir))
 var pages = Directory.GetFiles(apiDir, "*.md")
     .ToDictionary(p => Path.GetFileName(p), File.ReadAllText, StringComparer.Ordinal);
 
-// Every DocFX heading carries an anchor derived from the symbol's UID:
-//   # <a id="ONIONARCH_Application_Abstractions_ISender"></a> Interface ISender          (page)
-//   ### <a id="ONIONARCH_..._ISender_Send__1_..."></a> Send<TResponse\>\(...\)           (member)
 var headingRegex = new Regex(@"^(#+) <a id=""([^""]+)""></a> (.+?)\r?$", RegexOptions.Multiline);
 var anchors = new Dictionary<string, Heading>(StringComparer.Ordinal);
 foreach (var (file, text) in pages)

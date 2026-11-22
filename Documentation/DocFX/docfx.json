@@ -6,7 +6,7 @@
         {
           "src": "../../source",
           "files": [ "**/*.csproj" ],
-          "exclude": [ "**/bin/**", "**/obj/**", "ONIONARCH.Tests/**" ]
+          "exclude": [ "**/bin/**", "**/obj/**" ]
         }
       ],
       "dest": "api",
